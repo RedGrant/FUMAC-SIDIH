@@ -18,6 +18,7 @@ void main(void)
 	checkCoaccessibilty(automata);
 	dfaOrNfa(automata);
 	nfaToDfa(automata, automata->deterministic);
+
 	freeAutomata(automata);
 	getchar();
 }

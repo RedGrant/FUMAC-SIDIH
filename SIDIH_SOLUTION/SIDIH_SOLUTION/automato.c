@@ -721,6 +721,10 @@ void freeAutomata(automato* load_automata)
 	free(load_automata);
 }
 
+void dfaCanonical(automato* load_automata)
+{
+
+}
 //----------------------Private functions---------------------------
 void freeData(automato* load_automata)
 {
@@ -1445,7 +1449,7 @@ void parser(automato* load_automata, char* file_info)
 	trs_line = (char*)malloc(1);
 	int trs_index = 0;
 	int second_trs_state_index = 0, trs_event_index = 0, trs_state_index = 0;
-	int inv_trs_index = 0;
+	int inv_trs_index = 0, trs_test = 0;
 
 	nullEventSearcher(load_automata, file_info);
 
@@ -1588,9 +1592,27 @@ void parser(automato* load_automata, char* file_info)
 				}
 
 			}
-
-			intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
-			intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
+			if (load_automata->transitions[trs_state_index][trs_event_index]->size !=0)
+			{
+				for (i = 0; i < load_automata->transitions[trs_state_index][trs_event_index]->size; i++)
+				{
+					if (load_automata->transitions[trs_state_index][trs_event_index]->values[i] == second_trs_state_index)
+						trs_test++;
+				}
+				if (trs_test != load_automata->transitions[trs_state_index][trs_event_index]->size)
+				{
+					intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
+					intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
+				}
+				trs_test = 0;
+			}
+			
+			else
+			{
+				intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
+				intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
+			}
+			
 			break;
 
 		case 4:

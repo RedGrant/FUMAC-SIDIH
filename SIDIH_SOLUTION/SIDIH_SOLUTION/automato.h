@@ -68,4 +68,5 @@ void checkCoaccessibilty(automato* load_automata);
 void dfaOrNfa(automato* load_automata);
 void nfaToDfa(automato* load_automata, int nda_or_da);
 void freeAutomata(automato* load_automata);
+void dfaCanonical(automato* load_automata);
 automato* new_automata();
