@@ -1444,7 +1444,7 @@ void parser(automato* load_automata, char* file_info)
 	//private initializations 
 	char* line;
 	line = (char*)malloc(1);
-	int  parser_state = 0, i = 0, index = 0, j = 0, x = 0, y = 0, z = 0, initial_test = 0;
+	int  parser_state = 0, i = 0, index = 0, j = 0, x = 0, y = 0, z = 0,states_test=0, events_test = 0, initial_test = 0, marked_test = 0;
 	char* trs_line;
 	trs_line = (char*)malloc(1);
 	int trs_index = 0;
@@ -1494,11 +1494,37 @@ void parser(automato* load_automata, char* file_info)
 
 			//state case
 		case 1:
+			if (load_automata->states.size != 0)
+			{
+				for (i = 0; i < load_automata->states.size; i++)
+				{
+					if (strcmp(line, load_automata->states.string[i]) == 0)
+						states_test++;
+				}
+				if(states_test == 0)
+					stringPushBack(&(load_automata->states), line);
+				else
+				states_test = 0;
+			}
+			else
 			stringPushBack(&(load_automata->states), line);
 			break;
 
 			//event case
 		case 2:
+			if (load_automata->events.size != 0)
+			{
+				for (i = 0; i < load_automata->events.size; i++)
+				{
+					if (strcmp(line, load_automata->events.string[i]) == 0)
+						events_test++;
+				}
+				if (events_test == 0)
+					stringPushBack(&(load_automata->events), line);
+				else
+				events_test = 0;
+			}
+			else
 			stringPushBack(&(load_automata->events), line);
 			break;
 
@@ -1644,6 +1670,20 @@ void parser(automato* load_automata, char* file_info)
 			{
 				if (strcmp(line, load_automata->states.string[x]) == 0)
 				{
+					if (load_automata->marked.size != 0)
+					{
+						for (i = 0; i < load_automata->marked.size; i++)
+						{
+							if (load_automata->marked.values[i] == x)
+								marked_test++;
+
+						}
+						if(marked_test == 0)
+							intVectPushBack(&(load_automata->marked), x);
+						else
+						marked_test = 0;
+					}
+					else
 					intVectPushBack(&(load_automata->marked), x);
 				}
 			}

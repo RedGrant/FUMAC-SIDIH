@@ -29,11 +29,11 @@ typedef struct string_vector
 typedef struct automato
 {
 	string_vector states;
-
+	
 	string_vector events;
-
+	
 	int initial;
-
+	
 	int_vector marked;
 
 	int_vector*** transitions;
@@ -41,7 +41,7 @@ typedef struct automato
 	int_vector*** inverse_transitions;
 
 	int_vector* e_closure;
-
+	
 	int null_event;
 
 	int deterministic;
@@ -68,5 +68,4 @@ void checkCoaccessibilty(automato* load_automata);
 void dfaOrNfa(automato* load_automata);
 void nfaToDfa(automato* load_automata, int nda_or_da);
 void freeAutomata(automato* load_automata);
-void dfaCanonical(automato* load_automata);
 automato* new_automata();

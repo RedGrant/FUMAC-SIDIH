@@ -12,6 +12,7 @@ void main(void)
 	automato* automata;
 
 	automata = new_automata();
+	
 	load_file(automata, "Example.aut");
 	printAutomata(automata);
 	checkAccessibilty(automata);
