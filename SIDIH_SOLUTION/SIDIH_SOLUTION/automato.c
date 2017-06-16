@@ -1625,7 +1625,7 @@ void parser(automato* load_automata, char* file_info)
 					if (load_automata->transitions[trs_state_index][trs_event_index]->values[i] == second_trs_state_index)
 						trs_test++;
 				}
-				if (trs_test != load_automata->transitions[trs_state_index][trs_event_index]->size)
+				if (trs_test == 0)
 				{
 					intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
 					intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
