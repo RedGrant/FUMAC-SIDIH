@@ -270,24 +270,12 @@ void checkCoaccessibilty(automato* load_automata)
 			else initial_confirmation = 1;
 		}
 	}
-
+	
 	if (initial_confirmation == 1)
 	{
 		printf("No state is coacessible through any marked state(s)!\n\n");
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			coaccessible_states[i] = 0;
-		}
-		for (j = 0; j < load_automata->marked.size; j++)
-		{
-			for (i = 0; i < load_automata->states.size; i++)
-			{
-				if (load_automata->marked.values[j] == i)
-				{
-					coaccessible_states[i] = 1;
-				}
-			}
-		}
+		getchar();
+		exit(0);
 	}
 	else
 	{
