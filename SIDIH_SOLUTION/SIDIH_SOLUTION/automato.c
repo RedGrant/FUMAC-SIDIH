@@ -1728,8 +1728,15 @@ void parser(automato* load_automata, char* file_info)
 		exit(0);
 	}
 
+	
+	if (load_automata->transitions == NULL)
+	{
+		printf("There are no transitions in this automata!\n\nPress enter to continue");
+		getchar();
+		exit(0);
+	}
 
-
+		
 	load_automata->e_closure = (int_vector*)malloc(sizeof(int_vector)*((load_automata)->states.size));
 	for (i = 0; i < load_automata->states.size; i++)
 	{
