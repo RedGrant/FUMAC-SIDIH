@@ -1,30 +1,41 @@
-STATES
-A
-B
-C
-D
-E
-F
+STA    TES
+
+
+
+S0
+S   1
+S2
+S    3
+S0
+
+
+S0
 EVENTS
-0
-1
-TRANSITIONS
-A;0;B
-A;1;C
-B;0;A
-B;1;D
-C;0;E
-C;1;F
-D;0;E
-D;1;F
-E;0;F
-E;1;E
-F;0;F
-F;0;F
-F;1;F
-INITIAL
-A
-MARKED
-C
-D
-E
+a
+
+
+b
+TRA    NSITIONS
+S0;;S1
+
+
+S0;;S2
+S1;a;S  0
+
+
+S1;;S2
+
+
+S3;b;S2
+INI    TIAL
+S0
+
+
+MAR    KED
+S   0
+
+S2
+
+S2
+
+S2

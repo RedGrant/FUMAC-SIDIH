@@ -1482,197 +1482,208 @@ void parser(automato* load_automata, char* file_info)
 
 			//state case
 		case 1:
-			if (load_automata->states.size != 0)
+			if (strcmp(line, "") != 0)
 			{
-				for (i = 0; i < load_automata->states.size; i++)
+				if (load_automata->states.size != 0)
 				{
-					if (strcmp(line, load_automata->states.string[i]) == 0)
-						states_test++;
+					for (i = 0; i < load_automata->states.size; i++)
+					{
+						if (strcmp(line, load_automata->states.string[i]) == 0)
+							states_test++;
+					}
+					if (states_test == 0)
+						stringPushBack(&(load_automata->states), line);
+					else
+						states_test = 0;
 				}
-				if(states_test == 0)
-					stringPushBack(&(load_automata->states), line);
 				else
-				states_test = 0;
+					stringPushBack(&(load_automata->states), line);
 			}
-			else
-			stringPushBack(&(load_automata->states), line);
 			break;
 
 			//event case
 		case 2:
-			if (load_automata->events.size != 0)
+			if (strcmp(line, "") != 0)
 			{
-				for (i = 0; i < load_automata->events.size; i++)
+				if (load_automata->events.size != 0)
 				{
-					if (strcmp(line, load_automata->events.string[i]) == 0)
-						events_test++;
+					for (i = 0; i < load_automata->events.size; i++)
+					{
+						if (strcmp(line, load_automata->events.string[i]) == 0)
+							events_test++;
+					}
+					if (events_test == 0)
+						stringPushBack(&(load_automata->events), line);
+					else
+						events_test = 0;
 				}
-				if (events_test == 0)
-					stringPushBack(&(load_automata->events), line);
 				else
-				events_test = 0;
+					stringPushBack(&(load_automata->events), line);
 			}
-			else
-			stringPushBack(&(load_automata->events), line);
 			break;
 
 			//transition case
 		case 3:
-			trs_index = 0;
-			int i = 0, j = 0;
-
-			//memory allocation for the transitions (triple pointer)
-			if (load_automata->transitions == NULL)
+			if (strcmp(line, "") != 0)
 			{
-				//memory allocation for the double pointer, poiting to a pointer
-				load_automata->transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
-				for (i = 0; i < load_automata->states.size; i++)
+				trs_index = 0;
+				int i = 0, j = 0;
+
+				//memory allocation for the transitions (triple pointer)
+				if (load_automata->transitions == NULL)
 				{
-					load_automata->transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
-					for (j = 0; j < load_automata->events.size; j++)
+					//memory allocation for the double pointer, poiting to a pointer
+					load_automata->transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
+					for (i = 0; i < load_automata->states.size; i++)
 					{
-						load_automata->transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
-						load_automata->transitions[i][j]->size = 0;
+						load_automata->transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
+						for (j = 0; j < load_automata->events.size; j++)
+						{
+							load_automata->transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
+							load_automata->transitions[i][j]->size = 0;
+						}
 					}
 				}
-			}
 
-			if (load_automata->inverse_transitions == NULL)
-			{
-				//memory allocation for the double pointer, poiting to a pointer
-				load_automata->inverse_transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
-				for (i = 0; i < load_automata->states.size; i++)
+				if (load_automata->inverse_transitions == NULL)
 				{
-					load_automata->inverse_transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
-					for (j = 0; j < load_automata->events.size; j++)
+					//memory allocation for the double pointer, poiting to a pointer
+					load_automata->inverse_transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
+					for (i = 0; i < load_automata->states.size; i++)
 					{
-						load_automata->inverse_transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
-						load_automata->inverse_transitions[i][j]->size = 0;
+						load_automata->inverse_transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
+						for (j = 0; j < load_automata->events.size; j++)
+						{
+							load_automata->inverse_transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
+							load_automata->inverse_transitions[i][j]->size = 0;
+						}
 					}
 				}
-			}
 
-			//transitions will only happen with 2 states and one event
-			for (i = 0; i != 3; i++)
-			{
-				//transitions made correctly
-				if (splitString(line, &trs_line, &trs_index, ';') == false)
+				//transitions will only happen with 2 states and one event
+				for (i = 0; i != 3; i++)
 				{
-					printf("Invalid transition in file. Correct this transition:\n\nPress enter to continue");
-					puts(line);
-
-					getchar();
-					exit(0);
-				}
-
-				//when it's not an event
-				if (i == 0)
-				{
-
-					//confirm if there are states in the transitions vector
-					trs_state_index = findItemStringVector(trs_line, load_automata->states);
-					if (trs_state_index == load_automata->states.size)
+					//transitions made correctly
+					if (splitString(line, &trs_line, &trs_index, ';') == false)
 					{
-						printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue");
+						printf("Invalid transition in file. Correct this transition:\n\nPress enter to continue");
 						puts(line);
+
 						getchar();
 						exit(0);
 					}
-				}
-				if (i == 2)
-				{
 
-					//confirm if there are states in the transitions vector
-					second_trs_state_index = findItemStringVector(trs_line, load_automata->states);
-					if (second_trs_state_index == load_automata->states.size)
+					//when it's not an event
+					if (i == 0)
 					{
-						printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue");
-						puts(line);
-						getchar();
-						exit(0);
-					}
-				}
-				if (i == 1)
-				{
 
-					trs_event_index = findItemStringVector(trs_line, load_automata->events);
-					if (trs_event_index == load_automata->events.size)
+						//confirm if there are states in the transitions vector
+						trs_state_index = findItemStringVector(trs_line, load_automata->states);
+						if (trs_state_index == load_automata->states.size)
+						{
+							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue");
+							puts(line);
+							getchar();
+							exit(0);
+						}
+					}
+					if (i == 2)
 					{
-						printf("Invalid event being used on the transition. Correct this transition:\n\nPress enter to continue");
-						puts(line);
-						getchar();
-						exit(0);
+
+						//confirm if there are states in the transitions vector
+						second_trs_state_index = findItemStringVector(trs_line, load_automata->states);
+						if (second_trs_state_index == load_automata->states.size)
+						{
+							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue");
+							puts(line);
+							getchar();
+							exit(0);
+						}
 					}
+					if (i == 1)
+					{
+
+						trs_event_index = findItemStringVector(trs_line, load_automata->events);
+						if (trs_event_index == load_automata->events.size)
+						{
+							printf("Invalid event being used on the transition. Correct this transition:\n\nPress enter to continue");
+							puts(line);
+							getchar();
+							exit(0);
+						}
+					}
+
+				}
+				if (load_automata->transitions[trs_state_index][trs_event_index]->size != 0)
+				{
+					for (i = 0; i < load_automata->transitions[trs_state_index][trs_event_index]->size; i++)
+					{
+						if (load_automata->transitions[trs_state_index][trs_event_index]->values[i] == second_trs_state_index)
+							trs_test++;
+					}
+					if (trs_test == 0)
+					{
+						intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
+						intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
+					}
+					trs_test = 0;
 				}
 
-			}
-			if (load_automata->transitions[trs_state_index][trs_event_index]->size !=0)
-			{
-				for (i = 0; i < load_automata->transitions[trs_state_index][trs_event_index]->size; i++)
-				{
-					if (load_automata->transitions[trs_state_index][trs_event_index]->values[i] == second_trs_state_index)
-						trs_test++;
-				}
-				if (trs_test == 0)
+				else
 				{
 					intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
 					intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
 				}
-				trs_test = 0;
 			}
-			
-			else
-			{
-				intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
-				intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
-			}
-			
 			break;
 
 		case 4:
 
-
-			for (j = 0; j < load_automata->states.size; j++)
+			if (strcmp(line, "") != 0)
 			{
-				if (strcmp(line, load_automata->states.string[j]) == 0)
+				for (j = 0; j < load_automata->states.size; j++)
 				{
-					load_automata->initial = j;
-					initial_test++;
+					if (strcmp(line, load_automata->states.string[j]) == 0)
+					{
+						load_automata->initial = j;
+						initial_test++;
+					}
+				}
+
+				if (initial_test > 1)
+				{
+					printf("More than one initial state. Press enter to continue!");
+					getchar();
+					exit(0);
 				}
 			}
-
-			if (initial_test >1)
-			{
-				printf("More than one initial state. Press enter to continue!");
-				getchar();
-				exit(0);
-			}
-
 
 
 			break;
 
 		case 5:
-
-			for (x = 0; x < load_automata->states.size; x++)
+			if (strcmp(line, "") != 0)
 			{
-				if (strcmp(line, load_automata->states.string[x]) == 0)
+				for (x = 0; x < load_automata->states.size; x++)
 				{
-					if (load_automata->marked.size != 0)
+					if (strcmp(line, load_automata->states.string[x]) == 0)
 					{
-						for (i = 0; i < load_automata->marked.size; i++)
+						if (load_automata->marked.size != 0)
 						{
-							if (load_automata->marked.values[i] == x)
-								marked_test++;
+							for (i = 0; i < load_automata->marked.size; i++)
+							{
+								if (load_automata->marked.values[i] == x)
+									marked_test++;
 
+							}
+							if (marked_test == 0)
+								intVectPushBack(&(load_automata->marked), x);
+							else
+								marked_test = 0;
 						}
-						if(marked_test == 0)
-							intVectPushBack(&(load_automata->marked), x);
 						else
-						marked_test = 0;
+							intVectPushBack(&(load_automata->marked), x);
 					}
-					else
-					intVectPushBack(&(load_automata->marked), x);
 				}
 			}
 			break;
