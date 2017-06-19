@@ -560,11 +560,10 @@ void dfaCanonical(automato* load_automata)
 {
 	if (load_automata->states.size > 1)
 	{
-		int pair_size = 0, i = 0, j = 0, z = 0, x = 0, marked_test = 0;
+		int pair_size = 0, i = 0, j = 0, z = 0, x = 0, marked_test = 0, table_index = 0;
 		int_vector* pair;
-		
 		pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
-
+		
 
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -573,6 +572,13 @@ void dfaCanonical(automato* load_automata)
 
 		pair_size = nCr(load_automata);
 		printf("Number of pairs available: %d\n\n", pair_size);
+
+		int* marked_table = (int*)malloc(sizeof(int)*pair_size);
+
+		for (i = 0; i < pair_size; i++)
+		{
+			marked_table[i] = 0;
+		}
 
 		pairCreation(load_automata, pair);
 
@@ -584,8 +590,6 @@ void dfaCanonical(automato* load_automata)
 			}
 		}
 		
-
-
 		for (i = 0; i < load_automata->states.size; i++)
 		{
 
@@ -613,8 +617,16 @@ void dfaCanonical(automato* load_automata)
 					if (marked_test > 0)
 					{
 						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[z]]);
+						marked_table[table_index] = 1;
+						table_index++;
 						marked_test = 0;
-					}		
+					}
+					else
+					{
+						marked_table[table_index] = 0;
+						table_index++;
+						marked_test = 0;
+					}
 				}
 			}
 			else
@@ -634,13 +646,26 @@ void dfaCanonical(automato* load_automata)
 					if (marked_test == 0)
 					{
 						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[z]]);
+						marked_table[table_index] = 1;
+						table_index++;
 						marked_test = 0;
 					}
 						
 					else
+					{
 						marked_test = 0;
+						marked_table[table_index] = 0;
+						table_index++;
+					}
+						
 				}
 			}
+		}
+
+		printf("Marked table state:\n\n");
+		for (i = 0; i < pair_size; i++)
+		{
+			printf("Pair %d : %d\n", i, marked_table[i]);
 		}
 
 
@@ -655,6 +680,7 @@ void dfaCanonical(automato* load_automata)
 			}
 			free(pair);
 		}
+		free(marked_table);
 
 	}
 	else
