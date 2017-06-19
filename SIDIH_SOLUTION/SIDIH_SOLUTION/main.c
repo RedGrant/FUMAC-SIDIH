@@ -10,16 +10,19 @@ void main(void)
 	int i = 0, j = 0;
 	//automata type's being a pointer in order to be altered throughout the functions
 	automato* automata;
+	while (1)
+	{
+		automata = new_automata();
 
-	automata = new_automata();
+		load_file(automata, "Example.aut");
+		printAutomata(automata);
+		checkAccessibilty(automata);
+		//checkCoaccessibilty(automata);
+		dfaOrNfa(automata);
+		nfaToDfa(automata, automata->deterministic);
+		dfaCanonical(automata);
+		freeAutomata(automata);
+	}
 	
-	load_file(automata, "Example.aut");
-	printAutomata(automata);
-	checkAccessibilty(automata);
-	checkCoaccessibilty(automata);
-	dfaOrNfa(automata);
-	nfaToDfa(automata, automata->deterministic);
-
-	freeAutomata(automata);
 	getchar();
 }

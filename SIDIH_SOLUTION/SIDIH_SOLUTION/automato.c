@@ -26,6 +26,9 @@ void resetDfaStructure(dfa* load_dfa);
 void freeDfaStructure(dfa* load_dfa, automato* load_automata);
 dfa* newDfa();
 void freeDfa(dfa* load_dfa, automato* load_automata);
+void pairCreation(automato* load_automata);
+int nCr(automato* load_automata);
+int factorial(int number);
 //-----------------------Public functions--------------------
 
 //function responsible for creating a new automata
@@ -546,162 +549,6 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 
 
 
-void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events)
-{
-	int* dfa_provisory_state = (int*)malloc(sizeof(int));
-	int dfa_provisory_state_size = 0;
-	int i = 0, y = 0, j = 0, z = 0, test = 0, counter = 0, different_state = 0;
-
-	for (j = 0; j < dfa_states.size; j++)
-	{
-		if (load_automata->transitions[dfa_states.values[j]][events]->size != 0)
-		{
-			for (y = 0; y < load_automata->transitions[dfa_states.values[j]][events]->size; y++)
-			{
-				for (z = 0; z < load_automata->e_closure[load_automata->transitions[dfa_states.values[j]][events]->values[y]].size; z++)
-				{
-					if (dfa_provisory_state_size == 0)
-					{
-						dfa_provisory_state_size++;
-						dfa_provisory_state[dfa_provisory_state_size - 1] = load_automata->e_closure[load_automata->transitions[load_dfa->dfa_states[index].values[j]][events]->values[y]].values[z];
-
-					}
-					else
-					{
-						if (findItemarray(dfa_provisory_state, load_automata->e_closure[load_automata->transitions[load_dfa->dfa_states[index].values[j]][events]->values[y]].values[z], dfa_provisory_state_size) == dfa_provisory_state_size)
-						{
-							dfa_provisory_state_size++;
-							dfa_provisory_state = (int*)realloc(dfa_provisory_state, sizeof(int)*dfa_provisory_state_size);
-							dfa_provisory_state[dfa_provisory_state_size - 1] = load_automata->e_closure[load_automata->transitions[load_dfa->dfa_states[index].values[j]][events]->values[y]].values[z];
-						}
-					}
-				}
-			}
-		}
-	}
-	if (dfa_provisory_state_size == 0)
-	{
-		free(dfa_provisory_state);
-		return;
-	}
-	for (j = 0; j < load_dfa->dfa_states_size; j++)
-	{
-		if (load_dfa->dfa_states[j].size == dfa_provisory_state_size)
-		{
-			test++;
-		}
-	}
-	if (test == 0)
-	{
-		for (j = 0; j < dfa_provisory_state_size; j++)
-		{
-			if (j == 0)
-			{
-				load_dfa->dfa_states = (int_vector*)realloc(load_dfa->dfa_states, sizeof(int_vector)*(load_dfa->dfa_states_size + 1));
-				load_dfa->dfa_states[load_dfa->dfa_states_size].size = 0;
-				intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
-			}
-			else
-				intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
-		}
-		sortArrayAscending(&(load_dfa->dfa_states[load_dfa->dfa_states_size]));
-
-		load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
-		load_dfa->transitions_table[index][events].values[0] = load_dfa->dfa_states_size;
-		load_dfa->transitions_table[index][events].size++;
-		load_dfa->dfa_states_size++;
-
-	}
-	else
-	{
-		test = 0;
-		for (j = 0; j < load_dfa->dfa_states_size; j++)
-		{
-			if (load_dfa->dfa_states[j].size == dfa_provisory_state_size)
-			{
-				test++;
-			}
-			if (test != 0)
-			{
-				test = 0;
-				counter = 0;
-				for (z = 0; z < dfa_provisory_state_size; z++)
-				{
-					if (findItemIntVector(load_dfa->dfa_states[j], dfa_provisory_state[z]) != load_dfa->dfa_states[j].size)
-					{
-						counter++;
-						continue;
-					}
-				}
-				if (counter != load_dfa->dfa_states[j].size)
-				{
-					different_state++;
-					counter = 0;
-				}
-
-			}
-			else
-			{
-				if (dfa_provisory_state_size == 0)
-				{
-					return;
-				}
-				different_state++;
-			}
-		}
-		if (different_state == load_dfa->dfa_states_size)
-		{
-			test = 0;
-			different_state = 0;
-
-			for (j = 0; j < dfa_provisory_state_size; j++)
-			{
-				if (j == 0)
-				{
-					load_dfa->dfa_states = (int_vector*)realloc(load_dfa->dfa_states, sizeof(int_vector)*(load_dfa->dfa_states_size + 1));
-					load_dfa->dfa_states[load_dfa->dfa_states_size].size = 0;
-					intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
-				}
-				else
-					intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
-			}
-			sortArrayAscending(&(load_dfa->dfa_states[load_dfa->dfa_states_size]));
-
-			load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
-			load_dfa->transitions_table[index][events].values[0] = load_dfa->dfa_states_size;
-			load_dfa->transitions_table[index][events].size++;
-			load_dfa->dfa_states_size++;
-		}
-		else
-		{
-			test = 0;
-			different_state = 0;
-
-			for (i = 0; i < load_dfa->dfa_states_size; i++)
-			{
-				if (dfa_provisory_state_size == load_dfa->dfa_states[i].size)
-				{
-					for (j = 0; j < dfa_provisory_state_size; j++)
-					{
-						if (findItemIntVector(load_dfa->dfa_states[i], dfa_provisory_state[j]) != load_dfa->dfa_states[i].size)
-						{
-							test++;
-						}
-						if (test == load_dfa->dfa_states[i].size)
-						{
-							load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
-							load_dfa->transitions_table[index][events].values[0] = i;
-							load_dfa->transitions_table[index][events].size++;
-						}
-					}
-				}
-				test = 0;
-			}
-			test = 0;
-		}
-	}
-	free(dfa_provisory_state);
-}
 
 void freeAutomata(automato* load_automata)
 {
@@ -711,9 +558,84 @@ void freeAutomata(automato* load_automata)
 
 void dfaCanonical(automato* load_automata)
 {
-
+	pairCreation(load_automata);
 }
 //----------------------Private functions---------------------------
+
+void pairCreation(automato* load_automata)
+{
+	int i = 0, j = 0, pair_size = 0, temp = 0;
+
+	if (load_automata->states.size > 1)
+	{
+		int_vector* pair;
+		pair_size = nCr(load_automata);
+		pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
+		
+		for (i = 0; i < load_automata->states.size ; i++)
+		{
+			pair[i].size = 0;
+		}
+
+		for (i = 0; i < load_automata->states.size; i++) 
+		{
+			for (j = i + 1 ; j <= (load_automata->states.size - 1); j++)
+			{
+				intVectPushBack(&(pair[i]), j);
+			}
+		}
+
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			for (j = 0; j < pair[i].size; j++)
+			{
+				printf("(%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[j]]);
+			}
+		}
+
+		if (load_automata->states.size > 0)
+		{
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				if (pair[i].size > 0)
+				{
+					free(pair[i].values);
+				}
+			}
+			free(pair);
+		}
+	}
+	else
+		printf("Not enough states to make pairs! \n\n ");
+}
+
+
+int nCr(automato* load_automata)
+{
+	int result = 0;
+	int n = load_automata->states.size;
+	int k = 2;
+	int n_fact = factorial(n);
+	int k_fact = factorial(k);
+	int n_k = n - k;
+	int n_k_factorial = factorial(n_k);
+	result = n_fact/(k_fact * n_k_factorial);
+
+	return(result);
+}
+
+int factorial(int number)
+{
+	int i, fact = 1;
+
+	for (i = 1; i <= number; i++)
+	{
+		fact = fact * i;
+	}
+	return(fact);
+}
+
+
 void freeData(automato* load_automata)
 {
 	int i = 0, j = 0, x = 0, z = 0;
@@ -884,6 +806,163 @@ void resetDfaStructure(dfa* load_dfa)
 	load_dfa->dfa_states_size = 0;
 }
 
+
+void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events)
+{
+	int* dfa_provisory_state = (int*)malloc(sizeof(int));
+	int dfa_provisory_state_size = 0;
+	int i = 0, y = 0, j = 0, z = 0, test = 0, counter = 0, different_state = 0;
+
+	for (j = 0; j < dfa_states.size; j++)
+	{
+		if (load_automata->transitions[dfa_states.values[j]][events]->size != 0)
+		{
+			for (y = 0; y < load_automata->transitions[dfa_states.values[j]][events]->size; y++)
+			{
+				for (z = 0; z < load_automata->e_closure[load_automata->transitions[dfa_states.values[j]][events]->values[y]].size; z++)
+				{
+					if (dfa_provisory_state_size == 0)
+					{
+						dfa_provisory_state_size++;
+						dfa_provisory_state[dfa_provisory_state_size - 1] = load_automata->e_closure[load_automata->transitions[load_dfa->dfa_states[index].values[j]][events]->values[y]].values[z];
+
+					}
+					else
+					{
+						if (findItemarray(dfa_provisory_state, load_automata->e_closure[load_automata->transitions[load_dfa->dfa_states[index].values[j]][events]->values[y]].values[z], dfa_provisory_state_size) == dfa_provisory_state_size)
+						{
+							dfa_provisory_state_size++;
+							dfa_provisory_state = (int*)realloc(dfa_provisory_state, sizeof(int)*dfa_provisory_state_size);
+							dfa_provisory_state[dfa_provisory_state_size - 1] = load_automata->e_closure[load_automata->transitions[load_dfa->dfa_states[index].values[j]][events]->values[y]].values[z];
+						}
+					}
+				}
+			}
+		}
+	}
+	if (dfa_provisory_state_size == 0)
+	{
+		free(dfa_provisory_state);
+		return;
+	}
+	for (j = 0; j < load_dfa->dfa_states_size; j++)
+	{
+		if (load_dfa->dfa_states[j].size == dfa_provisory_state_size)
+		{
+			test++;
+		}
+	}
+	if (test == 0)
+	{
+		for (j = 0; j < dfa_provisory_state_size; j++)
+		{
+			if (j == 0)
+			{
+				load_dfa->dfa_states = (int_vector*)realloc(load_dfa->dfa_states, sizeof(int_vector)*(load_dfa->dfa_states_size + 1));
+				load_dfa->dfa_states[load_dfa->dfa_states_size].size = 0;
+				intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
+			}
+			else
+				intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
+		}
+		sortArrayAscending(&(load_dfa->dfa_states[load_dfa->dfa_states_size]));
+
+		load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
+		load_dfa->transitions_table[index][events].values[0] = load_dfa->dfa_states_size;
+		load_dfa->transitions_table[index][events].size++;
+		load_dfa->dfa_states_size++;
+
+	}
+	else
+	{
+		test = 0;
+		for (j = 0; j < load_dfa->dfa_states_size; j++)
+		{
+			if (load_dfa->dfa_states[j].size == dfa_provisory_state_size)
+			{
+				test++;
+			}
+			if (test != 0)
+			{
+				test = 0;
+				counter = 0;
+				for (z = 0; z < dfa_provisory_state_size; z++)
+				{
+					if (findItemIntVector(load_dfa->dfa_states[j], dfa_provisory_state[z]) != load_dfa->dfa_states[j].size)
+					{
+						counter++;
+						continue;
+					}
+				}
+				if (counter != load_dfa->dfa_states[j].size)
+				{
+					different_state++;
+					counter = 0;
+				}
+
+			}
+			else
+			{
+				if (dfa_provisory_state_size == 0)
+				{
+					return;
+				}
+				different_state++;
+			}
+		}
+		if (different_state == load_dfa->dfa_states_size)
+		{
+			test = 0;
+			different_state = 0;
+
+			for (j = 0; j < dfa_provisory_state_size; j++)
+			{
+				if (j == 0)
+				{
+					load_dfa->dfa_states = (int_vector*)realloc(load_dfa->dfa_states, sizeof(int_vector)*(load_dfa->dfa_states_size + 1));
+					load_dfa->dfa_states[load_dfa->dfa_states_size].size = 0;
+					intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
+				}
+				else
+					intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
+			}
+			sortArrayAscending(&(load_dfa->dfa_states[load_dfa->dfa_states_size]));
+
+			load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
+			load_dfa->transitions_table[index][events].values[0] = load_dfa->dfa_states_size;
+			load_dfa->transitions_table[index][events].size++;
+			load_dfa->dfa_states_size++;
+		}
+		else
+		{
+			test = 0;
+			different_state = 0;
+
+			for (i = 0; i < load_dfa->dfa_states_size; i++)
+			{
+				if (dfa_provisory_state_size == load_dfa->dfa_states[i].size)
+				{
+					for (j = 0; j < dfa_provisory_state_size; j++)
+					{
+						if (findItemIntVector(load_dfa->dfa_states[i], dfa_provisory_state[j]) != load_dfa->dfa_states[i].size)
+						{
+							test++;
+						}
+						if (test == load_dfa->dfa_states[i].size)
+						{
+							load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
+							load_dfa->transitions_table[index][events].values[0] = i;
+							load_dfa->transitions_table[index][events].size++;
+						}
+					}
+				}
+				test = 0;
+			}
+			test = 0;
+		}
+	}
+	free(dfa_provisory_state);
+}
 
 //rewrites the automata case it's needed 
 void rewriteAutomata(automato* load_automata, int* valid_states)
