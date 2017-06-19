@@ -29,6 +29,12 @@ void freeDfa(dfa* load_dfa, automato* load_automata);
 void pairCreation(automato* load_automata, int_vector* pair);
 int nCr(automato* load_automata);
 int factorial(int number);
+canonical* newCanonical();
+void resetCanonicalStructure(canonical* load_canonical);
+void freeCanonical(canonical* load_canonical, automato* load_automata);
+void resetDfaStructure(dfa* load_dfa);
+void freeCanonicalStructure(canonical* load_canonical, automato* load_automata);
+
 //-----------------------Public functions--------------------
 
 //function responsible for creating a new automata
@@ -560,33 +566,37 @@ void dfaCanonical(automato* load_automata)
 {
 	if (load_automata->states.size > 1)
 	{
-		int pair_size = 0, i = 0, j = 0, z = 0, x = 0, marked_test = 0, table_index = 0;
-		int_vector* pair;
-		pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
+		int  i = 0, j = 0, z = 0, x = 0, marked_test = 0;
 		
+		canonical* load_canonical = newCanonical();
+		resetCanonicalStructure(load_canonical);
+
+		if (load_canonical->pair == NULL)
+		{
+			load_canonical->pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
+		}
+		
+		if (load_canonical->table_marked == NULL)
+		{
+			load_canonical->table_marked = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
+		}
 
 		for (i = 0; i < load_automata->states.size; i++)
 		{
-			pair[i].size = 0;
+			load_canonical->pair[i].size = 0;
+			load_canonical->table_marked[i].size = 0;
 		}
 
-		pair_size = nCr(load_automata);
-		printf("Number of pairs available: %d\n\n", pair_size);
+		load_canonical->pair_size = nCr(load_automata);
+		printf("Number of pairs available: %d\n\n", load_canonical->pair_size);
 
-		int* marked_table = (int*)malloc(sizeof(int)*pair_size);
-
-		for (i = 0; i < pair_size; i++)
-		{
-			marked_table[i] = 0;
-		}
-
-		pairCreation(load_automata, pair);
+		pairCreation(load_automata, load_canonical->pair);
 
 		for (i = 0; i < load_automata->states.size; i++)
 		{
-			for (j = 0; j < pair[i].size; j++)
+			for (j = 0; j < load_canonical->pair[i].size ; j++)
 			{
-				printf("(%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[j]]);
+				printf("(%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
 			}
 		}
 		
@@ -603,11 +613,11 @@ void dfaCanonical(automato* load_automata)
 
 			if (marked_test == 0)
 			{
-				for (z = 0; z < pair[i].size; z++)
+				for (z = 0; z < load_canonical->pair[i].size; z++)
 				{
 					for (j = 0; j < load_automata->marked.size; j++)
 					{
-						if (pair[i].values[z] == load_automata->marked.values[j])
+						if (load_canonical->pair[i].values[z] == load_automata->marked.values[j])
 						{
 							marked_test++;
 							break;
@@ -616,15 +626,13 @@ void dfaCanonical(automato* load_automata)
 					}
 					if (marked_test > 0)
 					{
-						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[z]]);
-						marked_table[table_index] = 1;
-						table_index++;
+						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[z]]);
+						intVectPushBack(&(load_canonical->table_marked[i]), 1);
 						marked_test = 0;
 					}
 					else
 					{
-						marked_table[table_index] = 0;
-						table_index++;
+						intVectPushBack(&(load_canonical->table_marked[i]), 0);
 						marked_test = 0;
 					}
 				}
@@ -632,11 +640,11 @@ void dfaCanonical(automato* load_automata)
 			else
 			{
 				marked_test = 0;
-				for (z = 0; z < pair[i].size; z++)
+				for (z = 0; z < load_canonical->pair[i].size; z++)
 				{
 					for (x = 0; x < load_automata->marked.size; x++)
 					{
-						if (pair[i].values[z] == load_automata->marked.values[x])
+						if (load_canonical->pair[i].values[z] == load_automata->marked.values[x])
 						{
 							marked_test++;
 							break;
@@ -645,43 +653,31 @@ void dfaCanonical(automato* load_automata)
 					}
 					if (marked_test == 0)
 					{
-						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[z]]);
-						marked_table[table_index] = 1;
-						table_index++;
+						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[z]]);
+						intVectPushBack(&(load_canonical->table_marked[i]), 1);
+						//table_index++;
 						marked_test = 0;
 					}
 						
 					else
 					{
 						marked_test = 0;
-						marked_table[table_index] = 0;
-						table_index++;
+						intVectPushBack(&(load_canonical->table_marked[i]), 0);
 					}
 						
 				}
 			}
 		}
 
-		printf("Marked table state:\n\n");
-		for (i = 0; i < pair_size; i++)
+		for (i = 0; i < load_automata->states.size; i++)
 		{
-			printf("Pair %d : %d\n", i, marked_table[i]);
-		}
-
-
-		if (load_automata->states.size > 0)
-		{
-			for (i = 0; i < load_automata->states.size; i++)
+			for (j = 0; j < load_canonical->table_marked[i].size; j++)
 			{
-				if (pair[i].size > 0)
-				{
-					free(pair[i].values);
-				}
+				printf("Valores: %d, %d\n\n",i, load_canonical->table_marked[i].values[j]);
 			}
-			free(pair);
 		}
-		free(marked_table);
 
+		freeCanonical(load_canonical, load_automata);
 	}
 	else
 		printf("Not enough states to make pairs! \n\n ");
@@ -890,6 +886,56 @@ dfa* newDfa()
 	new_dfa = (dfa*)malloc(sizeof(dfa));
 	resetDfaStructure(new_dfa);
 	return new_dfa;
+}
+
+
+canonical* newCanonical()
+{
+	canonical* new_canonical;
+	new_canonical = (canonical*)malloc(sizeof(canonical));
+	resetCanonicalStructure(new_canonical);
+	return new_canonical;
+}
+
+void resetCanonicalStructure(canonical* load_canonical)
+{
+	load_canonical->pair_size = 0;
+	load_canonical->table_marked = NULL;
+	load_canonical->pair = NULL;
+}
+
+
+void freeCanonical(canonical* load_canonical, automato* load_automata)
+{
+	freeCanonicalStructure(load_canonical, load_automata);
+	free(load_canonical);
+}
+
+void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
+{
+	int i = 0, j = 0;
+
+	if (load_automata->states.size > 0)
+	{
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			if (load_canonical->pair[i].size > 0)
+			{
+				free(load_canonical->pair[i].values);
+			}
+		}
+		free(load_canonical->pair);
+
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			if (load_canonical->table_marked[i].size > 0)
+			{
+				free(load_canonical->table_marked[i].values);
+			}
+		}
+		free(load_canonical->table_marked);
+	}
+	resetCanonicalStructure(load_canonical);
 }
 
 

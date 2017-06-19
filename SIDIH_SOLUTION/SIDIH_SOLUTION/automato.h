@@ -59,6 +59,20 @@ typedef struct dfa
 
 }dfa;
 
+typedef struct canonical
+{
+	int pair_size;
+
+	int_vector* pair;
+
+	int_vector* table_marked;
+
+}canonical;
+
+
+
+
+
 
 //the prototype of the used functions
 void load_file(automato* load_automata, char* file_path);
