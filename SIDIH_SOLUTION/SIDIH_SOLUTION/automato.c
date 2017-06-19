@@ -26,7 +26,7 @@ void resetDfaStructure(dfa* load_dfa);
 void freeDfaStructure(dfa* load_dfa, automato* load_automata);
 dfa* newDfa();
 void freeDfa(dfa* load_dfa, automato* load_automata);
-void pairCreation(automato* load_automata);
+void pairCreation(automato* load_automata, int_vector* pair);
 int nCr(automato* load_automata);
 int factorial(int number);
 //-----------------------Public functions--------------------
@@ -558,32 +558,23 @@ void freeAutomata(automato* load_automata)
 
 void dfaCanonical(automato* load_automata)
 {
-	pairCreation(load_automata);
-}
-//----------------------Private functions---------------------------
-
-void pairCreation(automato* load_automata)
-{
-	int i = 0, j = 0, pair_size = 0, temp = 0;
-
 	if (load_automata->states.size > 1)
 	{
+		int pair_size = 0, i = 0, j = 0, z = 0, x = 0, marked_test = 0;
 		int_vector* pair;
-		pair_size = nCr(load_automata);
-		pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
 		
-		for (i = 0; i < load_automata->states.size ; i++)
+		pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
+
+
+		for (i = 0; i < load_automata->states.size; i++)
 		{
 			pair[i].size = 0;
 		}
 
-		for (i = 0; i < load_automata->states.size; i++) 
-		{
-			for (j = i + 1 ; j <= (load_automata->states.size - 1); j++)
-			{
-				intVectPushBack(&(pair[i]), j);
-			}
-		}
+		pair_size = nCr(load_automata);
+		printf("Number of pairs available: %d\n\n", pair_size);
+
+		pairCreation(load_automata, pair);
 
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -592,6 +583,66 @@ void pairCreation(automato* load_automata)
 				printf("(%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[j]]);
 			}
 		}
+		
+
+
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+
+			for (j = 0; j < load_automata->marked.size; j++)
+			{
+				if (i == load_automata->marked.values[j])
+				{
+					marked_test++;
+				}
+			}
+
+			if (marked_test == 0)
+			{
+				for (z = 0; z < pair[i].size; z++)
+				{
+					for (j = 0; j < load_automata->marked.size; j++)
+					{
+						if (pair[i].values[z] == load_automata->marked.values[j])
+						{
+							marked_test++;
+							break;
+						}
+							
+					}
+					if (marked_test > 0)
+					{
+						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[z]]);
+						marked_test = 0;
+					}		
+				}
+			}
+			else
+			{
+				marked_test = 0;
+				for (z = 0; z < pair[i].size; z++)
+				{
+					for (x = 0; x < load_automata->marked.size; x++)
+					{
+						if (pair[i].values[z] == load_automata->marked.values[x])
+						{
+							marked_test++;
+							break;
+						}
+							
+					}
+					if (marked_test == 0)
+					{
+						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[pair[i].values[z]]);
+						marked_test = 0;
+					}
+						
+					else
+						marked_test = 0;
+				}
+			}
+		}
+
 
 		if (load_automata->states.size > 0)
 		{
@@ -604,9 +655,26 @@ void pairCreation(automato* load_automata)
 			}
 			free(pair);
 		}
+
 	}
 	else
 		printf("Not enough states to make pairs! \n\n ");
+	
+}
+//----------------------Private functions---------------------------
+
+void pairCreation(automato* load_automata, int_vector* pair)
+{
+	int i = 0, j = 0, pair_size = 0, temp = 0;
+	
+	for (i = 0; i < load_automata->states.size; i++) 
+	{
+		for (j = i + 1 ; j <= (load_automata->states.size - 1); j++)
+		{
+			intVectPushBack(&(pair[i]), j);
+		}
+	}
+
 }
 
 

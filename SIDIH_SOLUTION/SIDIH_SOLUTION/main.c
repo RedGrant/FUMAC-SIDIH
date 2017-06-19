@@ -22,7 +22,8 @@ void main(void)
 		nfaToDfa(automata, automata->deterministic);
 		dfaCanonical(automata);
 		freeAutomata(automata);
+		getchar();
 	}
 	
-	getchar();
+	
 }
