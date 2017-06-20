@@ -34,6 +34,7 @@ void resetCanonicalStructure(canonical* load_canonical);
 void freeCanonical(canonical* load_canonical, automato* load_automata);
 void resetDfaStructure(dfa* load_dfa);
 void freeCanonicalStructure(canonical* load_canonical, automato* load_automata);
+void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two);
 
 //-----------------------Public functions--------------------
 
@@ -279,7 +280,7 @@ void checkCoaccessibilty(automato* load_automata)
 			else initial_confirmation = 1;
 		}
 	}
-	
+
 	if (initial_confirmation == 1)
 	{
 		printf("No state is coacessible through any marked state(s)!\n\n");
@@ -566,8 +567,8 @@ void dfaCanonical(automato* load_automata)
 {
 	if (load_automata->states.size > 1)
 	{
-		int  i = 0, j = 0, z = 0, x = 0, marked_test = 0;
-		
+		int  i = 0, j = 0, z = 0, x = 0, y = 0, marked_test = 0, leave_iterations = 0;
+
 		canonical* load_canonical = newCanonical();
 		resetCanonicalStructure(load_canonical);
 
@@ -575,7 +576,7 @@ void dfaCanonical(automato* load_automata)
 		{
 			load_canonical->pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
 		}
-		
+
 		if (load_canonical->table_marked == NULL)
 		{
 			load_canonical->table_marked = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
@@ -594,12 +595,12 @@ void dfaCanonical(automato* load_automata)
 
 		for (i = 0; i < load_automata->states.size; i++)
 		{
-			for (j = 0; j < load_canonical->pair[i].size ; j++)
+			for (j = 0; j < load_canonical->pair[i].size; j++)
 			{
 				printf("(%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
 			}
 		}
-		
+
 		for (i = 0; i < load_automata->states.size; i++)
 		{
 
@@ -622,12 +623,13 @@ void dfaCanonical(automato* load_automata)
 							marked_test++;
 							break;
 						}
-							
+
 					}
 					if (marked_test > 0)
 					{
 						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[z]]);
 						intVectPushBack(&(load_canonical->table_marked[i]), 1);
+						load_canonical->marked_counter++;
 						marked_test = 0;
 					}
 					else
@@ -649,56 +651,148 @@ void dfaCanonical(automato* load_automata)
 							marked_test++;
 							break;
 						}
-							
+
 					}
 					if (marked_test == 0)
 					{
 						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[z]]);
 						intVectPushBack(&(load_canonical->table_marked[i]), 1);
-						//table_index++;
+						load_canonical->marked_counter++;
 						marked_test = 0;
 					}
-						
+
 					else
 					{
 						marked_test = 0;
 						intVectPushBack(&(load_canonical->table_marked[i]), 0);
 					}
-						
+
 				}
 			}
 		}
-
-		for (i = 0; i < load_automata->states.size; i++)
+		
+		int marked_counter = 0; 
+	
+		int pair_one = 0 , pair_two = 0, dummy = 0, trs1_not = 0, trs2_not = 0;
+		
+		do
 		{
-			for (j = 0; j < load_canonical->table_marked[i].size; j++)
+			marked_counter = load_canonical->marked_counter;
+			for (i = 0; i < load_automata->states.size; i++)
 			{
-				printf("Valores: %d, %d\n\n",i, load_canonical->table_marked[i].values[j]);
+				for (y = 0; y < load_canonical->table_marked[i].size; y++)
+				{
+					if (load_canonical->table_marked[i].values[y] == 0)
+					{
+						for (j = 0; j < load_automata->events.size; j++)
+						{
+							if (load_automata->transitions[i][j]->size != 0)
+							{
+								pair_one = load_automata->transitions[i][j]->values[0];
+							}
+							else
+								trs1_not = 1;
+							if (load_automata->transitions[load_canonical->pair[i].values[y]][j]->size != 0)
+							{
+								pair_two = load_automata->transitions[load_canonical->pair[i].values[y]][j]->values[0];
+							}
+							else
+								trs2_not = 1;
+							if (pair_one > pair_two)
+							{
+								dummy = pair_one;
+								pair_one = pair_two;
+								pair_two = dummy;
+							}
+							if (trs1_not == 1 && trs2_not == 0)
+							{
+								trs1_not = 0;
+								load_canonical->table_marked[i].values[y] = 1;
+								printf("Este par agora e marcado! (%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[y]]);
+								load_canonical->marked_counter++;
+							}
+							else
+							{
+								if (trs1_not == 0 && trs2_not == 1)
+								{
+									trs2_not = 0;
+									load_canonical->table_marked[i].values[y] = 1;
+									printf("Este par agora e marcado! (%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[y]]);
+									load_canonical->marked_counter++;
+								}
+								else
+								{
+									if (trs1_not == 0 && trs2_not == 0)
+									{
+
+										if (pair_one != pair_two)
+										{
+											printf("Par gerado por %s,%s : %s,%s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[y]], load_automata->states.string[pair_one], load_automata->states.string[pair_two]);
+											checkIfIsMarkedOnTable(load_automata, load_canonical, i, y, load_canonical->pair[i].values[y], pair_one, pair_two);
+										}
+									}
+
+								}
+							}
+							trs1_not = 0;
+							trs2_not = 0;
+						}
+					}
+				}
 			}
-		}
+
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				for (j = 0; j < load_canonical->table_marked[i].size; j++)
+				{
+					printf("Valores marcados tabela: (%s,%s)->%d\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]], load_canonical->table_marked[i].values[j]);
+				}
+			}
+		} while (marked_counter != load_canonical->marked_counter);
+		
+
 
 		freeCanonical(load_canonical, load_automata);
 	}
 	else
 		printf("Not enough states to make pairs! \n\n ");
-	
+
 }
 //----------------------Private functions---------------------------
 
 void pairCreation(automato* load_automata, int_vector* pair)
 {
 	int i = 0, j = 0, pair_size = 0, temp = 0;
-	
-	for (i = 0; i < load_automata->states.size; i++) 
+
+	for (i = 0; i < load_automata->states.size; i++)
 	{
-		for (j = i + 1 ; j <= (load_automata->states.size - 1); j++)
+		for (j = i + 1; j <= (load_automata->states.size - 1); j++)
 		{
 			intVectPushBack(&(pair[i]), j);
 		}
 	}
-
 }
 
+void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two)
+{
+	int i = 0;
+	
+	
+	for (i = 0; i < load_canonical->pair[pair_one].size; i++)
+	{
+		if (load_canonical->pair[pair_one].values[i] == pair_two)
+			pair_two = i;
+	}
+
+	printf("(%s,%s)->%d\n\n", load_automata->states.string[pair_one], load_automata->states.string[load_canonical->pair[pair_one].values[pair_two]], load_canonical->table_marked[pair_one].values[pair_two]);
+	if (load_canonical->table_marked[pair_one].values[pair_two] == 1)
+	{
+		printf("Este par agora e marcado! (%s,%s)\n\n", load_automata->states.string[pair_index], load_automata->states.string[table_index]);
+		load_canonical->table_marked[pair_index].values[y] = 1;
+		load_canonical->marked_counter++;
+		table_index = 1;
+	}
+}
 
 int nCr(automato* load_automata)
 {
@@ -709,7 +803,7 @@ int nCr(automato* load_automata)
 	int k_fact = factorial(k);
 	int n_k = n - k;
 	int n_k_factorial = factorial(n_k);
-	result = n_fact/(k_fact * n_k_factorial);
+	result = n_fact / (k_fact * n_k_factorial);
 
 	return(result);
 }
@@ -900,6 +994,7 @@ canonical* newCanonical()
 void resetCanonicalStructure(canonical* load_canonical)
 {
 	load_canonical->pair_size = 0;
+	load_canonical->marked_counter = 0;
 	load_canonical->table_marked = NULL;
 	load_canonical->pair = NULL;
 }
@@ -1651,7 +1746,7 @@ void parser(automato* load_automata, char* file_info)
 	//private initializations 
 	char* line;
 	line = (char*)malloc(1);
-	int  parser_state = 0, i = 0, index = 0, j = 0, x = 0, y = 0, z = 0,states_test=0, events_test = 0, initial_test = 0, marked_test = 0;
+	int  parser_state = 0, i = 0, index = 0, j = 0, x = 0, y = 0, z = 0, states_test = 0, events_test = 0, initial_test = 0, marked_test = 0;
 	char* trs_line;
 	trs_line = (char*)malloc(1);
 	int trs_index = 0;
@@ -1946,7 +2041,7 @@ void parser(automato* load_automata, char* file_info)
 		exit(0);
 	}
 
-	
+
 	if (load_automata->transitions == NULL)
 	{
 		printf("There are no transitions in this automata!\n\nPress enter to continue");
@@ -1954,7 +2049,7 @@ void parser(automato* load_automata, char* file_info)
 		exit(0);
 	}
 
-		
+
 	load_automata->e_closure = (int_vector*)malloc(sizeof(int_vector)*((load_automata)->states.size));
 	for (i = 0; i < load_automata->states.size; i++)
 	{

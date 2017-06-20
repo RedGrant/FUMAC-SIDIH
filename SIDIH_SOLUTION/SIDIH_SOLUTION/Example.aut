@@ -11,42 +11,17 @@ F
 EV   EN   TS
 0
 1
-2
-3
-4
-5
-6
-7
-8
-1
-1
-1
-2
-2
-2
-3
 TRA   NSIT   IONS
 A;0;B
 A;1;C
-B;0;  A
+B;0;A
 B;1;D
 C;0;E
 C;1;F
 D;0;E
 D;1;F
-E;0;F
-E;0;F
-E;0;F
-E;0;F
-E;1;E
+E;0;E
 F;0;F
-F;0;F
-F;1;F
-F;1;F
-F;1;F
-F;1;F
-F;1;F
-F;1;F
 I   NITIAL
 A
 MARKED

@@ -63,6 +63,8 @@ typedef struct canonical
 {
 	int pair_size;
 
+	int marked_counter;
+
 	int_vector* pair;
 
 	int_vector* table_marked;
