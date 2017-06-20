@@ -35,6 +35,7 @@ void freeCanonical(canonical* load_canonical, automato* load_automata);
 void resetDfaStructure(dfa* load_dfa);
 void freeCanonicalStructure(canonical* load_canonical, automato* load_automata);
 void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two);
+void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index);
 
 //-----------------------Public functions--------------------
 
@@ -751,6 +752,16 @@ void dfaCanonical(automato* load_automata)
 		} while (marked_counter != load_canonical->marked_counter);
 		
 
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			for (j = 0; j < load_canonical->table_marked[i].size; j++)
+			{
+				if (load_canonical->table_marked[i].values[j] == 0)
+				{
+					createCanonicalStates(load_automata, load_canonical, load_canonical->pair[i].values[j], i, j);
+				}
+			}
+		}
 
 		freeCanonical(load_canonical, load_automata);
 	}
@@ -793,6 +804,41 @@ void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, 
 		table_index = 1;
 	}
 }
+
+void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index )
+{
+	int i = 0, j = 0;
+
+	for (i = pair_1st_index; i < load_automata->states.size; i++)
+	{
+		if (i == pair_1st_index)
+		{
+			for (j = pair_index + 1; j < load_canonical->pair[i].size; j++)
+			{
+				if (load_canonical->table_marked[i].values[j] == 0)
+				{
+					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
+					{
+						printf("Os pares %s,%s e %s,%s tem de se combinar!\n\n", load_automata->states.string[pair_1st_index], load_automata->states.string[result_pair], load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
+					}
+				}
+			}
+		}
+		else
+			for (j = 0; j < load_canonical->pair[i].size; j++)
+			{
+				if (load_canonical->table_marked[i].values[j] == 0)
+				{
+					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
+					{
+						printf("Os pares %s,%s e %s,%s tem de se combinar!\n\n", load_automata->states.string[pair_1st_index], load_automata->states.string[result_pair], load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
+					}
+				}
+			}
+		
+	}
+}
+
 
 int nCr(automato* load_automata)
 {
