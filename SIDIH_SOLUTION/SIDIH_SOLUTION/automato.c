@@ -568,7 +568,7 @@ void dfaCanonical(automato* load_automata)
 {
 	if (load_automata->states.size > 1)
 	{
-		int  i = 0, j = 0, z = 0, x = 0, y = 0, marked_test = 0, leave_iterations = 0;
+		int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, marked_test = 0, leave_iterations = 0;
 
 		canonical* load_canonical = newCanonical();
 		resetCanonicalStructure(load_canonical);
@@ -763,15 +763,15 @@ void dfaCanonical(automato* load_automata)
 			}
 		}
 
-		
+
 		if (load_canonical->combined_states != 0)
 		{
 			for (i = 0; i < load_automata->states.size; i++)
 			{
 				for (j = 0; j < load_canonical->combined_states; j++)
 				{
-						if (findItemarray(load_canonical->states_to_combine[j].values, i, load_canonical->states_to_combine[j].size) != load_canonical->states_to_combine[j].size)
-							dummy++;
+					if (findItemarray(load_canonical->states_to_combine[j].values, i, load_canonical->states_to_combine[j].size) != load_canonical->states_to_combine[j].size)
+						dummy++;
 				}
 				if (dummy == 0)
 				{
@@ -808,10 +808,104 @@ void dfaCanonical(automato* load_automata)
 			}
 		}
 
+
+
+		if (load_canonical->combined_states_trs == NULL)
+		{
+			load_canonical->combined_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_canonical->combined_states);
+
+			for (i = 0; i < load_canonical->combined_states; i++)
+			{
+				load_canonical->combined_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(load_automata->events.size));
+			}
+		}
+
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (x = 0; x < load_canonical->states_to_combine[i].size; x++)
+			{
+				for (j = 0; j < load_automata->events.size; j++)
+				{
+					load_canonical->combined_states_trs[i][j].size = 0;
+				}
+			}
+		}
+
+
+		dummy = 0;
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (x = 0; x < load_canonical->states_to_combine[i].size; x++)
+			{
+				for (j = 0; j < load_automata->events.size; j++)
+				{
+					if (load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->size != 0)
+					{
+						if (x == 0)
+						{
+							load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+							for (k = 0; k < load_canonical->combined_states; k++)
+							{
+								if(findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
+								{
+									load_canonical->combined_states_trs[i][j].values[0] = k;
+									load_canonical->combined_states_trs[i][j].size = 1;
+									break;
+								}
+							}
+							
+						}
+						else
+						{
+							for (y = 0; y < load_canonical->combined_states; y++)
+							{
+								for (k = 0; k < load_automata->events.size; k++)
+								{
+									if (load_canonical->combined_states_trs[y][k].size != 0)
+									{
+										if (load_canonical->combined_states_trs[y][k].values[0] == load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0])
+										{
+											dummy++;
+										}
+									}
+								}
+							}
+							if (dummy == 0)
+							{
+								for (k = 0; k < load_canonical->combined_states; k++)
+								{
+									if (findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
+									{
+										load_canonical->combined_states_trs[i][j].values[0] = k;
+										load_canonical->combined_states_trs[i][j].size = 1;
+										break;
+									}
+								}
+							}
+							else
+							{
+								dummy = 0;
+							}
+						}
+					}
+				}
+			}
+		}
+	
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_canonical->combined_states_trs[i][j].size != 0)
+				{
+					printf("%d,%d -> %d\n\n", i, j, load_canonical->combined_states_trs[i][j].values[0]);
+				}
+			}
+		}
 		freeCanonical(load_canonical, load_automata);
 	}
 	else
-		printf("Not enough states to make pairs! \n\n ");
+		printf("Not enough states to make pairs! The automata is already at canonical form. \n\n ");
 
 }
 //----------------------Private functions---------------------------
@@ -1275,6 +1369,7 @@ void resetCanonicalStructure(canonical* load_canonical)
 	load_canonical->states_to_combine = NULL;
 	load_canonical->table_marked = NULL;
 	load_canonical->pair = NULL;
+	load_canonical->combined_states_trs = NULL;
 }
 
 
@@ -1287,6 +1382,22 @@ void freeCanonical(canonical* load_canonical, automato* load_automata)
 void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 {
 	int i = 0, j = 0;
+
+	if (load_canonical->combined_states != 0)
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_canonical->combined_states_trs[i][j].size != 0)
+				{
+					free(load_canonical->combined_states_trs[i][j].values);
+				}
+			}
+			free(load_canonical->combined_states_trs[i]);
+		}
+		free(load_canonical->combined_states_trs);
+	}
 
 	if (load_automata->states.size > 0)
 	{
@@ -1320,6 +1431,9 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 		}
 		free(load_canonical->states_to_combine);
 	}
+
+	
+
 
 	resetCanonicalStructure(load_canonical);
 }

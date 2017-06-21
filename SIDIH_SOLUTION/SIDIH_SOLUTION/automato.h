@@ -71,7 +71,11 @@ typedef struct canonical
 
 	int_vector* states_to_combine;
 
+	int_vector** combined_states_trs;
+
 	int combined_states;
+
+
 
 }canonical;
 
