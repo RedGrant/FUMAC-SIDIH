@@ -69,6 +69,10 @@ typedef struct canonical
 
 	int_vector* table_marked;
 
+	int_vector* states_to_combine;
+
+	int combined_states;
+
 }canonical;
 
 

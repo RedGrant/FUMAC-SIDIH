@@ -763,6 +763,23 @@ void dfaCanonical(automato* load_automata)
 			}
 		}
 
+		if (load_canonical->combined_states > 0)
+		{
+			printf("\n");
+			for (i = 0; i < load_canonical->combined_states; i++)
+			{
+				printf("Estado canonico combinado:");
+				for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
+				{
+					printf("%s ", load_automata->states.string[load_canonical->states_to_combine[i].values[j]]);
+				}
+				printf("\n\n");
+			}
+		}
+
+
+
+
 		freeCanonical(load_canonical, load_automata);
 	}
 	else
@@ -807,8 +824,9 @@ void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, 
 
 void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index )
 {
-	int i = 0, j = 0;
-
+	int i = 0, j = 0, x = 0, test = 0;
+	int* provisory_states;
+	int provisory_states_size = 0;
 	for (i = pair_1st_index; i < load_automata->states.size; i++)
 	{
 		if (i == pair_1st_index)
@@ -819,6 +837,64 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 				{
 					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
 					{
+						if (provisory_states_size == 0)
+						{
+							provisory_states_size++;
+							provisory_states = (int*)malloc(sizeof(int));
+							provisory_states[provisory_states_size - 1] = pair_1st_index;
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+
+						}
+						else
+						{
+							if (findItemarray(provisory_states, pair_1st_index, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = pair_1st_index;
+							}
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+						}
 						printf("Os pares %s,%s e %s,%s tem de se combinar!\n\n", load_automata->states.string[pair_1st_index], load_automata->states.string[result_pair], load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
 					}
 				}
@@ -831,11 +907,137 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 				{
 					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
 					{
+						if (provisory_states_size == 0)
+						{
+							provisory_states_size++;
+							provisory_states = (int*)malloc(sizeof(int));
+							provisory_states[provisory_states_size - 1] = pair_1st_index;
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+						}
+						else
+						{
+							if (findItemarray(provisory_states, pair_1st_index, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = pair_1st_index;
+							}
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+						}
 						printf("Os pares %s,%s e %s,%s tem de se combinar!\n\n", load_automata->states.string[pair_1st_index], load_automata->states.string[result_pair], load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
 					}
 				}
 			}
-		
+	}
+
+	if (provisory_states_size > 0)
+	{
+		printf("Os pares que tem de se combinar sao : \n\n");
+		for (i = 0; i < provisory_states_size; i++)
+		{
+			printf("%s\n", load_automata->states.string[provisory_states[i]]);
+		}
+	}
+	else
+	{
+		provisory_states_size++;
+		provisory_states = (int*)malloc(sizeof(int));
+		provisory_states[provisory_states_size - 1] = pair_1st_index;
+
+		if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+		{
+			provisory_states_size++;
+			provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+			provisory_states[provisory_states_size - 1] = result_pair;
+		}
+		printf("So se combina o par de entrada : \n\n");
+		for (i = 0; i < provisory_states_size; i++)
+		{
+			printf("%s\n", load_automata->states.string[provisory_states[i]]);
+		}
+	}
+
+	if (load_canonical->combined_states == 0)
+	{
+		load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector));
+		load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+		for (i = 0; i < provisory_states_size; i++)
+		{
+			intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+		}
+		sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+		load_canonical->combined_states++;
+	}
+	else
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
+			{
+				for (x = 0; x < provisory_states_size; x++)
+				{
+					if (findItemarray(load_canonical->states_to_combine[i].values, provisory_states[x], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
+						test++;
+				}
+			}
+		}
+		if (test == 0)
+		{
+			load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine,sizeof(int_vector)*(load_canonical->combined_states + 1));
+			load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+			for (i = 0; i < provisory_states_size; i++)
+			{
+				intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+			}
+			sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+			load_canonical->combined_states++;
+		}
+
+	}
+	
+	if (provisory_states_size > 0)
+	{
+		free(provisory_states);
 	}
 }
 
@@ -1041,6 +1243,8 @@ void resetCanonicalStructure(canonical* load_canonical)
 {
 	load_canonical->pair_size = 0;
 	load_canonical->marked_counter = 0;
+	load_canonical->combined_states = 0;
+	load_canonical->states_to_combine = NULL;
 	load_canonical->table_marked = NULL;
 	load_canonical->pair = NULL;
 }
@@ -1076,6 +1280,19 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 		}
 		free(load_canonical->table_marked);
 	}
+
+	if (load_canonical->combined_states != 0)
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			if (load_canonical->states_to_combine[i].size > 0)
+			{
+				free(load_canonical->states_to_combine[i].values);
+			}
+		}
+		free(load_canonical->states_to_combine);
+	}
+
 	resetCanonicalStructure(load_canonical);
 }
 
