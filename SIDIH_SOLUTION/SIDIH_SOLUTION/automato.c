@@ -569,6 +569,7 @@ void dfaCanonical(automato* load_automata)
 {
 	if (load_automata->states.size > 1)
 	{
+		printf("Checking if the automata needs to be converted to the canonical form...\n\n");
 		int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, marked_test = 0, leave_iterations = 0;
 
 		canonical* load_canonical = newCanonical();
@@ -591,17 +592,9 @@ void dfaCanonical(automato* load_automata)
 		}
 
 		load_canonical->pair_size = nCr(load_automata);
-		printf("Number of pairs available: %d\n\n", load_canonical->pair_size);
+		printf("Number of pairs available in the automata: %d\n\n", load_canonical->pair_size);
 
 		pairCreation(load_automata, load_canonical->pair);
-
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			for (j = 0; j < load_canonical->pair[i].size; j++)
-			{
-				printf("(%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
-			}
-		}
 
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -629,7 +622,6 @@ void dfaCanonical(automato* load_automata)
 					}
 					if (marked_test > 0)
 					{
-						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[z]]);
 						intVectPushBack(&(load_canonical->table_marked[i]), 1);
 						load_canonical->marked_counter++;
 						marked_test = 0;
@@ -657,7 +649,6 @@ void dfaCanonical(automato* load_automata)
 					}
 					if (marked_test == 0)
 					{
-						printf("Marcado na tabela: %s %s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[z]]);
 						intVectPushBack(&(load_canonical->table_marked[i]), 1);
 						load_canonical->marked_counter++;
 						marked_test = 0;
@@ -710,7 +701,6 @@ void dfaCanonical(automato* load_automata)
 							{
 								trs1_not = 0;
 								load_canonical->table_marked[i].values[y] = 1;
-								printf("Este par agora e marcado! (%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[y]]);
 								load_canonical->marked_counter++;
 							}
 							else
@@ -719,7 +709,6 @@ void dfaCanonical(automato* load_automata)
 								{
 									trs2_not = 0;
 									load_canonical->table_marked[i].values[y] = 1;
-									printf("Este par agora e marcado! (%s,%s)\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[y]]);
 									load_canonical->marked_counter++;
 								}
 								else
@@ -729,7 +718,6 @@ void dfaCanonical(automato* load_automata)
 
 										if (pair_one != pair_two)
 										{
-											printf("Par gerado por %s,%s : %s,%s\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[y]], load_automata->states.string[pair_one], load_automata->states.string[pair_two]);
 											checkIfIsMarkedOnTable(load_automata, load_canonical, i, y, load_canonical->pair[i].values[y], pair_one, pair_two);
 										}
 									}
@@ -743,13 +731,6 @@ void dfaCanonical(automato* load_automata)
 				}
 			}
 
-			for (i = 0; i < load_automata->states.size; i++)
-			{
-				for (j = 0; j < load_canonical->table_marked[i].size; j++)
-				{
-					printf("Valores marcados tabela: (%s,%s)->%d\n\n", load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]], load_canonical->table_marked[i].values[j]);
-				}
-			}
 		} while (marked_counter != load_canonical->marked_counter);
 
 
@@ -793,22 +774,6 @@ void dfaCanonical(automato* load_automata)
 				intVectPushBack(&(load_canonical->states_to_combine[i]), i);
 			}
 		}
-
-
-		if (load_canonical->combined_states > 0)
-		{
-			printf("\n");
-			for (i = 0; i < load_canonical->combined_states; i++)
-			{
-				printf("Estado canonico combinado:");
-				for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
-				{
-					printf("%s ", load_automata->states.string[load_canonical->states_to_combine[i].values[j]]);
-				}
-				printf("\n\n");
-			}
-		}
-
 
 
 		if (load_canonical->combined_states_trs == NULL)
@@ -893,20 +858,10 @@ void dfaCanonical(automato* load_automata)
 			}
 		}
 	
-		for (i = 0; i < load_canonical->combined_states; i++)
-		{
-			for (j = 0; j < load_automata->events.size; j++)
-			{
-				if (load_canonical->combined_states_trs[i][j].size != 0)
-				{
-					printf("%d,%d -> %d\n\n", i, j, load_canonical->combined_states_trs[i][j].values[0]);
-				}
-			}
-		}
 		writeCanonicalAutomata(load_automata, load_canonical);
 	}
 	else
-		printf("Not enough states to make pairs! The automata is already at canonical form. \n\n ");
+		printf("Not enough states to make pairs! The automata is already at canonical form! \n\n ");
 
 }
 //----------------------Private functions---------------------------
@@ -935,10 +890,8 @@ void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, 
 			pair_two = i;
 	}
 
-	printf("(%s,%s)->%d\n\n", load_automata->states.string[pair_one], load_automata->states.string[load_canonical->pair[pair_one].values[pair_two]], load_canonical->table_marked[pair_one].values[pair_two]);
 	if (load_canonical->table_marked[pair_one].values[pair_two] == 1)
 	{
-		printf("Este par agora e marcado! (%s,%s)\n\n", load_automata->states.string[pair_index], load_automata->states.string[table_index]);
 		load_canonical->table_marked[pair_index].values[y] = 1;
 		load_canonical->marked_counter++;
 		table_index = 1;
@@ -1018,12 +971,12 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
 							}
 						}
-						printf("Os pares %s,%s e %s,%s tem de se combinar!\n\n", load_automata->states.string[pair_1st_index], load_automata->states.string[result_pair], load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
 					}
 				}
 			}
 		}
 		else
+		{
 			for (j = 0; j < load_canonical->pair[i].size; j++)
 			{
 				if (load_canonical->table_marked[i].values[j] == 0)
@@ -1087,18 +1040,50 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
 							}
 						}
-						printf("Os pares %s,%s e %s,%s tem de se combinar!\n\n", load_automata->states.string[pair_1st_index], load_automata->states.string[result_pair], load_automata->states.string[i], load_automata->states.string[load_canonical->pair[i].values[j]]);
 					}
 				}
 			}
+		}
 	}
 
 	if (provisory_states_size > 0)
 	{
-		printf("Os pares que tem de se combinar sao : \n\n");
-		for (i = 0; i < provisory_states_size; i++)
+		if (load_canonical->combined_states == 0)
 		{
-			printf("%s\n", load_automata->states.string[provisory_states[i]]);
+			load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector));
+			load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+			for (i = 0; i < provisory_states_size; i++)
+			{
+				intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+			}
+			sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+			load_canonical->combined_states++;
+		}
+		else
+		{
+			for (i = 0; i < load_canonical->combined_states; i++)
+			{
+				for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
+				{
+					for (x = 0; x < provisory_states_size; x++)
+					{
+						if (findItemarray(load_canonical->states_to_combine[i].values, provisory_states[x], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
+							test++;
+					}
+				}
+			}
+			if (test == 0)
+			{
+				load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
+				load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+				for (i = 0; i < provisory_states_size; i++)
+				{
+					intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+				}
+				sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+				load_canonical->combined_states++;
+			}
+
 		}
 	}
 	else
@@ -1112,11 +1097,6 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 			provisory_states_size++;
 			provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
 			provisory_states[provisory_states_size - 1] = result_pair;
-		}
-		printf("So se combina o par de entrada : \n\n");
-		for (i = 0; i < provisory_states_size; i++)
-		{
-			printf("%s\n", load_automata->states.string[provisory_states[i]]);
 		}
 	}
 
@@ -2182,124 +2162,43 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 	}
 
-	/*
+	
 	x = x + strlen("TRANSITIONS\r\n");
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
 	strcat(new_automata_info, "TRANSITIONS\r\n\0");
 
-	for (i = 0; i < load_dfa->dfa_states_size; i++)
+	for (i = 0; i < load_canonical->combined_states; i++)
 	{
-		if (load_automata->null_event == 1)
-		{
-			for (j = 1; j < (load_automata)->events.size; j++)
-			{
-				if (load_dfa->transitions_table[i][j].size != 0)
-				{
-					for (z = 0; z < load_dfa->dfa_states[i].size; z++)
-					{
-						if (load_dfa->dfa_states[i].size == 1)
-						{
-							x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen("\r\n") + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
-							strcat(new_automata_info, "\0");
-							strcat(new_automata_info, ";\0");
-						}
-						else
-						{
-							if (z == load_dfa->dfa_states[i].size - 1)
-							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(";") + 2;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, ";\0");
-							}
-							else
-							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen("_") + 2;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "_\0");
-
-							}
-						}
-					}
-
-					x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->events.string[j]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, ";\0");
-
-					z = 0;
-					z = load_dfa->transitions_table[i][j].values[0];
-					for (y = 0; y < load_dfa->dfa_states[z].size; y++)
-					{
-						if (load_dfa->dfa_states[z].size == 1)
-						{
-							x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
-							strcat(new_automata_info, "\0");
-							strcat(new_automata_info, "\r\n\0");
-						}
-						else
-						{
-							if (y == load_dfa->dfa_states[z].size - 1)
-							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 2;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "\r\n\0");
-							}
-							else
-							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("_") + 2;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "_\0");
-							}
-						}
-					}
-
-				}
-			}
-		}
-		else
 		{
 			for (j = 0; j < (load_automata)->events.size; j++)
 			{
-				if (load_dfa->transitions_table[i][j].size != 0)
+				if (load_canonical->combined_states_trs[i][j].size != 0)
 				{
-					for (z = 0; z < load_dfa->dfa_states[i].size; z++)
+					for (z = 0; z < load_canonical->states_to_combine[i].size; z++)
 					{
-						if (load_dfa->dfa_states[i].size == 1)
+						if (load_canonical->states_to_combine[i].size == 1)
 						{
-							x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen("\r\n") + 2;
+							x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[z]]) + strlen("\r\n") + 2;
 							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
+							strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[z]]);
 							strcat(new_automata_info, "\0");
 							strcat(new_automata_info, ";\0");
 						}
 						else
 						{
-							if (z == load_dfa->dfa_states[i].size - 1)
+							if (z == load_canonical->states_to_combine[i].size - 1)
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(";") + 2;
+								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[z]]) + strlen(";") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
+								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[z]]);
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, ";\0");
 							}
 							else
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen("_") + 2;
+								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[z]]) + strlen("_") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
+								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[z]]);
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, "_\0");
 
@@ -2314,32 +2213,32 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 					strcat(new_automata_info, ";\0");
 
 					z = 0;
-					z = load_dfa->transitions_table[i][j].values[0];
-					for (y = 0; y < load_dfa->dfa_states[z].size; y++)
+					z = load_canonical->combined_states_trs[i][j].values[0];
+					for (y = 0; y < load_canonical->states_to_combine[z].size; y++)
 					{
-						if (load_dfa->dfa_states[z].size == 1)
+						if (load_canonical->states_to_combine[z].size == 1)
 						{
-							x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 2;
+							x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[z].values[y]]) + strlen("\r\n") + 2;
 							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
+							strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[z].values[y]]);
 							strcat(new_automata_info, "\0");
 							strcat(new_automata_info, "\r\n\0");
 						}
 						else
 						{
-							if (y == load_dfa->dfa_states[z].size - 1)
+							if (y == load_canonical->states_to_combine[z].size - 1)
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 2;
+								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[z].values[y]]) + strlen("\r\n") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
+								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[z].values[y]]);
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, "\r\n\0");
 							}
 							else
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("_") + 2;
+								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[z].values[y]]) + strlen("_") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
+								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[z].values[y]]);
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, "_\0");
 							}
@@ -2350,7 +2249,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 			}
 		}
 	}
-	*/
+	
 	x = x + strlen("INITIAL\r\n");
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
 	strcat(new_automata_info, "INITIAL\r\n\0");
@@ -2460,7 +2359,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	fprintf(fp, new_automata_info);
 	freeCanonical(load_canonical, load_automata);
 	freeData(load_automata);
-	//parser(load_automata, new_automata_info);
+	parser(load_automata, new_automata_info);
 	fclose(fp);
 	free(new_automata_info);
 }
