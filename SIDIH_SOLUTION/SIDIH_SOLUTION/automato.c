@@ -569,7 +569,7 @@ void dfaCanonical(automato* load_automata)
 {
 	if (load_automata->states.size > 1)
 	{
-		printf("Checking if the automata needs to be converted to the canonical form...\n\n");
+		printf("\n\n\n-----------Checking if the automata needs to be converted to the canonical form.-----------\n\n\n");
 		int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, marked_test = 0, leave_iterations = 0;
 
 		canonical* load_canonical = newCanonical();
