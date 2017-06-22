@@ -1,0 +1,11 @@
+STATES
+A_B
+C_D_E
+F
+EVENTS
+0
+1
+INITIAL
+A_B
+MARKED
+C_D_E
