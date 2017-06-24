@@ -49,32 +49,12 @@ void menu()
 	int i = 0, j = 0, k = 0;
 	int count = 0;
 	char c;
-	do
-	{
-		printf("\n");
-		i++;
-	} while (i != 10);
 	
-	i = 0;
-	
-	printf("                                             --------SIDIH PROJECT--------                                             \n                                                       made by                                                       \n                                                  1130625 Nuno Viana                                                  \n                                                  1130691 Pedro Guedes                                                  \n                                                       2016/2017                                                  \n                                             -----------------------------                                             ");
-	do
-	{
-		i++;
-	} while (i != 1000000000);
-	i = 0;
-	printf("\n");
-	do
-	{
-		for (i = 0; i < 20000000; i++)
-		{
-			
-		}
-		j++;
-		printf("                                                    \n");
-	} while (j!= 40);
-	i = 0;
+	i = 9;
 	j = 0;
+	
+
+	
 	while (1)
 	{
 		switch (i)
@@ -89,6 +69,7 @@ void menu()
 			printf("6 - Convert the automata if it is NFA\n");
 			printf("7 - Convert the automata to its canonical form\n");
 			printf("8 - Exit\n");
+			printf("9 - Authors\n");
 			printf("Default - the menu will be rewritten\n\n");
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
 			
@@ -144,7 +125,7 @@ void menu()
 		case 2:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
 				getchar();
 				i = 0;
 				do
@@ -173,7 +154,7 @@ void menu()
 		case 3:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
 				getchar();
 				i = 0;
 				do
@@ -202,7 +183,7 @@ void menu()
 		case 4:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
 				getchar();
 				i = 0;
 				do
@@ -231,7 +212,7 @@ void menu()
 		case 5:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
 				getchar();
 				i = 0;
 				do
@@ -270,7 +251,7 @@ void menu()
 		case 6:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
 				getchar();
 				i = 0;
 				do
@@ -306,7 +287,7 @@ void menu()
 		case 7:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
 				getchar();
 				do
 				{
@@ -345,6 +326,33 @@ void menu()
 			return;
 			break;
 
+		case 9:
+			do
+			{
+				j++;
+				printf("\n");
+			} while (j != 10);
+			j = 0;
+			printf("                                             --------SIDIH PROJECT--------                                             \n\n                                                        made by                                                       \n\n                                                  1130625 Nuno Viana                                                  \n                                                  1130691 Pedro Guedes                                                  \n                                                       2016/2017                                                  \n\n                                             -----------------------------                                             ");
+			do
+			{
+				i++;
+			} while (i != 1000000000);
+			i = 0;
+			printf("\n");
+			do
+			{
+				for (i = 0; i < 20000000; i++)
+				{
+
+				}
+				j++;
+				printf("                                                    \n");
+			} while (j != 40);
+			i = 0;
+			j = 0;
+
+			break;
 		default:
 			i = 0;
 			do
