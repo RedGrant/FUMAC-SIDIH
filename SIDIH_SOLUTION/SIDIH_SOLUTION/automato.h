@@ -85,6 +85,7 @@ typedef struct canonical
 
 
 //the prototype of the used functions
+void menu();
 void load_file(automato* load_automata, char* file_path);
 void printAutomata(automato* load_automata);
 void checkAccessibilty(automato* load_automata);

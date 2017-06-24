@@ -37,8 +37,327 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata);
 void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two);
 void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index);
 void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical);
+int clean_stdin();
 
 //-----------------------Public functions--------------------
+
+//software's menu
+
+void menu()
+{
+	automato* automata;
+	int i = 0, j = 0, k = 0;
+	int count = 0;
+	char c;
+	do
+	{
+		printf("\n");
+		i++;
+	} while (i != 10);
+	
+	i = 0;
+	
+	printf("                                             --------SIDIH PROJECT--------                                             \n                                                       made by                                                       \n                                                  1130625 Nuno Viana                                                  \n                                                  1130691 Pedro Guedes                                                  \n                                                       2016/2017                                                  \n                                             -----------------------------                                             ");
+	do
+	{
+		i++;
+	} while (i != 2000000000);
+	i = 0;
+	printf("\n");
+	do
+	{
+		for (i = 0; i < 20000000; i++)
+		{
+			
+		}
+		j++;
+		printf("                                                    \n");
+	} while (j!= 40);
+	i = 0;
+	j = 0;
+	while (1)
+	{
+		switch (i)
+		{
+		case 0:
+			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
+			printf("1 - Load one automata\n");
+			printf("2 - Print the automata to the console\n");
+			printf("3 - Check automata accesibility\n");
+			printf("4 - Check automata coaccesibility\n");
+			printf("5 - Check if the automata is DFA or NFA\n");
+			printf("6 - Convert the automata if it is NFA\n");
+			printf("7 - Convert the automata to its canonical form\n");
+			printf("8 - Exit\n");
+			printf("Default - the menu will be rewritten\n\n");
+			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
+			
+			while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin())
+			{
+
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+				break;
+			}
+			
+			break;
+		
+		case 1:
+			
+			
+			
+			if (k == 0)
+			{
+				automata = new_automata();
+
+				load_file(automata, "Example.aut");
+
+				k = 1;
+
+			}
+			else
+			{
+				freeAutomata(automata);
+
+				automata = new_automata();
+
+				load_file(automata, "Example.aut");
+
+				k = 1;
+			}
+			printf("\n\nAutomata loaded! Press any key to continue! \n\n");
+			getchar();
+			i = 0;
+			do
+			{
+				j++;
+				printf("\n");
+			} while (j != 40);
+			j = 0;
+			break;
+
+		case 2:
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			else
+			{
+				printAutomata(automata);
+				printf("\n\nPress any key to procede to the menu!\n");
+				getchar();
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			
+			i = 0;
+			break;
+
+		case 3:
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			else
+			{
+				checkAccessibilty(automata);
+				printf("\n\nPress any key to procede to the menu!\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			
+			break;
+
+		case 4:
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			else
+			{
+				checkCoaccessibilty(automata);
+				printf("\n\nPress any key to procede to the menu!\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			
+			break;
+
+		case 5:
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			else
+			{
+				dfaOrNfa(automata);
+				
+				if (automata->deterministic == 1)
+				{
+					printf("\n\nThe automata is deterministic!\n\n");
+				}
+				else
+				{
+					printf("\n\nThe automata is not deterministic!\n\n");
+				}
+
+				printf("\n\nPress any key to procede to the menu!\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			
+			break;
+
+		case 6:
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			else
+			{
+				dfaOrNfa(automata);
+				if (automata->deterministic == 0)
+				{
+					nfaToDfa(automata, automata->deterministic);
+				}
+				else
+					printf("\n\nThe automata is already deterministic!\n\n");
+				
+				printf("\n\nPress any key to procede to the menu!\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			
+			break;
+
+		case 7:
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press any key to continue! \n\n");
+				getchar();
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+				i = 0;
+			}
+			else
+			{
+				freeAutomata(automata);
+				automata = new_automata();
+				load_file(automata, "Example.aut");
+				checkAccessibilty(automata);
+				dfaOrNfa(automata);
+				nfaToDfa(automata, automata->deterministic);
+				dfaCanonical(automata);
+				printf("\n\nPress any key to procede to the menu!\n");
+				getchar();
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 40);
+				j = 0;
+			}
+			break;
+
+		case 8 :
+			if (k == 1)
+			{
+				freeAutomata(automata);
+			}
+			return;
+			break;
+
+		default:
+			i = 0;
+			do
+			{
+				j++;
+				printf("\n");
+			} while (j != 40);
+			j = 0;
+			break;
+		}
+	}
+}
+
 
 //function responsible for creating a new automata
 automato* new_automata()
@@ -249,8 +568,7 @@ void checkAccessibilty(automato* load_automata)
 				printf("%s \n", load_automata->states.string[i]);
 		}
 		rewriteAutomata(load_automata, accessible_states);
-		printf("\n\n\n-----------Reprinting the trimmed automata-----------\n\n\n");
-		printAutomata(load_automata);
+		
 	}
 	else
 		printf("\n\n\n-----------All states in the automata are accessible!-----------\n\n\n");
@@ -362,9 +680,6 @@ void checkCoaccessibilty(automato* load_automata)
 				printf("%s \n", load_automata->states.string[i]);
 		}
 		rewriteAutomata(load_automata, coaccessible_states);
-		printf("\n\n\n-----------Reprinting the trimmed automata-----------\n\n\n");
-
-		printAutomata(load_automata);
 	}
 	else
 		printf("\n\n\n-----------All states in the automata are coaccessible!-----------\n\n\n");
@@ -384,7 +699,6 @@ void dfaOrNfa(automato* load_automata)
 			getchar();
 			exit(0);
 		}
-		printf("The automata is not deterministic\n\n");
 		load_automata->deterministic = 0;
 		return;
 	}
@@ -428,13 +742,13 @@ void dfaOrNfa(automato* load_automata)
 		}
 		if (load_automata->null_event == 1)
 		{
-			printf("The automata is not deterministic\n\n");
+			
 			load_automata->deterministic = 0;
 			load_automata->null_event = 0;
 		}
 		else
 		{
-			printf("The automata is deterministic!\n\n");
+			
 			load_automata->deterministic = 1;
 			load_automata->null_event = 0;
 		}
@@ -550,8 +864,7 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 
 		}
 		writeDfaAutomata(load_automata, load_dfa);
-		printf("\n\n\n-----------Automata converted... Rewriting the converted automata-----------\n\n\n");
-		printAutomata(load_automata);
+		printf("\n\n\n-----------Automata converted-----------\n\n\n");
 
 	}
 }
@@ -886,6 +1199,13 @@ void dfaCanonical(automato* load_automata)
 
 }
 //----------------------Private functions---------------------------
+
+int clean_stdin()
+{
+	while (getchar() != '\n');
+	return 1;
+}
+
 
 void pairCreation(automato* load_automata, int_vector* pair)
 {
@@ -2491,8 +2811,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	parser(load_automata, new_automata_info);
 	fclose(fp);
 	free(new_automata_info);
-	printf("\n\n\n-----------Automata in canonical form... Rewriting canonical form automata-----------\n\n\n");
-	printAutomata(load_automata);
+	printf("\n\n\n-----------Automata in canonical form-----------\n\n\n");
 }
 
 
