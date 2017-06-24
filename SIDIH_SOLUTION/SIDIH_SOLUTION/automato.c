@@ -61,7 +61,7 @@ void menu()
 	do
 	{
 		i++;
-	} while (i != 2000000000);
+	} while (i != 1000000000);
 	i = 0;
 	printf("\n");
 	do
@@ -81,7 +81,7 @@ void menu()
 		{
 		case 0:
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
-			printf("1 - Load one automata\n");
+			printf("1 - Load automata called Example.aut\n");
 			printf("2 - Print the automata to the console\n");
 			printf("3 - Check automata accesibility\n");
 			printf("4 - Check automata coaccesibility\n");
