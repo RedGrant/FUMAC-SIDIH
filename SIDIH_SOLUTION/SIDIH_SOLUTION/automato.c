@@ -1611,7 +1611,7 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 {
 	int i = 0, j = 0, x = 0, z = 0;
 
-	x = x + strlen("STATES\r\n");
+	x = x + strlen("STATES\r\n") +1;
 	char* new_automata_info;
 	int* valid_events;
 
@@ -1623,7 +1623,7 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 
 	new_automata_info = malloc(x);
 
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcpy(new_automata_info, "STATES\r\n\0");
 	//strcat(new_automata_info, "\0");
 	for (i = 0; i < load_automata->states.size; i++)
@@ -1638,8 +1638,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 		}
 	}
 
-	x = x + strlen("EVENTS\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("EVENTS\r\n")+1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "EVENTS\r\n\0");
 
 
@@ -1692,8 +1692,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 	}
 
 
-	x = x + strlen("TRANSITIONS\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("TRANSITIONS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "TRANSITIONS\r\n\0");
 
 
@@ -1734,8 +1734,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 		}
 	}
 
-	x = x + strlen("INITIAL\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("INITIAL\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) );
 	strcat(new_automata_info, "INITIAL\r\n\0");
 
 	x = x + strlen(load_automata->states.string[load_automata->initial]) + strlen("\r\n") + 2;
@@ -1745,8 +1745,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 	strcat(new_automata_info, "\r\n\0");
 
 
-	x = x + strlen("MARKED\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("MARKED\r\n") +1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) );
 	strcat(new_automata_info, "MARKED\r\n\0");
 
 
@@ -1779,11 +1779,11 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
 
-	x = x + strlen("STATES\r\n");
+	x = x + strlen("STATES\r\n") + 1;
 	char* new_automata_info;
 	new_automata_info = malloc(x);
 
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcpy(new_automata_info, "STATES\r\n\0");
 
 	for (i = 0; i < load_dfa->dfa_states_size; i++)
@@ -1802,27 +1802,36 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 			{
 				if (j == load_dfa->dfa_states[i].size - 1)
 				{
-					x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen("\r\n") + 2;
+					x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen("\r\n") + 4;
 					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 					strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[j]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "}");
 					strcat(new_automata_info, "\0");
 					strcat(new_automata_info, "\r\n\0");
 				}
 				else
 				{
-					x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen("_") + 2;
+					if (j == 0)
+					{
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+					}
+					x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen(",") + 2;
 					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 					strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[j]]);
 					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, "_\0");
+					strcat(new_automata_info, ",\0");
 
 				}
 			}
 		}
 	}
 
-	x = x + strlen("EVENTS\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("EVENTS\r\n") +1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "EVENTS\r\n\0");
 	if (load_automata->null_event == 1)
 	{
@@ -1848,8 +1857,8 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 	}
 
 
-	x = x + strlen("TRANSITIONS\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("TRANSITIONS\r\n")+1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "TRANSITIONS\r\n\0");
 
 	for (i = 0; i < load_dfa->dfa_states_size; i++)
@@ -1874,19 +1883,28 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 						{
 							if (z == load_dfa->dfa_states[i].size - 1)
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(";") + 2;
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(";") + 4;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
+								strcat(new_automata_info, "\0");
+								strcat(new_automata_info, "}");
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, ";\0");
 							}
 							else
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen("_") + 2;
+								if (z == 0)
+								{
+									x = x + 2;
+									new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+									strcat(new_automata_info, "{");
+									strcat(new_automata_info, "\0");
+								}
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(",") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
 								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "_\0");
+								strcat(new_automata_info, ",\0");
 
 							}
 						}
@@ -1914,19 +1932,28 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 						{
 							if (y == load_dfa->dfa_states[z].size - 1)
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 2;
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 4;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
+								strcat(new_automata_info, "\0");
+								strcat(new_automata_info, "}");
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, "\r\n\0");
 							}
 							else
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("_") + 2;
+								if (y == 0)
+								{
+									x = x + 2;
+									new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+									strcat(new_automata_info, "{");
+									strcat(new_automata_info, "\0");
+								}
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen(",") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
 								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "_\0");
+								strcat(new_automata_info, ",\0");
 							}
 						}
 					}
@@ -1954,19 +1981,28 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 						{
 							if (z == load_dfa->dfa_states[i].size - 1)
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(";") + 2;
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(";") + 4;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
+								strcat(new_automata_info, "\0");
+								strcat(new_automata_info, "}");
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, ";\0");
 							}
 							else
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen("_") + 2;
+								if (z == 0)
+								{
+									x = x + 2;
+									new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+									strcat(new_automata_info, "{");
+									strcat(new_automata_info, "\0");
+								}
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[z]]) + strlen(",") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[z]]);
 								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "_\0");
+								strcat(new_automata_info, ",\0");
 
 							}
 						}
@@ -1994,19 +2030,28 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 						{
 							if (y == load_dfa->dfa_states[z].size - 1)
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 2;
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("\r\n") + 4;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
+								strcat(new_automata_info, "\0");
+								strcat(new_automata_info, "}");
 								strcat(new_automata_info, "\0");
 								strcat(new_automata_info, "\r\n\0");
 							}
 							else
 							{
-								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen("_") + 2;
+								if (y == 0)
+								{
+									x = x + 2;
+									new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+									strcat(new_automata_info, "{");
+									strcat(new_automata_info, "\0");
+								}
+								x = x + strlen(load_automata->states.string[load_dfa->dfa_states[z].values[y]]) + strlen(",") + 2;
 								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 								strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[z].values[y]]);
 								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "_\0");
+								strcat(new_automata_info, ",\0");
 							}
 						}
 					}
@@ -2016,8 +2061,8 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 		}
 	}
 
-	x = x + strlen("INITIAL\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("INITIAL\r\n") +1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "INITIAL\r\n\0");
 	for (i = 0; i < (load_dfa->dfa_states[0].size); i++)
 	{
@@ -2033,26 +2078,35 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 		{
 			if (i == load_dfa->dfa_states[0].size - 1)
 			{
-				x = x + strlen(load_automata->states.string[load_dfa->dfa_states[0].values[i]]) + strlen("\r\n") + 2;
+				x = x + strlen(load_automata->states.string[load_dfa->dfa_states[0].values[i]]) + strlen("\r\n") + 4;
 				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 				strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[0].values[i]]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "}");
 				strcat(new_automata_info, "\0");
 				strcat(new_automata_info, "\r\n\0");
 
 			}
 			else
 			{
-				x = x + strlen(load_automata->states.string[load_dfa->dfa_states[0].values[i]]) + strlen("_") + 2;
+				if (i == 0)
+				{
+					x = x + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, "{");
+					strcat(new_automata_info, "\0");
+				}
+				x = x + strlen(load_automata->states.string[load_dfa->dfa_states[0].values[i]]) + strlen(",") + 2;
 				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 				strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[0].values[i]]);
 				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "_\0");
+				strcat(new_automata_info, ",\0");
 			}
 		}
 	}
 
-	x = x + strlen("MARKED\r\n");
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) + 1);
+	x = x + strlen("MARKED\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "MARKED\r\n\0");
 	int marked = 0;
 	for (i = 0; i < load_dfa->dfa_states_size; i++)
@@ -2082,19 +2136,28 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 				{
 					if (j == load_dfa->dfa_states[i].size - 1)
 					{
-						x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen("\r\n") + 2;
+						x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen("\r\n") + 4;
 						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 						strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[j]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
 						strcat(new_automata_info, "\0");
 						strcat(new_automata_info, "\r\n\0");
 					}
 					else
 					{
-						x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen("_") + 2;
+						if (j == 0)
+						{
+							x = x + 2;
+							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+							strcat(new_automata_info, "{");
+							strcat(new_automata_info, "\0");
+						}
+						x = x + strlen(load_automata->states.string[load_dfa->dfa_states[i].values[j]]) + strlen(",") + 2;
 						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 						strcat(new_automata_info, load_automata->states.string[load_dfa->dfa_states[i].values[j]]);
 						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, "_\0");
+						strcat(new_automata_info, ",\0");
 
 					}
 				}
