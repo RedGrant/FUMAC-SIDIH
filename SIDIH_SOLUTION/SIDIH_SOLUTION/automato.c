@@ -225,7 +225,7 @@ void menu()
 				
 				for (z = 0; z < automata_number; z++)
 				{
-					printf("%s\n", automata_name.string[z]);
+					printf("%s\n\n", automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
@@ -241,6 +241,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
+					printf("\n");
 					checkAccessibilty(automata[automata_to_load]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
@@ -279,7 +280,7 @@ void menu()
 			}
 			else
 			{
-				printf("Which automata do you wish to test the coaccessibility? Available automata:\n");
+				printf("Which automata do you wish to test the coaccessibility? Available automata:\n\n");
 				for (z = 0; z < automata_number; z++)
 				{
 					printf("%s\n\n", automata_name.string[z]);
