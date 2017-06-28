@@ -75,10 +75,16 @@ typedef struct canonical
 
 	int combined_states;
 
-
-
 }canonical;
 
+typedef struct product
+
+{
+	int product_states_size;
+	int_vector* product_states;
+	int_vector** product_states_trs;
+
+}product;
 
 
 

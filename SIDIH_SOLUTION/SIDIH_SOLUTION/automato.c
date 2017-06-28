@@ -38,6 +38,9 @@ void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, 
 void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index);
 void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical);
 int clean_stdin();
+product* newProduct();
+void resetProductStructure(product* load_product);
+void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int_vector* product_state);
 
 //-----------------------Public functions--------------------
 
@@ -1510,11 +1513,86 @@ void dfaCanonical(automato* load_automata)
 
 void automataProduct(automato* automata1, automato* automata2)
 {
+	int i = 0;
+	if (automata1->states.size > 1 && automata2->states.size)
+	{
+		printf("\n\n\n-----------Making the product between the inserted automata-----------\n\n\n");
+
+		product* load_product = newProduct();
+		resetProductStructure(load_product);
+
+		if (load_product->product_states == NULL)
+		{
+			load_product->product_states = (int_vector*)malloc(sizeof(int_vector));
+		}
+
+		load_product->product_states[0].size = 0;
+
+		intVectPushBack(&(load_product->product_states[0]), automata1->initial);
+		intVectPushBack(&(load_product->product_states[0]), automata2->initial);
+
+		load_product->product_states_size++;
+
+		productStatescreation(load_product, automata1, automata2, &(load_product->product_states[0]));
+		
+		printf("Pares gerados:\n\n");
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			printf("%d,%d", load_product->product_states[i].values[0], load_product->product_states[i].values[1]);
+		}
+	}
+	
+	
+
+
+
 	printf("Entraram os automatos");
 }
 
 
+void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int_vector* product_state)
+{
+	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0;
 
+	for (i = 0; i < load_automata1->events.size; i++)
+	{
+		for (j = 0; j < load_automata2->events.size; j++)
+		{
+			if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0)
+			{
+				if (load_automata1->transitions[product_state->values[0]][i]->size != 0 && load_automata2->transitions[product_state->values[1]][j]->size != 0)
+				{
+					for (z = 0; z < load_product->product_states_size; z++)
+					{
+						if ((findItemarray(load_product->product_states[z].values, load_automata1->transitions[product_state->values[0]][i]->values[0], load_product->product_states_size) != load_product->product_states_size) && (findItemarray(load_product->product_states[z].values, load_automata2->transitions[product_state->values[1]][j]->values[0], load_product->product_states_size) != load_product->product_states_size))
+						{
+							dummy++;
+						}
+					}
+
+					if (dummy == 0)
+					{
+
+						load_product->product_states = (int_vector*)realloc(load_product->product_states, sizeof(int_vector)*(load_product->product_states_size + 1));
+						load_product->product_states[load_product->product_states_size].size = 0;
+
+						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), load_automata1->transitions[product_state->values[0]][i]->values[0]);
+						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), load_automata2->transitions[product_state->values[1]][j]->values[0]);
+						load_product->product_states_size++;
+
+						productStatescreation(load_product, load_automata1, load_automata2, &(load_product->product_states[load_product->product_states_size - 1]));
+					}
+
+					else
+					{
+						dummy = 0;
+					}
+						
+				}
+			}
+		}
+	}
+}
 
 
 
@@ -1994,6 +2072,13 @@ dfa* newDfa()
 	return new_dfa;
 }
 
+void resetDfaStructure(dfa* load_dfa)
+{
+	load_dfa->transitions_table = NULL;
+	load_dfa->dfa_states = NULL;
+	load_dfa->dfa_states_size = 0;
+}
+
 
 canonical* newCanonical()
 {
@@ -2081,12 +2166,91 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 }
 
 
-void resetDfaStructure(dfa* load_dfa)
+
+
+product* newProduct()
 {
-	load_dfa->transitions_table = NULL;
-	load_dfa->dfa_states = NULL;
-	load_dfa->dfa_states_size = 0;
+	product* new_product;
+	new_product = (product*)malloc(sizeof(product));
+	resetProductStructure(new_product);
+	return new_product;
 }
+
+void resetProductStructure(product* load_product)
+{
+	load_product->product_states_size = 0;
+	load_product->product_states = NULL;
+	load_product->product_states_trs = NULL;
+}
+
+/*
+void freeProductStructure(canonical* load_canonical, automato* load_automata)
+{
+	int i = 0, j = 0;
+
+	if (load_canonical->combined_states != 0)
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_canonical->combined_states_trs[i][j].size != 0)
+				{
+					free(load_canonical->combined_states_trs[i][j].values);
+				}
+			}
+			free(load_canonical->combined_states_trs[i]);
+		}
+		free(load_canonical->combined_states_trs);
+	}
+
+	if (load_automata->states.size > 0)
+	{
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			if (load_canonical->pair[i].size > 0)
+			{
+				free(load_canonical->pair[i].values);
+			}
+		}
+		free(load_canonical->pair);
+
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			if (load_canonical->table_marked[i].size > 0)
+			{
+				free(load_canonical->table_marked[i].values);
+			}
+		}
+		free(load_canonical->table_marked);
+	}
+
+	if (load_canonical->combined_states != 0)
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			if (load_canonical->states_to_combine[i].size > 0)
+			{
+				free(load_canonical->states_to_combine[i].values);
+			}
+		}
+		free(load_canonical->states_to_combine);
+	}
+
+
+	int product_states_size;
+	int_vector* pair_states;
+	int_vector* product_states;
+	int_vector** product_states_trs;
+
+
+	resetProductStructure(load_canonical);
+}*/
+
+
+
+
+
 
 
 void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events)
