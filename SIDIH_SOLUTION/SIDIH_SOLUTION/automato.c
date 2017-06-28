@@ -49,11 +49,11 @@ void menu()
 	automata = (automato**)malloc(sizeof(automato*));
 	string_vector automata_name;
 	automata_name.size = 0;
-	int i = 0, j = 0, k = 0, z = 0, automata_number = 0, automata_to_load = 0, dummy = 0;
+	int i = 0, j = 0, k = 0, z = 0, automata_number = 0, automata_to_load = 0, dummy = 0, automata1 = 0, automata2 = 0;
 	int count = 0;
 	char c;
 	char buffer[1000];
-	i = 9;
+	i = 10;
 	j = 0;
 	
 
@@ -71,8 +71,9 @@ void menu()
 			printf("5 - Check if the automata is DFA or NFA\n");
 			printf("6 - Convert the automata if it is NFA\n");
 			printf("7 - Convert the automata to its canonical form\n");
-			printf("8 - Exit\n");
-			printf("9 - Authors\n");
+			printf("8 - Automatas product\n");
+			printf("9 - Exit\n");
+			printf("10 - Authors\n");
 			printf("Default - the menu will be rewritten\n\n");
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
 			
@@ -180,7 +181,7 @@ void menu()
 						automata_to_load = z;
 					}
 				}
-
+				memset(buffer, 0, 1000);
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -237,7 +238,7 @@ void menu()
 						automata_to_load = z;
 					}
 				}
-
+				memset(buffer, 0, 1000);
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -295,7 +296,7 @@ void menu()
 						automata_to_load = z;
 					}
 				}
-
+				memset(buffer, 0, 1000);
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -351,7 +352,7 @@ void menu()
 						automata_to_load = z;
 					}
 				}
-
+				memset(buffer, 0, 1000);
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -419,7 +420,7 @@ void menu()
 						automata_to_load = z;
 					}
 				}
-
+				memset(buffer, 0, 1000);
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -485,7 +486,7 @@ void menu()
 						automata_to_load = z;
 					}
 				}
-
+				memset(buffer, 0, 1000);
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -518,7 +519,101 @@ void menu()
 			}
 			break;
 
-		case 8 :
+		case 8:
+			dummy = 0;
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 10);
+				j = 0;
+				i = 0;
+			}
+			else
+			{
+				printf("\nWhich automatas do you wish to do a product? Available automata:\n\n");
+
+				for (z = 0; z < automata_number; z++)
+				{
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				printf("First automata:\n\n");
+				scanf("%s", buffer);
+				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata1 = z;
+					}
+				}
+				memset(buffer, 0, 1000);
+				if (dummy == 0)
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+					i = 0;
+					do
+					{
+						j++;
+						printf("\n");
+					} while (j != 10);
+					j = 0;
+					break;
+				}
+
+				dummy = 0;
+				printf("\nSecond automata:\n\n");
+				scanf("%s", buffer);
+				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata2 = z;
+					}
+				}
+				memset(buffer, 0, 1000);
+				if (dummy == 0)
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+					i = 0;
+					do
+					{
+						j++;
+						printf("\n");
+					} while (j != 10);
+					j = 0;
+					break;
+				}
+				
+				if (dummy == 1)
+				{
+					automataProduct(automata[automata1], automata[automata2]);
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+			}
+			i = 0;
+			do
+			{
+				j++;
+				printf("\n");
+			} while (j != 10);
+			j = 0;
+
+			break;
+
+		case 9 :
 			if (k == 1)
 			{
 				for (z = 0; z < automata_number; z++)
@@ -530,7 +625,7 @@ void menu()
 			return;
 			break;
 
-		case 9:
+		case 10:
 			do
 			{
 				j++;
@@ -591,6 +686,7 @@ void load_file(automato* load_automata, char* file_path)
 	if (fp == NULL)
 	{
 		printf("Error opening file");
+		getchar();
 		getchar();
 		exit(0);
 	}
@@ -1410,6 +1506,18 @@ void dfaCanonical(automato* load_automata)
 		printf("Not enough states to make pairs! The automata is already at canonical form! \n\n ");
 
 }
+
+
+void automataProduct(automato* automata1, automato* automata2)
+{
+	printf("Entraram os automatos");
+}
+
+
+
+
+
+
 //----------------------Private functions---------------------------
 
 int clean_stdin()
@@ -3204,7 +3312,7 @@ void parser(automato* load_automata, char* file_info)
 					{
 						printf("Invalid transition in file. Correct this transition:\n\nPress enter to continue");
 						puts(line);
-
+						getchar();
 						getchar();
 						exit(0);
 					}
@@ -3219,6 +3327,7 @@ void parser(automato* load_automata, char* file_info)
 						{
 							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue");
 							puts(line);
+							getchar();
 							getchar();
 							exit(0);
 						}
@@ -3244,6 +3353,7 @@ void parser(automato* load_automata, char* file_info)
 						{
 							printf("Invalid event being used on the transition. Correct this transition:\n\nPress enter to continue");
 							puts(line);
+							getchar();
 							getchar();
 							exit(0);
 						}
@@ -3290,6 +3400,7 @@ void parser(automato* load_automata, char* file_info)
 				{
 					printf("More than one initial state. Press enter to continue!");
 					getchar();
+					getchar();
 					exit(0);
 				}
 			}
@@ -3327,6 +3438,7 @@ void parser(automato* load_automata, char* file_info)
 		default:
 			printf("\nParser error!Automata's file not correct!\n\nPress enter to continue");
 			getchar();
+			getchar();
 			exit(0);
 		}
 	}
@@ -3338,6 +3450,7 @@ void parser(automato* load_automata, char* file_info)
 	{
 		printf("There are no states in the automata!\n\nPress enter to continue");
 		getchar();
+		getchar();
 		exit(0);
 	}
 
@@ -3345,12 +3458,14 @@ void parser(automato* load_automata, char* file_info)
 	{
 		printf("There are no events in the automata!\n\nPress enter to continue");
 		getchar();
+		getchar();
 		exit(0);
 	}
 
 	if (load_automata->marked.size == 0)
 	{
 		printf("There are no marked states in the automata\n\nPress enter to continue");
+		getchar();
 		getchar();
 		exit(0);
 	}
@@ -3360,6 +3475,7 @@ void parser(automato* load_automata, char* file_info)
 	{
 		printf("There is no initial state in this automata!\n\nPress enter to continue");
 		getchar();
+		getchar();
 		exit(0);
 	}
 
@@ -3367,6 +3483,7 @@ void parser(automato* load_automata, char* file_info)
 	if (load_automata->transitions == NULL)
 	{
 		printf("There are no transitions in this automata!\n\nPress enter to continue");
+		getchar();
 		getchar();
 		exit(0);
 	}

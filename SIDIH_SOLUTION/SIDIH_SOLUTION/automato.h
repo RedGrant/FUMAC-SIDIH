@@ -94,4 +94,5 @@ void dfaOrNfa(automato* load_automata);
 void nfaToDfa(automato* load_automata, int nda_or_da);
 void freeAutomata(automato* load_automata);
 void dfaCanonical(automato* load_automata);
+void automataProduct(automato* automata1, automato* automata2);
 automato* new_automata();
