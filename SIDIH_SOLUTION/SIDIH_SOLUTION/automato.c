@@ -45,11 +45,14 @@ int clean_stdin();
 
 void menu()
 {
-	automato* automata;
-	int i = 0, j = 0, k = 0;
+	automato** automata;
+	automata = (automato**)malloc(sizeof(automato*));
+	string_vector automata_name;
+	automata_name.size = 0;
+	int i = 0, j = 0, k = 0, z = 0, automata_number = 0, automata_to_load = 0, dummy = 0;
 	int count = 0;
 	char c;
-	
+	char buffer[1000];
 	i = 9;
 	j = 0;
 	
@@ -75,13 +78,13 @@ void menu()
 			
 			while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin())
 			{
-
+				
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 				break;
 			}
@@ -89,62 +92,114 @@ void menu()
 			break;
 		
 		case 1:
-			
-			
-			
 			if (k == 0)
 			{
-				automata = new_automata();
-
-				load_file(automata, "Example.aut");
-
+				automata[automata_number] = new_automata();
+				printf("Write the file path\n\n");
+				scanf("%s", buffer);
+				getchar();
+				load_file(automata[automata_number], buffer);
+				stringPushBack(&(automata_name), buffer);
+				memset(buffer, 0, 1000);
 				k = 1;
-
+				automata_number++;
 			}
 			else
 			{
-				freeAutomata(automata);
-
-				automata = new_automata();
-
-				load_file(automata, "Example.aut");
-
-				k = 1;
+				
+				printf("Write the file path\n\n");
+				scanf("%s", buffer);
+				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+						dummy = 1;
+				}
+				if (dummy == 1)
+				{
+					printf("\n\nThis automata has already been loaded! Press enter to continue! \n\n");
+					while (getchar() != '\n');
+					i = 0;
+					do
+					{
+						j++;
+						printf("\n");
+					} while (j != 10);
+					j = 0;
+					break;
+				}
+				else
+				{
+					automata = (automato**)realloc(automata, sizeof(automato*)*(automata_number + 1));
+					automata[automata_number] = new_automata();
+					load_file(automata[automata_number], buffer);
+					stringPushBack(&(automata_name), buffer);
+					memset(buffer, 0, 1000);
+					k = 1;
+					automata_number++;
+				}
 			}
-			printf("\n\nAutomata loaded! Press any key to continue! \n\n");
-			getchar();
+			printf("\n\nAutomata loaded! Press enter to continue! \n\n");
+			while (getchar() != '\n');
 			i = 0;
 			do
 			{
 				j++;
 				printf("\n");
-			} while (j != 40);
+			} while (j != 10);
 			j = 0;
 			break;
 
 		case 2:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
-				getchar();
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			else
 			{
-				printAutomata(automata);
-				printf("\n\nPress any key to procede to the menu!\n");
+				printf("\nWhich automata do you wish to print? Available automata:\n\n");
+				for (z = 0; z < automata_number; z++)
+				{
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				scanf("%s", buffer);
 				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+
+				if (dummy == 1)
+				{
+					dummy = 0;
+					printAutomata(automata[automata_to_load]);
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				
+				}
+				else
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					while (getchar() != '\n');
+				}
+
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			
@@ -154,27 +209,56 @@ void menu()
 		case 3:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
-				getchar();
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			else
 			{
-				checkAccessibilty(automata);
-				printf("\n\nPress any key to procede to the menu!\n");
+				printf("\nWhich automata do you wish to test accessibility? Available automata:\n\n");
+				
+				for (z = 0; z < automata_number; z++)
+				{
+					printf("%s\n", automata_name.string[z]);
+				}
+				scanf("%s", buffer);
 				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+
+				if (dummy == 1)
+				{
+					dummy = 0;
+					checkAccessibilty(automata[automata_to_load]);
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+				else
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+
+				
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			
@@ -183,27 +267,54 @@ void menu()
 		case 4:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
-				getchar();
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			else
 			{
-				checkCoaccessibilty(automata);
-				printf("\n\nPress any key to procede to the menu!\n");
+				printf("Which automata do you wish to test the coaccessibility? Available automata:\n");
+				for (z = 0; z < automata_number; z++)
+				{
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				scanf("%s", buffer);
 				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+
+				if (dummy == 1)
+				{
+					dummy = 0;
+					checkCoaccessibilty(automata[automata_to_load]);
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+				else
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+			
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			
@@ -212,37 +323,65 @@ void menu()
 		case 5:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
-				getchar();
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			else
 			{
-				dfaOrNfa(automata);
-				
-				if (automata->deterministic == 1)
+				printf("Which automata do you wish to test if it is deterministic or not? Available automata:\n\n");
+				for (z = 0; z < automata_number; z++)
 				{
-					printf("\n\nThe automata is deterministic!\n\n");
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				scanf("%s", buffer);
+				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+
+				if (dummy == 1)
+				{
+					dummy = 0;
+					
+					dfaOrNfa(automata[automata_to_load]);
+
+					if (automata[automata_to_load]->deterministic == 1)
+					{
+						printf("\n\nThe automata is deterministic!\n\n");
+					}
+					else
+					{
+						printf("\n\nThe automata is not deterministic!\n\n");
+					}
+
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
 				}
 				else
 				{
-					printf("\n\nThe automata is not deterministic!\n\n");
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
 				}
-
-				printf("\n\nPress any key to procede to the menu!\n");
-				getchar();
+				
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			
@@ -251,34 +390,64 @@ void menu()
 		case 6:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
-				getchar();
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			else
 			{
-				dfaOrNfa(automata);
-				if (automata->deterministic == 0)
+				printf("\nWhich automata do you wish to convert? Available automata:\n\n");
+				
+				for (z = 0; z < automata_number; z++)
 				{
-					nfaToDfa(automata, automata->deterministic);
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				scanf("%s", buffer);
+				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+
+				if (dummy == 1)
+				{
+					dummy = 0;
+					
+					dfaOrNfa(automata[automata_to_load]);
+
+					if (automata[automata_to_load]->deterministic == 0)
+					{
+						nfaToDfa(automata[automata_to_load], automata[automata_to_load]->deterministic);
+					}
+					else
+						printf("\n\nThe automata is already deterministic!\n\n");
+
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
 				}
 				else
-					printf("\n\nThe automata is already deterministic!\n\n");
-				
-				printf("\n\nPress any key to procede to the menu!\n");
-				getchar();
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			
@@ -287,33 +456,63 @@ void menu()
 		case 7:
 			if (k == 0)
 			{
-				printf("\n\nNo automata has not been loaded yet! Press any key to continue! \n\n");
-				getchar();
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 				i = 0;
 			}
 			else
 			{
-				freeAutomata(automata);
-				automata = new_automata();
-				load_file(automata, "Example.aut");
-				checkAccessibilty(automata);
-				dfaOrNfa(automata);
-				nfaToDfa(automata, automata->deterministic);
-				dfaCanonical(automata);
-				printf("\n\nPress any key to procede to the menu!\n");
+				printf("\nWhich automata do you wish to convert to the canonical form? Available automata:\n\n");
+				
+				for (z = 0; z < automata_number; z++)
+				{
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				scanf("%s", buffer);
 				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+
+				if (dummy == 1)
+				{
+					dummy = 0;
+					
+					freeAutomata(automata[automata_to_load]);
+					automata[automata_to_load] = new_automata();
+					load_file(automata[automata_to_load], automata_name.string[automata_to_load]);
+					checkAccessibilty(automata[automata_to_load]);
+					dfaOrNfa(automata[automata_to_load]);
+					nfaToDfa(automata[automata_to_load], automata[automata_to_load]->deterministic);
+					dfaCanonical(automata[automata_to_load]);
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+				else
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+				
+				
 				i = 0;
 				do
 				{
 					j++;
 					printf("\n");
-				} while (j != 40);
+				} while (j != 10);
 				j = 0;
 			}
 			break;
@@ -321,7 +520,11 @@ void menu()
 		case 8 :
 			if (k == 1)
 			{
-				freeAutomata(automata);
+				for (z = 0; z < automata_number; z++)
+				{
+					freeAutomata(automata[z]);
+				}
+				free(automata);
 			}
 			return;
 			break;
@@ -348,7 +551,7 @@ void menu()
 				}
 				j++;
 				printf("                                                    \n");
-			} while (j != 40);
+			} while (j != 10);
 			i = 0;
 			j = 0;
 
@@ -359,7 +562,7 @@ void menu()
 			{
 				j++;
 				printf("\n");
-			} while (j != 40);
+			} while (j != 10);
 			j = 0;
 			break;
 		}
@@ -2821,36 +3024,6 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	free(new_automata_info);
 	printf("\n\n\n-----------Automata in canonical form-----------\n\n\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
