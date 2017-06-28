@@ -56,7 +56,7 @@ void menu()
 	int count = 0;
 	char c;
 	char buffer[1000];
-	i = 10;
+	i = 11;
 	j = 0;
 	
 
@@ -75,8 +75,9 @@ void menu()
 			printf("6 - Convert the automata if it is NFA\n");
 			printf("7 - Convert the automata to its canonical form\n");
 			printf("8 - Automatas product\n");
-			printf("9 - Exit\n");
-			printf("10 - Authors\n");
+			printf("9 - Write any automata to a file\n");
+			printf("10 - Exit\n");
+			printf("11 - Authors\n");
 			printf("Default - the menu will be rewritten\n\n");
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
 			
@@ -616,7 +617,65 @@ void menu()
 
 			break;
 
-		case 9 :
+
+		case 9:
+			if (k == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 10);
+				j = 0;
+			}
+			else
+			{
+				printf("\nWhich automata do you wish to print to a file? Available automata:\n\n");
+				for (z = 0; z < automata_number; z++)
+				{
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				
+				scanf("%s", buffer);
+				getchar();
+				
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+				memset(buffer, 0, 1000);
+				if (dummy == 1)
+				{
+					dummy = 0;
+					writeAutomataToFile(automata[automata_to_load]);
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+				else
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					while (getchar() != '\n');
+				}
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 10);
+				j = 0;
+			}
+			i = 0;
+			break;
+
+
+		case 10 :
+			
 			if (k == 1)
 			{
 				for (z = 0; z < automata_number; z++)
@@ -624,11 +683,16 @@ void menu()
 					freeAutomata(automata[z]);
 				}
 				free(automata);
+
+				if (automata_name.size != 0)
+				{
+					free(automata_name.string);
+				}
 			}
 			return;
 			break;
 
-		case 10:
+		case 11:
 			do
 			{
 				j++;
@@ -2429,7 +2493,6 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcpy(new_automata_info, "STATES\r\n\0");
-	//strcat(new_automata_info, "\0");
 	for (i = 0; i < load_automata->states.size; i++)
 	{
 		if (valid_states[i] == 1)
@@ -2567,12 +2630,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 			}
 		}
 	}
-	FILE* fp;
-	fp = fopen("new_aut.aut", "w");
-	fprintf(fp, new_automata_info);
 	freeData(load_automata);
 	parser(load_automata, new_automata_info);
-	fclose(fp);
 	free(new_automata_info);
 	free(valid_events);
 }
@@ -2968,13 +3027,9 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 			}
 		}
 	}
-	FILE* fp;
-	fp = fopen("new_aut.aut", "w");
-	fprintf(fp, new_automata_info);
 	freeDfa(load_dfa, load_automata);
 	freeData(load_automata);
 	parser(load_automata, new_automata_info);
-	fclose(fp);
 	free(new_automata_info);
 }
 
@@ -3286,18 +3341,139 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 	}
 
-
-	FILE* fp;
-	fp = fopen("new_aut_canonical.aut", "w");
-	fprintf(fp, new_automata_info);
 	freeCanonical(load_canonical, load_automata);
 	freeData(load_automata);
 	parser(load_automata, new_automata_info);
-	fclose(fp);
 	free(new_automata_info);
 	printf("\n\n\n-----------Automata in canonical form-----------\n\n\n");
 }
 
+
+void writeAutomataToFile(automato* load_automata)
+{
+	printf("\n\n\n-----------Writing automata to file-----------\n\n\n");
+	int i = 0, j = 0, x = 0, z = 0;
+	char buffer[1000];
+	x = x + strlen("STATES\r\n") + 1;
+	char* new_automata_info;
+
+	new_automata_info = (char*)malloc(sizeof(char)*x);
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcpy(new_automata_info, "STATES\r\n\0");
+
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+			x = x + strlen(load_automata->states.string[i]) + strlen("\r\n") + 2;
+			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+			strcat(new_automata_info, load_automata->states.string[i]);
+			strcat(new_automata_info, "\0");
+			strcat(new_automata_info, "\r\n\0");
+	}
+
+	x = x + strlen("EVENTS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "EVENTS\r\n\0");
+
+
+	
+	if (load_automata->null_event == 1)
+	{
+		for (i = 1; i < load_automata->events.size; i++)
+		{
+				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, load_automata->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+		}
+	}
+	else
+	{
+		for (i = 0; i < load_automata->events.size; i++)
+		{
+				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, load_automata->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+		}
+	}
+
+
+	x = x + strlen("TRANSITIONS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "TRANSITIONS\r\n\0");
+
+
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_automata->transitions[i][j]->size != 0)
+				{
+					for (z = 0; z < load_automata->transitions[i][j]->size; z++)
+					{
+						x = x + strlen(load_automata->states.string[i]) + strlen(";") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, load_automata->states.string[i]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";\0");
+
+						x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, load_automata->events.string[j]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";\0");
+
+						x = x + strlen(load_automata->states.string[load_automata->transitions[i][j]->values[z]]) + strlen("\r\n") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, load_automata->states.string[load_automata->transitions[i][j]->values[z]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "\r\n\0");
+					}
+				}
+			}
+	}
+
+	x = x + strlen("INITIAL\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "INITIAL\r\n\0");
+
+	x = x + strlen(load_automata->states.string[load_automata->initial]) + strlen("\r\n") + 2;
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, load_automata->states.string[load_automata->initial]);
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, "\r\n\0");
+
+
+	x = x + strlen("MARKED\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "MARKED\r\n\0");
+
+
+	for (i = 0; i < load_automata->marked.size; i++)
+	{
+		for (j = 0; j < load_automata->states.size; j++)
+		{
+			if ((load_automata->states.string[j] == load_automata->states.string[load_automata->marked.values[i]]))
+			{
+				x = x + strlen(load_automata->states.string[load_automata->marked.values[i]]) + strlen("\r\n") + 2;
+				strcat(new_automata_info, load_automata->states.string[load_automata->marked.values[i]]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+			}
+		}
+	}
+	printf("\n\n\nInsert path file\n\n\n");
+	scanf("%s", &buffer);
+	getchar();
+	FILE* fp;
+	fp = fopen(buffer, "w");
+	memset(buffer, 0, 1000);
+	fprintf(fp, new_automata_info);
+	fclose(fp);
+	free(new_automata_info);
+}
 
 
 //check if a state is accessible or not. if it is, the reached state will be accessible
