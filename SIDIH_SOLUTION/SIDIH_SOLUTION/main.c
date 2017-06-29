@@ -7,8 +7,5 @@
 //main function of the automata's project
 void main(void)
 {
-	while (1)
-	{
 		menu();
-	}
 }

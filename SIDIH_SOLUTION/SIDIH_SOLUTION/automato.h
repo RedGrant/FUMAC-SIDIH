@@ -81,8 +81,9 @@ typedef struct product
 
 {
 	int product_states_size;
+	int product_trs_size;
 	int_vector* product_states;
-	int_vector** product_states_trs;
+	//int_vector** product_states_trs;
 
 }product;
 
