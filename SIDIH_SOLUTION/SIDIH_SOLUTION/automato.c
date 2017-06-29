@@ -497,11 +497,7 @@ void menu()
 				{
 					dummy = 0;
 					
-					freeAutomata(automata[automata_to_load]);
-					automata[automata_to_load] = new_automata();
-					load_file(automata[automata_to_load], automata_name.string[automata_to_load]);
 					checkAccessibilty(automata[automata_to_load]);
-					dfaOrNfa(automata[automata_to_load]);
 					nfaToDfa(automata[automata_to_load], automata[automata_to_load]->deterministic);
 					dfaCanonical(automata[automata_to_load]);
 					printf("\n\nPress enter to procede to the menu!\n");
@@ -3400,7 +3396,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 void writeProductAutomata(automato* automata1, automato* automata2, product* load_product)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
-
+	int* valid_events;
 	x = x + strlen("STATES\r\n");
 	char* new_automata_info;
 	new_automata_info = malloc(x);
@@ -3433,27 +3429,74 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 	x = x + strlen("EVENTS\r\n") + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "EVENTS\r\n\0");
-	/*
-	if (load_automata->null_event == 1)
+	
+	if (automata1->events.size < automata2->events.size)
 	{
-		for (i = 1; i < load_automata->events.size; i++)
+		valid_events = (int*)malloc(sizeof(int)*automata1->events.size);
+
+		for (i = 0; i < automata1->events.size; i++)
 		{
-			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->events.string[i]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
+			valid_events[i] = 0;
+		}
+
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			for (j = 0; j < automata1->events.size; j++)
+			{
+				if (load_product->product_states_trs[i][j].size != 0)
+				{
+					valid_events[j] = 1;
+				}
+			}
 		}
 	}
 	else
 	{
-		for (i = 0; i < load_automata->events.size; i++)
+		valid_events = (int*)malloc(sizeof(int)*automata2->events.size);
+
+		for (i = 0; i < automata1->events.size; i++)
 		{
-			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->events.string[i]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
+			valid_events[i] = 0;
+		}
+
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			for (j = 0; j < automata2->events.size; j++)
+			{
+				if (load_product->product_states_trs[i][j].size != 0)
+				{
+					valid_events[j] = 1;
+				}
+			}
+		}
+	}
+
+	if (automata1->events.size < automata2->events.size)
+	{
+		for (i = 0; i < automata1->events.size; i++)
+		{
+			if (valid_events[i] == 1)
+			{
+				x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, automata1->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+			}
+		}
+	}
+	else
+	{
+		for (i = 0; i < automata2->events.size; i++)
+		{
+			if (valid_events[i] == 1)
+			{
+				x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, automata2->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+			}
 		}
 	}
 
@@ -3462,229 +3505,202 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "TRANSITIONS\r\n\0");
 
-	for (i = 0; i < load_canonical->combined_states; i++)
+	for (i = 0; i < load_product->product_states_size; i++)
 	{
+		if (automata1->events.size < automata2->events.size)
 		{
-			for (j = 0; j < (load_automata)->events.size; j++)
+			for (j = 0; j < automata1->events.size; j++)
 			{
-				if (load_canonical->combined_states_trs[i][j].size != 0)
+				if (valid_events[j] == 1)
 				{
-					for (z = 0; z < load_canonical->states_to_combine[i].size; z++)
+					if (load_product->product_states_trs[i][j].size != 0)
 					{
-						if (load_canonical->states_to_combine[i].size == 1)
-						{
-							x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[z]]) + strlen("\r\n") + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[z]]);
-							strcat(new_automata_info, "\0");
-							strcat(new_automata_info, ";\0");
-						}
-						else
-						{
-							if (z == load_canonical->states_to_combine[i].size - 1)
-							{
-								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[z]]) + strlen(";") + 4;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[z]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "}");
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, ";\0");
-							}
-							else
-							{
-								if (z == 0)
-								{
-									x = x + 2;
-									new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-									strcat(new_automata_info, "{");
-									strcat(new_automata_info, "\0");
-								}
-								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[z]]) + strlen(",") + 2;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[z]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, ",\0");
 
-							}
-						}
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_product->product_states[i].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_product->product_states[i].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_product->product_states[i].values[1]]) + strlen(";") + 3 + strlen("}");
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_product->product_states[i].values[1]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";");
+
+
+						x = x + strlen(automata1->events.string[j]) + strlen(";") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->events.string[j]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";\0");
+
+						z = 0;
+						z = load_product->product_states_trs[i][j].values[0];
+
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_product->product_states[z].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_product->product_states[z].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_product->product_states[z].values[1]]) + strlen(";") + strlen("\r\n") + 4;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_product->product_states[z].values[1]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "\r\n\0");
 					}
-
-					x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->events.string[j]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, ";\0");
-
-					z = 0;
-					z = load_canonical->combined_states_trs[i][j].values[0];
-					for (y = 0; y < load_canonical->states_to_combine[z].size; y++)
+				}
+			}
+		}
+		else
+		{
+			for (j = 0; j < automata2->events.size; j++)
+			{
+				if (valid_events[j] == 1)
+				{
+					if (load_product->product_states_trs[i][j].size != 0)
 					{
-						if (load_canonical->states_to_combine[z].size == 1)
-						{
-							x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[z].values[y]]) + strlen("\r\n") + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[z].values[y]]);
-							strcat(new_automata_info, "\0");
-							strcat(new_automata_info, "\r\n\0");
-						}
-						else
-						{
-							if (y == load_canonical->states_to_combine[z].size - 1)
-							{
-								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[z].values[y]]) + strlen("\r\n") + 4;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[z].values[y]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "}");
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, "\r\n\0");
-							}
-							else
-							{
-								if (y == 0)
-								{
-									x = x + 2;
-									new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-									strcat(new_automata_info, "{");
-									strcat(new_automata_info, "\0");
-								}
-								x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[z].values[y]]) + strlen(",") + 2;
-								new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-								strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[z].values[y]]);
-								strcat(new_automata_info, "\0");
-								strcat(new_automata_info, ",\0");
-							}
-						}
-					}
 
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_product->product_states[i].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_product->product_states[i].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_product->product_states[i].values[1]]) + strlen(";") + 3 + strlen("}");
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_product->product_states[i].values[1]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";");
+
+
+						x = x + strlen(automata2->events.string[j]) + strlen(";") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->events.string[j]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";\0");
+
+						z = 0;
+						z = load_product->product_states_trs[i][j].values[0];
+
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_product->product_states[z].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_product->product_states[z].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_product->product_states[z].values[1]]) + strlen(";") + strlen("\r\n") + 4;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_product->product_states[z].values[1]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "\r\n\0");
+					}
 				}
 			}
 		}
 	}
-
+				
 	x = x + strlen("INITIAL\r\n") + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "INITIAL\r\n\0");
 
 	int dummy = 0;
 
-	for (i = 0; i < load_canonical->combined_states; i++)
-	{
-		for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
-		{
-			if (load_canonical->states_to_combine[i].values[j] == load_automata->initial)
-			{
-				dummy = i;
-			}
-		}
-	}
-	for (z = 0; z < load_canonical->states_to_combine[dummy].size; z++)
-	{
-		if (load_canonical->states_to_combine[dummy].size == 1)
-		{
-			x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[dummy].values[z]]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[dummy].values[z]]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
-		}
-		else
-		{
-			if (z == load_canonical->states_to_combine[dummy].size - 1)
-			{
-				x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[dummy].values[z]]) + strlen("\r\n") + 4;
-				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-				strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[dummy].values[z]]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "}");
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "\r\n\0");
+	x = x + 2;
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, "{");
+	strcat(new_automata_info, "\0");
 
-			}
-			else
-			{
-				if (z == 0)
-				{
-					x = x + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, "{");
-					strcat(new_automata_info, "\0");
-				}
-				x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[dummy].values[z]]) + strlen(",") + 2;
-				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-				strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[dummy].values[z]]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, ",\0");
-			}
-		}
-	}
+	x = x + strlen(automata1->states.string[load_product->product_states[0].values[0]]) + strlen(",") + 2;
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, automata1->states.string[load_product->product_states[0].values[0]]);
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, ",\0");
+
+	x = x + strlen(automata2->states.string[load_product->product_states[0].values[1]]) + strlen("\r\n") + 3 + strlen("}");
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, automata2->states.string[load_product->product_states[0].values[1]]);
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, "}");
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, "\r\n\0");
 
 	x = x + strlen("MARKED\r\n") + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "MARKED\r\n\0");
 	int marked = 0;
 
-
-	for (i = 0; i < load_canonical->combined_states; i++)
+	
+	for (i = 0; i < load_product->product_states_size; i++)
 	{
-		for (j = 0; j < load_automata->marked.size; j++)
+		for (j = 0; j < automata1->marked.size; j++)
 		{
-			if (findItemarray(load_canonical->states_to_combine[i].values, load_automata->marked.values[j], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
+			if (load_product->product_states[i].values[0] == automata1->marked.values[j])
 			{
-				marked++;
-				continue;
-			}
-		}
-		if (marked != 0)
-		{
-
-
-			marked = 0;
-			for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
-			{
-				if (load_canonical->states_to_combine[i].size == 1)
+				for (k = 0; k < automata2->marked.size; k++)
 				{
-					x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[j]]) + strlen("\r\n") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[j]]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, "\r\n\0");
-				}
-				else
-				{
-					if (j == load_canonical->states_to_combine[i].size - 1)
+					if (load_product->product_states[i].values[1] == automata2->marked.values[k])
 					{
-						x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[j]]) + strlen("\r\n") + 4;
+						x = x + 2;
 						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[j]]);
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_product->product_states[i].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_product->product_states[i].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_product->product_states[i].values[1]]) + strlen("\r\n") + 3 + strlen("}");
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_product->product_states[i].values[1]]);
 						strcat(new_automata_info, "\0");
 						strcat(new_automata_info, "}");
 						strcat(new_automata_info, "\0");
 						strcat(new_automata_info, "\r\n\0");
 					}
-					else
-					{
-						if (j == 0)
-						{
-							x = x + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, "{");
-							strcat(new_automata_info, "\0");
-						}
-						x = x + strlen(load_automata->states.string[load_canonical->states_to_combine[i].values[j]]) + strlen(",") + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, load_automata->states.string[load_canonical->states_to_combine[i].values[j]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ",\0");
-
-					}
 				}
 			}
 		}
-	}*/
-
-	freeProduct(load_product, automata1);
+	}
+	
+	if (automata1->events.size < automata2->events.size)
+	{
+		freeProduct(load_product, automata1);
+	}
+	else
+		freeProduct(load_product, automata2);
+	
 	
 	//parser(load_automata, new_automata_info);
 	free(new_automata_info);
