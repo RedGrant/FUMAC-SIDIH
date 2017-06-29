@@ -1558,7 +1558,7 @@ void dfaCanonical(automato* load_automata)
 
 void automataProduct(automato* automata1, automato* automata2)
 {
-	int i = 0;
+	int i = 0, j = 0 , x = 0, k = 0, y = 0, z = 0, dummy = 0;
 	if (automata1->states.size > 1 && automata2->states.size)
 	{
 		printf("\n\n\n-----------Making the product between the inserted automata-----------\n\n\n");
@@ -1586,6 +1586,103 @@ void automataProduct(automato* automata1, automato* automata2)
 			printf("%d,%d", load_product->product_states[i].values[0], load_product->product_states[i].values[1]);
 		}
 		
+		if (load_product->product_states_trs == NULL)
+		{
+			load_product->product_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_product->product_states_size);
+
+			for (i = 0; i < load_product->product_states_size; i++)
+			{
+				load_product->product_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(automata1->events.size));
+			}
+		}
+
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			//for (x = 0; x <load_product->product_states[i].size; x++)
+			//{
+				for (j = 0; j < automata1->events.size; j++)
+				{
+					load_product->product_states_trs[i][j].size = 0;
+				}
+			//}
+		}
+
+
+		dummy = 0;
+		
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			for (x = 0; x <load_product->product_states[i].size; x++)
+			{
+				for (j = 0; j < automata1->events.size; j++)
+				{
+					if (automata1->transitions[load_product->product_states[i].values[x]][j]->size != 0)
+					{
+						if (x == 0)
+						{
+							
+							for (k = 0; k < load_product->product_states_size; k++)
+							{
+								if (findItemarray(load_product->product_states[k].values, automata1->transitions[load_product->product_states[i].values[x]][j]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size)
+								{
+									load_product->product_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+									load_product->product_states_trs[i][j].values[0] = k;
+									load_product->product_states_trs[i][j].size = 1;
+									break;
+								}
+							}
+
+						}
+						else
+						{
+							for (y = 0; y < load_product->product_states_size; y++)
+							{
+								for (k = 0; k < automata1->events.size; k++)
+								{
+									if (load_product->product_states_trs[y][k].size != 0)
+									{
+										if (load_product->product_states_trs[y][k].values[0] == automata1->transitions[load_product->product_states[i].values[x]][j]->values[0])
+										{
+											dummy++;
+										}
+									}
+								}
+							}
+							if (dummy == 0)
+							{
+								for (k = 0; k < load_product->product_states_size; k++)
+								{
+									if (findItemarray(load_product->product_states[k].values, automata1->transitions[load_product->product_states[i].values[x]][j]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size)
+									{
+										load_product->product_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+										load_product->product_states_trs[i][j].values[0] = k;
+										load_product->product_states_trs[i][j].size = 1;
+										break;
+									}
+								}
+							}
+							else
+							{
+								dummy = 0;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			for (k = 0; k < automata1->events.size; k++)
+			{
+				if (load_product->product_states_trs[i][k].size != 0)
+				{
+					printf("{%s,%s},%s -> {%s,%s}\n\n", automata1->states.string[load_product->product_states[i].values[0]], automata2->states.string[load_product->product_states[i].values[1]], automata1->events.string[k],automata1->states.string[load_product->product_states[load_product->product_states_trs[i][k].values[0]].values[0]], automata2->states.string[load_product->product_states[load_product->product_states_trs[i][k].values[0]].values[1]]);
+				}
+			}
+		}
+
+
 		freeProduct(load_product, automata1);
 	}
 	
@@ -2228,7 +2325,7 @@ void resetProductStructure(product* load_product)
 	load_product->product_trs_size = 0;
 	load_product->product_states_size = 0;
 	load_product->product_states = NULL;
-	//load_product->product_states_trs = NULL;
+	load_product->product_states_trs = NULL;
 }
 
 
