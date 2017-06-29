@@ -75,6 +75,8 @@ typedef struct canonical
 
 	int combined_states;
 
+	int trs_size;
+
 }canonical;
 
 typedef struct product

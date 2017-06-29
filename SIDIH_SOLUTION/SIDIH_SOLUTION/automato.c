@@ -1496,15 +1496,17 @@ void dfaCanonical(automato* load_automata)
 					{
 						if (load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->size != 0)
 						{
-							if (x == 0)
+							if (load_canonical->trs_size == 0)
 							{
-								load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+								
 								for (k = 0; k < load_canonical->combined_states; k++)
 								{
 									if (findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
 									{
+										load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
 										load_canonical->combined_states_trs[i][j].values[0] = k;
 										load_canonical->combined_states_trs[i][j].size = 1;
+										load_canonical->trs_size++;
 										break;
 									}
 								}
@@ -1512,27 +1514,21 @@ void dfaCanonical(automato* load_automata)
 							}
 							else
 							{
-								for (y = 0; y < load_canonical->combined_states; y++)
+								if (load_canonical->combined_states_trs[i][j].size !=0)
 								{
-									for (k = 0; k < load_automata->events.size; k++)
-									{
-										if (load_canonical->combined_states_trs[y][k].size != 0)
-										{
-											if (load_canonical->combined_states_trs[y][k].values[0] == load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0])
-											{
-												dummy++;
-											}
-										}
-									}
+										dummy++;
 								}
+							
 								if (dummy == 0)
 								{
 									for (k = 0; k < load_canonical->combined_states; k++)
 									{
 										if (findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
 										{
+											load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
 											load_canonical->combined_states_trs[i][j].values[0] = k;
 											load_canonical->combined_states_trs[i][j].size = 1;
+											load_canonical->trs_size++;
 											break;
 										}
 									}
@@ -2234,6 +2230,7 @@ canonical* newCanonical()
 
 void resetCanonicalStructure(canonical* load_canonical)
 {
+	load_canonical->trs_size = 0;
 	load_canonical->pair_size = 0;
 	load_canonical->marked_counter = 0;
 	load_canonical->combined_states = 0;
