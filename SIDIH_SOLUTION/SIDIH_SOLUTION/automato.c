@@ -1072,6 +1072,7 @@ void dfaOrNfa(automato* load_automata)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
 			getchar();
+			freeAutomata(load_automata);
 			exit(0);
 		}
 		load_automata->deterministic = 0;
@@ -1083,6 +1084,7 @@ void dfaOrNfa(automato* load_automata)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
 			getchar();
+			freeAutomata(load_automata);
 			exit(0);
 		}
 		for (i = 0; i < load_automata->states.size; i++)
@@ -1091,44 +1093,18 @@ void dfaOrNfa(automato* load_automata)
 			{
 				if (load_automata->transitions[i][j]->size != 0)
 				{
-					for (x = 0; x < load_automata->transitions[i][j]->size; x++)
+					if (load_automata->transitions[i][j]->size > 1)
 					{
-						if (load_automata->transitions[i][j]->size != 0 && load_automata->transitions[i][j]->size == 1)
-						{
-							continue;
-						}
-
-						if (load_automata->transitions[i][j]->size > 0)
-						{
-							for (int t = 0; t < load_automata->transitions[i][j]->size - 1; t++)
-							{
-								for (int y = t + 1; y < load_automata->transitions[i][j]->size; y++)
-								{
-									if (load_automata->transitions[i][j]->values[t] != load_automata->transitions[i][j]->values[y])
-									{
-										load_automata->null_event = 1;
-									}
-								}
-							}
-						}
+						load_automata->deterministic = 0;
+						return;
 					}
 				}
 			}
 		}
-		if (load_automata->null_event == 1)
-		{
-			
-			load_automata->deterministic = 0;
-			load_automata->null_event = 0;
-		}
-		else
-		{
-			
-			load_automata->deterministic = 1;
-			load_automata->null_event = 0;
-		}
-	}
+		load_automata->deterministic = 1;
+	}	
 }
+
 
 void nfaToDfa(automato* load_automata, int nda_or_da)
 {
