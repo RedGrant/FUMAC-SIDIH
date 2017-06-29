@@ -40,7 +40,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical);
 int clean_stdin();
 product* newProduct();
 void resetProductStructure(product* load_product);
-void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int_vector* product_state);
+void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index);
 void freeProductStructure(product* load_product, automato* load_automata);
 void freeProduct(product* load_product, automato* load_automata);
 //-----------------------Public functions--------------------
@@ -59,7 +59,7 @@ void menu()
 	string_vector automata_name;
 	automata_name.size = 0;
 
-
+	
 	while (1)
 	{
 		switch (i)
@@ -79,10 +79,10 @@ void menu()
 			printf("11 - Authors\n");
 			printf("Default - the menu will be rewritten\n\n");
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
-
+			
 			while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin())
 			{
-
+				
 				i = 0;
 				do
 				{
@@ -92,13 +92,13 @@ void menu()
 				j = 0;
 				break;
 			}
-
+			
 			break;
-
+		
 		case 1:
 			if (k == 0)
 			{
-
+				
 				automata = (automato**)malloc(sizeof(automato*));
 				automata[automata_number] = new_automata();
 				printf("Write the file path\n\n");
@@ -112,7 +112,7 @@ void menu()
 			}
 			else
 			{
-
+				
 				printf("Write the file path\n\n");
 				scanf("%s", buffer);
 				getchar();
@@ -193,7 +193,7 @@ void menu()
 					printAutomata(automata[automata_to_load]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
-
+				
 				}
 				else
 				{
@@ -208,7 +208,7 @@ void menu()
 				} while (j != 10);
 				j = 0;
 			}
-
+			
 			i = 0;
 			break;
 
@@ -228,7 +228,7 @@ void menu()
 			else
 			{
 				printf("\nWhich automata do you wish to test accessibility? Available automata:\n\n");
-
+				
 				for (z = 0; z < automata_number; z++)
 				{
 					printf("%s\n\n", automata_name.string[z]);
@@ -259,7 +259,7 @@ void menu()
 					while (getchar() != '\n');
 				}
 
-
+				
 				i = 0;
 				do
 				{
@@ -268,7 +268,7 @@ void menu()
 				} while (j != 10);
 				j = 0;
 			}
-
+			
 			break;
 
 		case 4:
@@ -315,7 +315,7 @@ void menu()
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
-
+			
 				i = 0;
 				do
 				{
@@ -324,7 +324,7 @@ void menu()
 				} while (j != 10);
 				j = 0;
 			}
-
+			
 			break;
 
 		case 5:
@@ -361,7 +361,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-
+					
 					dfaOrNfa(automata[automata_to_load]);
 
 					if (automata[automata_to_load]->deterministic == 1)
@@ -382,7 +382,7 @@ void menu()
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
-
+				
 				i = 0;
 				do
 				{
@@ -391,7 +391,7 @@ void menu()
 				} while (j != 10);
 				j = 0;
 			}
-
+			
 			break;
 
 		case 6:
@@ -410,7 +410,7 @@ void menu()
 			else
 			{
 				printf("\nWhich automata do you wish to convert? Available automata:\n\n");
-
+				
 				for (z = 0; z < automata_number; z++)
 				{
 					printf("%s\n\n", automata_name.string[z]);
@@ -429,7 +429,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-
+					
 					dfaOrNfa(automata[automata_to_load]);
 
 					if (automata[automata_to_load]->deterministic == 0)
@@ -457,7 +457,7 @@ void menu()
 				} while (j != 10);
 				j = 0;
 			}
-
+			
 			break;
 
 		case 7:
@@ -476,7 +476,7 @@ void menu()
 			else
 			{
 				printf("\nWhich automata do you wish to convert to the canonical form? Available automata:\n\n");
-
+				
 				for (z = 0; z < automata_number; z++)
 				{
 					printf("%s\n\n", automata_name.string[z]);
@@ -495,7 +495,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-
+					
 					freeAutomata(automata[automata_to_load]);
 					automata[automata_to_load] = new_automata();
 					load_file(automata[automata_to_load], automata_name.string[automata_to_load]);
@@ -512,8 +512,8 @@ void menu()
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
-
-
+				
+				
 				i = 0;
 				do
 				{
@@ -600,7 +600,7 @@ void menu()
 					j = 0;
 					break;
 				}
-
+				
 				if (dummy == 1)
 				{
 					automataProduct(automata[automata1], automata[automata2]);
@@ -639,10 +639,10 @@ void menu()
 				{
 					printf("%s\n\n", automata_name.string[z]);
 				}
-
+				
 				scanf("%s", buffer);
 				getchar();
-
+				
 				for (z = 0; z < automata_number; z++)
 				{
 					if (strcmp(buffer, automata_name.string[z]) == 0)
@@ -675,8 +675,8 @@ void menu()
 			break;
 
 
-		case 10:
-
+		case 10 :
+			
 			if (k == 1)
 			{
 				for (z = 0; z < automata_number; z++)
@@ -687,7 +687,7 @@ void menu()
 
 				if (automata_name.size != 0)
 				{
-					for (z = 0; z < automata_name.size; z++)
+					for(z = 0; z < automata_name.size; z++)
 					{
 						free(automata_name.string[z]);
 					}
@@ -948,7 +948,7 @@ void checkAccessibilty(automato* load_automata)
 				printf("%s \n", load_automata->states.string[i]);
 		}
 		rewriteAutomata(load_automata, accessible_states);
-
+		
 	}
 	else
 		printf("\n\n\n-----------All states in the automata are accessible!-----------\n\n\n");
@@ -1107,7 +1107,7 @@ void dfaOrNfa(automato* load_automata)
 			}
 		}
 		load_automata->deterministic = 1;
-	}
+	}	
 }
 
 
@@ -1578,23 +1578,23 @@ void automataProduct(automato* automata1, automato* automata2)
 
 		load_product->product_states_size++;
 
-		productStatescreation(load_product, automata1, automata2, &(load_product->product_states[0]));
-
+		productStatescreation(load_product, automata1, automata2, 0);
+		
 		printf("Pares gerados:\n\n");
 		for (i = 0; i < load_product->product_states_size; i++)
 		{
 			printf("%d,%d", load_product->product_states[i].values[0], load_product->product_states[i].values[1]);
 		}
-
+		
 		freeProduct(load_product, automata1);
 	}
-
+	
 
 
 }
 
 
-void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int_vector* product_state)
+void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index)
 {
 	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0, trs1_provisory_value = 0, trs2_provisory_value = 0;
 
@@ -1604,38 +1604,38 @@ void productStatescreation(product* load_product, automato* load_automata1, auto
 		{
 			if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0)
 			{
-				if ((load_automata1->transitions[product_state->values[0]][i]->size != 0) && (load_automata2->transitions[product_state->values[1]][j]->size != 0))
-				{
-					for (z = 0; z < load_product->product_states_size; z++)
+					if ((load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->size != 0))
 					{
-						if ((findItemarray(load_product->product_states[z].values, load_automata1->transitions[product_state->values[0]][i]->values[0], load_product->product_states_size) != load_product->product_states_size) && (findItemarray(load_product->product_states[z].values, load_automata2->transitions[product_state->values[1]][j]->values[0], load_product->product_states_size) != load_product->product_states_size))
+						for (z = 0; z < load_product->product_states_size; z++)
 						{
-							dummy++;
+							if ((findItemarray(load_product->product_states[z].values, load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->values[0], load_product->product_states_size) != load_product->product_states_size) && (findItemarray(load_product->product_states[z].values, load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->values[0], load_product->product_states_size) != load_product->product_states_size))
+							{
+								dummy++;
+							}
 						}
-					}
 
-					if (dummy == 0)
-					{
+						if (dummy == 0)
+						{
 
-						trs1_provisory_value = load_automata1->transitions[product_state->values[0]][i]->values[0];
-						trs2_provisory_value = load_automata2->transitions[product_state->values[1]][j]->values[0],
-
+							trs1_provisory_value = load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->values[0];
+							trs2_provisory_value = load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->values[0];
 							load_product->product_states = (int_vector*)realloc(load_product->product_states, sizeof(int_vector)*(load_product->product_states_size + 1));
-						load_product->product_states[load_product->product_states_size].size = 0;
+							load_product->product_states[load_product->product_states_size].size = 0;
 
-						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs1_provisory_value);
-						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs2_provisory_value);
-						load_product->product_states_size++;
+							intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs1_provisory_value);
+							intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs2_provisory_value);
+							load_product->product_states_size++;
 
-						productStatescreation(load_product, load_automata1, load_automata2, &(load_product->product_states[load_product->product_states_size - 1]));
+							productStatescreation(load_product, load_automata1, load_automata2, load_product->product_states_size - 1);
+						}
+
+						else
+						{
+							dummy = 0;
+						}
+
 					}
-
-					else
-					{
-						dummy = 0;
-					}
-
-				}
+				
 			}
 		}
 	}
@@ -1668,8 +1668,8 @@ void pairCreation(automato* load_automata, int_vector* pair)
 void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two)
 {
 	int i = 0;
-
-
+	
+	
 	for (i = 0; i < load_canonical->pair[pair_one].size; i++)
 	{
 		if (load_canonical->pair[pair_one].values[i] == pair_two)
@@ -1684,7 +1684,7 @@ void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, 
 	}
 }
 
-void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index)
+void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index )
 {
 	int i = 0, j = 0, x = 0, test = 0;
 	int* provisory_states;
@@ -1912,7 +1912,7 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 		}
 		if (test == 0)
 		{
-			load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
+			load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine,sizeof(int_vector)*(load_canonical->combined_states + 1));
 			load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
 			for (i = 0; i < provisory_states_size; i++)
 			{
@@ -1923,7 +1923,7 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 		}
 
 	}
-
+	
 	if (provisory_states_size > 0)
 	{
 		free(provisory_states);
@@ -2206,7 +2206,7 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 		free(load_canonical->states_to_combine);
 	}
 
-
+	
 
 
 	resetCanonicalStructure(load_canonical);
@@ -2245,18 +2245,18 @@ void freeProductStructure(product* load_product, automato* load_automata)
 	int i = 0, j = 0;
 	/*if (load_product->combined_states != 0)
 	{
-	for (i = 0; i < load_product->combined_states; i++)
-	{
-	for (j = 0; j < load_automata->events.size; j++)
-	{
-	if (load_product->combined_states_trs[i][j].size != 0)
-	{
-	free(load_product->combined_states_trs[i][j].values);
-	}
-	}
-	free(load_product->combined_states_trs[i]);
-	}
-	free(load_product->combined_states_trs);
+		for (i = 0; i < load_product->combined_states; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_product->combined_states_trs[i][j].size != 0)
+				{
+					free(load_product->combined_states_trs[i][j].values);
+				}
+			}
+			free(load_product->combined_states_trs[i]);
+		}
+		free(load_product->combined_states_trs);
 	}*/
 
 	if (load_product->product_states_size != 0)
@@ -2442,7 +2442,7 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 {
 	int i = 0, j = 0, x = 0, z = 0;
 
-	x = x + strlen("STATES\r\n") + 1;
+	x = x + strlen("STATES\r\n") +1;
 	char* new_automata_info;
 	int* valid_events;
 
@@ -2468,7 +2468,7 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 		}
 	}
 
-	x = x + strlen("EVENTS\r\n") + 1;
+	x = x + strlen("EVENTS\r\n")+1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "EVENTS\r\n\0");
 
@@ -2565,7 +2565,7 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 	}
 
 	x = x + strlen("INITIAL\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) );
 	strcat(new_automata_info, "INITIAL\r\n\0");
 
 	x = x + strlen(load_automata->states.string[load_automata->initial]) + strlen("\r\n") + 2;
@@ -2575,8 +2575,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 	strcat(new_automata_info, "\r\n\0");
 
 
-	x = x + strlen("MARKED\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	x = x + strlen("MARKED\r\n") +1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char) );
 	strcat(new_automata_info, "MARKED\r\n\0");
 
 
@@ -2656,7 +2656,7 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 		}
 	}
 
-	x = x + strlen("EVENTS\r\n") + 1;
+	x = x + strlen("EVENTS\r\n") +1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "EVENTS\r\n\0");
 	if (load_automata->null_event == 1)
@@ -2683,7 +2683,7 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 	}
 
 
-	x = x + strlen("TRANSITIONS\r\n") + 1;
+	x = x + strlen("TRANSITIONS\r\n")+1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "TRANSITIONS\r\n\0");
 
@@ -2887,7 +2887,7 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 		}
 	}
 
-	x = x + strlen("INITIAL\r\n") + 1;
+	x = x + strlen("INITIAL\r\n") +1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "INITIAL\r\n\0");
 	for (i = 0; i < (load_dfa->dfa_states[0].size); i++)
@@ -3077,7 +3077,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 	}
 
-
+	
 	x = x + strlen("TRANSITIONS\r\n") + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "TRANSITIONS\r\n\0");
@@ -3182,8 +3182,8 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 			}
 		}
 	}
-
-	x = x + strlen("INITIAL\r\n") + 1;
+	
+	x = x + strlen("INITIAL\r\n")+1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "INITIAL\r\n\0");
 
@@ -3240,7 +3240,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 	}
 
-	x = x + strlen("MARKED\r\n") + 1;
+	x = x + strlen("MARKED\r\n") +1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "MARKED\r\n\0");
 	int marked = 0;
@@ -3250,7 +3250,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	{
 		for (j = 0; j < load_automata->marked.size; j++)
 		{
-			if (findItemarray(load_canonical->states_to_combine[i].values, load_automata->marked.values[j], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
+			if(findItemarray(load_canonical->states_to_combine[i].values, load_automata->marked.values[j], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
 			{
 				marked++;
 				continue;
@@ -3258,7 +3258,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 		if (marked != 0)
 		{
-
+			
 
 			marked = 0;
 			for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
@@ -3326,11 +3326,11 @@ void writeAutomataToFile(automato* load_automata)
 
 	for (i = 0; i < load_automata->states.size; i++)
 	{
-		x = x + strlen(load_automata->states.string[i]) + strlen("\r\n") + 2;
-		new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-		strcat(new_automata_info, load_automata->states.string[i]);
-		strcat(new_automata_info, "\0");
-		strcat(new_automata_info, "\r\n\0");
+			x = x + strlen(load_automata->states.string[i]) + strlen("\r\n") + 2;
+			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+			strcat(new_automata_info, load_automata->states.string[i]);
+			strcat(new_automata_info, "\0");
+			strcat(new_automata_info, "\r\n\0");
 	}
 
 	x = x + strlen("EVENTS\r\n") + 1;
@@ -3338,27 +3338,27 @@ void writeAutomataToFile(automato* load_automata)
 	strcat(new_automata_info, "EVENTS\r\n\0");
 
 
-
+	
 	if (load_automata->null_event == 1)
 	{
 		for (i = 1; i < load_automata->events.size; i++)
 		{
-			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->events.string[i]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
+				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, load_automata->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
 		}
 	}
 	else
 	{
 		for (i = 0; i < load_automata->events.size; i++)
 		{
-			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->events.string[i]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
+				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, load_automata->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
 		}
 	}
 
@@ -3370,32 +3370,32 @@ void writeAutomataToFile(automato* load_automata)
 
 	for (i = 0; i < load_automata->states.size; i++)
 	{
-		for (j = 0; j < load_automata->events.size; j++)
-		{
-			if (load_automata->transitions[i][j]->size != 0)
+			for (j = 0; j < load_automata->events.size; j++)
 			{
-				for (z = 0; z < load_automata->transitions[i][j]->size; z++)
+				if (load_automata->transitions[i][j]->size != 0)
 				{
-					x = x + strlen(load_automata->states.string[i]) + strlen(";") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->states.string[i]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, ";\0");
+					for (z = 0; z < load_automata->transitions[i][j]->size; z++)
+					{
+						x = x + strlen(load_automata->states.string[i]) + strlen(";") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, load_automata->states.string[i]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";\0");
 
-					x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->events.string[j]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, ";\0");
+						x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, load_automata->events.string[j]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";\0");
 
-					x = x + strlen(load_automata->states.string[load_automata->transitions[i][j]->values[z]]) + strlen("\r\n") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->states.string[load_automata->transitions[i][j]->values[z]]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, "\r\n\0");
+						x = x + strlen(load_automata->states.string[load_automata->transitions[i][j]->values[z]]) + strlen("\r\n") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, load_automata->states.string[load_automata->transitions[i][j]->values[z]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "\r\n\0");
+					}
 				}
 			}
-		}
 	}
 
 	x = x + strlen("INITIAL\r\n") + 1;
