@@ -96,12 +96,15 @@ typedef struct product
 
 }product;
 
+automato** automata;
+string_vector automata_name;
+
 //the prototype of the used functions
 void menu();
 void load_file(automato* load_automata, char* file_path);
 void printAutomata(automato* load_automata);
 void checkAccessibilty(automato* load_automata, int dfa_canonical);
-void checkCoaccessibilty(automato* load_automata);
+void checkCoaccessibilty(automato* load_automata, int dfa_canonical);
 void dfaOrNfa(automato* load_automata);
 void nfaToDfa(automato* load_automata, int nda_or_da);
 void freeAutomata(automato* load_automata);

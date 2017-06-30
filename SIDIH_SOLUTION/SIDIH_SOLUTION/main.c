@@ -8,4 +8,5 @@
 void main(void)
 {
 		menu();
+		getchar();
 }

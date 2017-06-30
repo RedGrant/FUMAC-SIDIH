@@ -13,7 +13,7 @@ void stringPushBack(string_vector* char_vector, char* item);
 void writeIntVectorInConsole(int_vector* vector, string_vector* string_vect);
 void writeStringVectorInConsole(string_vector* string_vect);
 void accesibleState(automato* load_automata, int state_index, int *accessible_states);
-void rewriteAutomata(automato* load_automata, int* valid_states);
+void rewriteAutomata(automato* load_automata, int* valid_states, int dfa_canonical);
 void freeData(automato* load_automata);
 void coaccesibleState(automato* load_automata, int state_index, int *coaccessible_states);
 void sortArrayAscending(int_vector* array_to_sort);
@@ -56,8 +56,7 @@ void menu()
 	char buffer[1000];
 	i = 11;
 	j = 0;
-	automato** automata;
-	string_vector automata_name;
+	
 	automata_name.size = 0;
 
 	
@@ -333,7 +332,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-					checkCoaccessibilty(automata[automata_to_load]);
+					checkCoaccessibilty(automata[automata_to_load],0);
 					if (automata[automata_to_load]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
@@ -1019,7 +1018,7 @@ void checkAccessibilty(automato* load_automata, int dfa_canonical)
 			}
 		}
 		
-		rewriteAutomata(load_automata, accessible_states);
+		rewriteAutomata(load_automata, accessible_states, dfa_canonical);
 		
 	}
 	else
@@ -1035,7 +1034,7 @@ void checkAccessibilty(automato* load_automata, int dfa_canonical)
 	free(accessible_states_check);
 }
 
-void checkCoaccessibilty(automato* load_automata)
+void checkCoaccessibilty(automato* load_automata, int dfa_canonical)
 {
 	int i = 0, j = 0, x = 0, initial_confirmation = 0;
 	int *coaccessible_states;
@@ -1139,7 +1138,7 @@ void checkCoaccessibilty(automato* load_automata)
 			if (coaccessible_states[i] == 0)
 				printf("%s \n", load_automata->states.string[i]);
 		}
-		rewriteAutomata(load_automata, coaccessible_states);
+		rewriteAutomata(load_automata, coaccessible_states, dfa_canonical);
 	}
 	else
 		printf("\n\n\n-----------All states in the automata are coaccessible!-----------\n\n\n");
@@ -2607,10 +2606,13 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 }
 
 //rewrites the automata case it's needed 
-void rewriteAutomata(automato* load_automata, int* valid_states)
+void rewriteAutomata(automato* load_automata, int* valid_states, int dfa_canonical)
 {
-	int i = 0, j = 0, x = 0, z = 0;
 
+
+	int i = 0, j = 0, x = 0, z = 0, k = 0;
+	int* buffer[1000];
+	char c;
 	x = x + strlen("STATES\r\n") +1;
 	char* new_automata_info;
 	int* valid_events;
@@ -2656,10 +2658,6 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 			}
 		}
 	}
-
-
-
-
 
 	if (load_automata->null_event == 1)
 	{
@@ -2762,8 +2760,48 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 			}
 		}
 	}
-	freeData(load_automata);
-	parser(load_automata, new_automata_info);
+	
+
+	if (dfa_canonical == 0)
+	{
+		printf("\n\nDo you wish to change the current automata? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
+		if (k == 1)
+		{
+			freeAutomata(load_automata);
+			load_automata = new_automata();
+			parser(load_automata, new_automata_info);
+		}
+		else
+		{
+			printf("\n\nDo you wish to print the changed automata? Press 1 if yes, any other number if not \n\n");
+			while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
+			if (k == 1)
+			{
+				automato* provisory;
+				provisory = new_automata();
+				parser(provisory, new_automata_info);
+				printAutomata(provisory);
+				freeAutomata(provisory);
+			}
+			printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
+			while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
+			if (k == 1)
+			{
+				automato* provisory;
+				provisory = new_automata();
+				parser(provisory, new_automata_info);
+				writeAutomataToFile(provisory);
+				freeAutomata(provisory);
+			}
+		}
+	}
+	else
+	{
+		freeAutomata(load_automata);
+		load_automata = new_automata();
+		parser(load_automata, new_automata_info);
+	}
 	free(new_automata_info);
 	free(valid_events);
 }
@@ -3183,18 +3221,16 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 			printAutomata(provisory);
 			freeAutomata(provisory);
 		}
-		else
+		
+		printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+		if (i == 1)
 		{
-			printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
-			while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
-			if (i == 1)
-			{
-				automato* provisory;
-				provisory = new_automata();
-				parser(provisory, new_automata_info);
-				writeAutomataToFile(provisory);
-				freeAutomata(provisory);
-			}
+			automato* provisory;
+			provisory = new_automata();
+			parser(provisory, new_automata_info);
+			writeAutomataToFile(provisory);
+			freeAutomata(provisory);
 		}
 	}
 	free(new_automata_info);
