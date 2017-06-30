@@ -104,19 +104,21 @@ void menu()
 				scanf("%s", buffer);
 				getchar();
 				load_file(automata[automata_number], buffer);
-				if (automata[automata_number]->error == 1)
+				stringPushBack(&(automata_name), buffer);
+				memset(buffer, 0, 1000);
+				automata_number++;
+				if (automata[automata_number-1]->error == 1)
 				{
 					printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
 					getchar();
-					automata[automata_number]->error= 0;
-					deleteAutomata(automata, &(automata_name), automata_number);
+					automata[automata_number-1]->error= 0;
+					deleteAutomata(automata, &(automata_name), automata_number-1);
 					i = 0;
 					break;
 				}
-				stringPushBack(&(automata_name), buffer);
-				memset(buffer, 0, 1000);
 				k = 1;
-				automata_number++;
+				
+				
 			}
 			else
 			{
@@ -147,19 +149,20 @@ void menu()
 					automata = (automato**)realloc(automata, sizeof(automato*)*(automata_number + 1));
 					automata[automata_number] = new_automata();
 					load_file(automata[automata_number], buffer);
-					if (automata[automata_number]->error == 1)
+					stringPushBack(&(automata_name), buffer);
+					memset(buffer, 0, 1000);
+					automata_number++;
+					if (automata[automata_number-1]->error == 1)
 					{
 						printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
 						getchar();
-						automata[automata_number]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_number);
+						automata[automata_number-1]->error = 0;
+						deleteAutomata(automata, &(automata_name), automata_number-1);
 						i = 0;
 						break;
 					}
-					stringPushBack(&(automata_name), buffer);
-					memset(buffer, 0, 1000);
 					k = 1;
-					automata_number++;
+				
 				}
 			}
 			printf("\n\nAutomata loaded! Press enter to continue! \n\n");
@@ -4785,31 +4788,31 @@ void deleteAutomata(automato** automata_array, string_vector* automata_name, int
 		}
 	}
 	
-	if (automata_number > 0)
+	
+	free(automata_name->string[automata_to_delete]);
+
+	if (automata_to_delete + 1 < automata_number)
 	{
-		free(automata_name->string[automata_to_delete]);
-
-		if (automata_to_delete + 1 < automata_number)
+		for (i = automata_to_delete; i < automata_number - 1; i++)
 		{
-			for (i = automata_to_delete; i < automata_number - 1; i++)
-			{
-				automata_name->string[i] = automata_name->string[i + 1];
-				automata_name->size--;
-			}
+			automata_name->string[i] = automata_name->string[i + 1];
+			
 		}
+	}
 
+	
+	if (automata_number > 1)
+	{
 		automata_number--;
-		if (automata_number > 0)
-		{
-			automata_array = (automato**)realloc(automata_array, sizeof(automato*)* automata_number);
-			automata_name->string = (char**)realloc(automata_name->string, sizeof(char*)*automata_number);
-		}
-		else
-		{
-			automata_name->size = 0;
-			free(automata_name->string);
-
-		}
+		automata_array = (automato**)realloc(automata_array, sizeof(automato*)* automata_number);
+		automata_name->string = (char**)realloc(automata_name->string, sizeof(char*)*automata_number);
+		automata_name->size--;
+	}
+	else
+	{
+		automata_name->size = 0;
+		free(automata_name->string);
+		automata_number--;
 	}
 	
 }
