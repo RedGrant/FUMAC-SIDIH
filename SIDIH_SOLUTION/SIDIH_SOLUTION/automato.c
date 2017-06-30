@@ -54,9 +54,9 @@ void menu()
 	int count = 0;
 	char c;
 	char buffer[1000];
-	i = 11;
+	i = 12;
 	j = 0;
-	
+	automata = (automato**)malloc(sizeof(automato*));
 	automata_name.size = 0;
 	automata_number = 0;
 	
@@ -75,8 +75,9 @@ void menu()
 			printf("7 - Convert the automata to its canonical form\n");
 			printf("8 - Automatas product\n");
 			printf("9 - Write any automata to a file\n");
-			printf("10 - Exit\n");
-			printf("11 - Authors\n");
+			printf("10 - Delete automata\n");
+			printf("11 - Exit\n");
+			printf("12 - Authors\n");
 			printf("Default - the menu will be rewritten\n\n");
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
 			
@@ -96,10 +97,8 @@ void menu()
 			break;
 		
 		case 1:
-			if (k == 0)
+			if (automata_number == 0)
 			{
-				
-				automata = (automato**)malloc(sizeof(automato*));
 				automata[automata_number] = new_automata();
 				printf("Write the file path\n\n");
 				scanf("%s", buffer);
@@ -110,7 +109,7 @@ void menu()
 					printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
 					getchar();
 					automata[automata_number]->error= 0;
-					freeAutomata(automata[automata_number]);
+					deleteAutomata(automata, &(automata_name), automata_number);
 					i = 0;
 					break;
 				}
@@ -153,7 +152,7 @@ void menu()
 						printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
 						getchar();
 						automata[automata_number]->error = 0;
-						freeAutomata(automata[automata_number]);
+						deleteAutomata(automata, &(automata_name), automata_number);
 						i = 0;
 						break;
 					}
@@ -175,7 +174,7 @@ void menu()
 			break;
 
 		case 2:
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -231,7 +230,7 @@ void menu()
 			break;
 
 		case 3:
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -272,7 +271,7 @@ void menu()
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
 						automata[automata_to_load]->error = 0;
-						freeAutomata(automata[automata_to_load]);
+						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
@@ -299,7 +298,7 @@ void menu()
 			break;
 
 		case 4:
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -338,7 +337,7 @@ void menu()
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
 						automata[automata_to_load]->error = 0;
-						freeAutomata(automata[automata_to_load]);
+						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
@@ -364,7 +363,7 @@ void menu()
 			break;
 
 		case 5:
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -404,7 +403,7 @@ void menu()
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
 						automata[automata_to_load]->error = 0;
-						freeAutomata(automata[automata_to_load]);
+						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
 						return;
 					}
@@ -440,7 +439,7 @@ void menu()
 			break;
 
 		case 6:
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -506,7 +505,7 @@ void menu()
 			break;
 
 		case 7:
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -547,7 +546,7 @@ void menu()
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
 						automata[automata_to_load]->error = 0;
-						freeAutomata(automata[automata_to_load]);
+						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
 						return;
 					}
@@ -564,7 +563,7 @@ void menu()
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
 						automata[automata_to_load]->error = 0;
-						freeAutomata(automata[automata_to_load]);
+						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
 						return;
 					}
@@ -593,7 +592,7 @@ void menu()
 
 		case 8:
 			dummy = 0;
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -687,7 +686,7 @@ void menu()
 
 
 		case 9:
-			if (k == 0)
+			if (automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -741,8 +740,65 @@ void menu()
 			i = 0;
 			break;
 
+		case 10:
+			
 
-		case 10 :
+			if (automata_number == 0)
+			{
+				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
+				while (getchar() != '\n');
+				i = 0;
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 10);
+				j = 0;
+			}
+			else
+			{
+				printf("\nWhich automata do you wish to delete? Available automata:\n\n");
+				for (z = 0; z < automata_number; z++)
+				{
+					printf("%s\n\n", automata_name.string[z]);
+				}
+				scanf("%s", buffer);
+				getchar();
+				for (z = 0; z < automata_number; z++)
+				{
+					if (strcmp(buffer, automata_name.string[z]) == 0)
+					{
+						dummy = 1;
+						automata_to_load = z;
+					}
+				}
+				memset(buffer, 0, 1000);
+				if (dummy == 1)
+				{
+					dummy = 0;
+					deleteAutomata(automata, &(automata_name), automata_to_load);
+					printf("\n\nPress enter to procede to the menu!\n");
+					while (getchar() != '\n');
+				}
+				else
+				{
+					printf("\n\nInvalid automata was written, try again!\n\n");
+					while (getchar() != '\n');
+				}
+
+				do
+				{
+					j++;
+					printf("\n");
+				} while (j != 10);
+				j = 0;
+			}
+
+			i = 0;
+			break;
+			
+
+		case 11 :
 			
 			if (k == 1)
 			{
@@ -759,12 +815,13 @@ void menu()
 						free(automata_name.string[z]);
 					}
 					free(automata_name.string);
+					automata_name.size = 0;
 				}
 			}
 			return;
 			break;
 
-		case 11:
+		case 12:
 			do
 			{
 				j++;
@@ -4712,4 +4769,47 @@ int findItemarray(int* array_to_search, int item, int array_size)
 		}
 	}
 	return i;
+}
+
+
+void deleteAutomata(automato** automata_array, string_vector* automata_name, int automata_to_delete)
+{
+	int i = 0;
+	freeAutomata(automata_array[automata_to_delete]);
+	
+	if (automata_to_delete + 1 < automata_number)
+	{
+		for (i = automata_to_delete; i < automata_number -1; i++)
+		{
+			automata_array[i] = automata_array[i + 1];
+		}
+	}
+	
+	if (automata_number > 0)
+	{
+		free(automata_name->string[automata_to_delete]);
+
+		if (automata_to_delete + 1 < automata_number)
+		{
+			for (i = automata_to_delete; i < automata_number - 1; i++)
+			{
+				automata_name->string[i] = automata_name->string[i + 1];
+				automata_name->size--;
+			}
+		}
+
+		automata_number--;
+		if (automata_number > 0)
+		{
+			automata_array = (automato**)realloc(automata_array, sizeof(automato*)* automata_number);
+			automata_name->string = (char**)realloc(automata_name->string, sizeof(char*)*automata_number);
+		}
+		else
+		{
+			automata_name->size = 0;
+			free(automata_name->string);
+
+		}
+	}
+	
 }

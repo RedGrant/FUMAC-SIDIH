@@ -112,4 +112,5 @@ void freeAutomata(automato* load_automata);
 void dfaCanonical(automato* load_automata);
 void automataProduct(automato* automata1, automato* automata2);
 void writeAutomataToFile(automato* load_automata);
+void deleteAutomata(automato** automata_array, string_vector* automata_name, int automata_to_delete);
 automato* new_automata();
