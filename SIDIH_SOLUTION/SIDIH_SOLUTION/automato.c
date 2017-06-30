@@ -50,7 +50,7 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 
 void menu()
 {
-	int i = 0, j = 0, k = 0, z = 0, automata_number = 0, automata_to_load = 0, dummy = 0, automata1 = 0, automata2 = 0;
+	int i = 0, j = 0, k = 0, z = 0, automata_number = 0, automata_to_load = 0, dummy = 0, automata1 = 0, automata2 = 0, dfa_canonical = 0;
 	int count = 0;
 	char c;
 	char buffer[1000];
@@ -67,7 +67,7 @@ void menu()
 		{
 		case 0:
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
-			printf("1 - Load automata called Example.aut\n");
+			printf("1 - Load automata \n");
 			printf("2 - Print the automata to the console\n");
 			printf("3 - Check automata accesibility\n");
 			printf("4 - Check automata coaccesibility\n");
@@ -106,6 +106,15 @@ void menu()
 				scanf("%s", buffer);
 				getchar();
 				load_file(automata[automata_number], buffer);
+				if (automata[automata_number]->error == 1)
+				{
+					printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
+					getchar();
+					automata[automata_number]->error= 0;
+					freeAutomata(automata[automata_number]);
+					i = 0;
+					break;
+				}
 				stringPushBack(&(automata_name), buffer);
 				memset(buffer, 0, 1000);
 				k = 1;
@@ -140,6 +149,15 @@ void menu()
 					automata = (automato**)realloc(automata, sizeof(automato*)*(automata_number + 1));
 					automata[automata_number] = new_automata();
 					load_file(automata[automata_number], buffer);
+					if (automata[automata_number]->error == 1)
+					{
+						printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
+						getchar();
+						automata[automata_number]->error = 0;
+						freeAutomata(automata[automata_number]);
+						i = 0;
+						break;
+					}
 					stringPushBack(&(automata_name), buffer);
 					memset(buffer, 0, 1000);
 					k = 1;
@@ -249,7 +267,16 @@ void menu()
 				{
 					dummy = 0;
 					printf("\n");
-					checkAccessibilty(automata[automata_to_load]);
+					checkAccessibilty(automata[automata_to_load], 0);
+					if (automata[automata_to_load]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata[automata_to_load]->error = 0;
+						freeAutomata(automata[automata_to_load]);
+						i = 0;
+						break;
+					}
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
@@ -307,6 +334,15 @@ void menu()
 				{
 					dummy = 0;
 					checkCoaccessibilty(automata[automata_to_load]);
+					if (automata[automata_to_load]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata[automata_to_load]->error = 0;
+						freeAutomata(automata[automata_to_load]);
+						i = 0;
+						break;
+					}
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
@@ -364,6 +400,15 @@ void menu()
 					dummy = 0;
 					
 					dfaOrNfa(automata[automata_to_load]);
+					if (automata[automata_to_load]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata[automata_to_load]->error = 0;
+						freeAutomata(automata[automata_to_load]);
+						i = 0;
+						return;
+					}
 
 					if (automata[automata_to_load]->deterministic == 1)
 					{
@@ -497,8 +542,34 @@ void menu()
 				{
 					dummy = 0;
 					
-					checkAccessibilty(automata[automata_to_load]);
-					nfaToDfa(automata[automata_to_load], automata[automata_to_load]->deterministic);
+					dfaOrNfa(automata[automata_to_load]);
+					if (automata[automata_to_load]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata[automata_to_load]->error = 0;
+						freeAutomata(automata[automata_to_load]);
+						i = 0;
+						return;
+					}
+					if (automata[automata_to_load]->deterministic == 0)
+					{
+						printf("The automata is NFA, try to convert it first to DFA!\n\n Press any key to return to menu\n");
+						getchar();
+						break;
+					}
+
+					checkAccessibilty(automata[automata_to_load], 1);
+					if (automata[automata_to_load]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata[automata_to_load]->error = 0;
+						freeAutomata(automata[automata_to_load]);
+						i = 0;
+						return;
+					}
+					
 					dfaCanonical(automata[automata_to_load]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
@@ -755,9 +826,8 @@ void load_file(automato* load_automata, char* file_path)
 	if (fp == NULL)
 	{
 		printf("Error opening file");
-		getchar();
-		getchar();
-		exit(0);
+		load_automata->error = 1;
+		return;
 	}
 	//get amount of characters in file
 	fseek(fp, 0, SEEK_END);
@@ -862,7 +932,7 @@ void printAutomata(automato* load_automata)
 }
 
 //check accessibility of a state and delete those that aren't accessible
-void checkAccessibilty(automato* load_automata)
+void checkAccessibilty(automato* load_automata, int dfa_canonical)
 {
 	int i = 0, j = 0, x = 0, initial_confirmation = 0;
 	int *accessible_states;
@@ -885,7 +955,8 @@ void checkAccessibilty(automato* load_automata)
 	{
 		printf("No state is acessible through the initial state!\n\n");
 		getchar();
-		exit(0);
+		load_automata->error = 1;
+		return;
 	}
 	else
 	{
@@ -937,18 +1008,29 @@ void checkAccessibilty(automato* load_automata)
 
 	if (delete_counter > 0)
 	{
-		printf("-----------The automata had non-accessible states. They are going to be removed-----------\n\n\n");
-		printf("Removed states:\n");
-		for (i = 0; i < load_automata->states.size; i++)
+		if (dfa_canonical == 0)
 		{
-			if (accessible_states[i] == 0)
-				printf("%s \n", load_automata->states.string[i]);
+			printf("-----------The automata had non-accessible states. They are going to be removed-----------\n\n\n");
+			printf("Removed states:\n");
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				if (accessible_states[i] == 0)
+					printf("%s \n", load_automata->states.string[i]);
+			}
 		}
+		
 		rewriteAutomata(load_automata, accessible_states);
 		
 	}
 	else
-		printf("\n\n\n-----------All states in the automata are accessible!-----------\n\n\n");
+	{
+		if (dfa_canonical == 0)
+		{
+			printf("\n\n\n-----------All states in the automata are accessible!-----------\n\n\n");
+		}
+	}
+		
+		
 	free(accessible_states);
 	free(accessible_states_check);
 }
@@ -982,7 +1064,8 @@ void checkCoaccessibilty(automato* load_automata)
 	{
 		printf("No state is coacessible through any marked state(s)!\n\n");
 		getchar();
-		exit(0);
+		load_automata->error = 1;
+		return;
 	}
 	else
 	{
@@ -1074,8 +1157,8 @@ void dfaOrNfa(automato* load_automata)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
 			getchar();
-			freeAutomata(load_automata);
-			exit(0);
+			load_automata->error = 1;
+			return;
 		}
 		load_automata->deterministic = 0;
 		return;
@@ -1086,8 +1169,8 @@ void dfaOrNfa(automato* load_automata)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
 			getchar();
-			freeAutomata(load_automata);
-			exit(0);
+			load_automata->error = 1;
+			return;
 		}
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -2040,7 +2123,7 @@ int factorial(int number)
 void freeData(automato* load_automata)
 {
 	int i = 0, j = 0, x = 0, z = 0;
-	if (load_automata->states.size > 0)
+	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -2057,7 +2140,7 @@ void freeData(automato* load_automata)
 		free(load_automata->transitions);
 	}
 
-	if (load_automata->states.size > 0)
+	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -2075,7 +2158,7 @@ void freeData(automato* load_automata)
 	}
 
 
-	if (load_automata->states.size > 0)
+	if (load_automata->states.size > 0 && load_automata->e_closure != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -2115,6 +2198,7 @@ void freeData(automato* load_automata)
 
 void resetAutomataStruct(automato* load_automata)
 {
+	load_automata->error = 0;
 	load_automata->states.size = 0;
 	load_automata->events.size = 0;
 	load_automata->marked.size = 0;
@@ -2204,6 +2288,7 @@ void resetDfaStructure(dfa* load_dfa)
 	load_dfa->transitions_table = NULL;
 	load_dfa->dfa_states = NULL;
 	load_dfa->dfa_states_size = 0;
+	load_dfa->error = 0;
 }
 
 
@@ -2217,6 +2302,7 @@ canonical* newCanonical()
 
 void resetCanonicalStructure(canonical* load_canonical)
 {
+	load_canonical->error = 0;
 	load_canonical->trs_size = 0;
 	load_canonical->pair_size = 0;
 	load_canonical->marked_counter = 0;
@@ -2306,6 +2392,7 @@ product* newProduct()
 
 void resetProductStructure(product* load_product)
 {
+	load_product->error = 0;
 	load_product->product_trs_size = 0;
 	load_product->product_states_size = 0;
 	load_product->product_states = NULL;
@@ -2686,7 +2773,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states)
 void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
-
+	int* buffer[1000];
+	char c;
 	x = x + strlen("STATES\r\n") + 1;
 	char* new_automata_info;
 	new_automata_info = malloc(x);
@@ -3072,9 +3160,43 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 			}
 		}
 	}
+
 	freeDfa(load_dfa, load_automata);
 	freeData(load_automata);
-	parser(load_automata, new_automata_info);
+
+	printf("\n\nDo you wish to change the current automata? Press 1 if yes, any other number if not \n\n");
+	while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+	if (i == 1)
+	{
+		parser(load_automata, new_automata_info);
+		printf("\n\n\n-----------Automata in canonical form-----------\n\n\n");
+	}
+	else
+	{
+		printf("\n\nDo you wish to print the changed automata? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+		if (i == 1)
+		{
+			automato* provisory;
+			provisory = new_automata();
+			parser(provisory, new_automata_info);
+			printAutomata(provisory);
+			freeAutomata(provisory);
+		}
+		else
+		{
+			printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
+			while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+			if (i == 1)
+			{
+				automato* provisory;
+				provisory = new_automata();
+				parser(provisory, new_automata_info);
+				writeAutomataToFile(provisory);
+				freeAutomata(provisory);
+			}
+		}
+	}
 	free(new_automata_info);
 }
 
@@ -3088,6 +3210,8 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	x = x + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcpy(new_automata_info, "STATES\r\n\0");
+	int* buffer[1000];
+	char c;
 
 	for (i = 0; i < load_canonical->combined_states; i++)
 	{
@@ -3159,7 +3283,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 	}
 
-	
+
 	x = x + strlen("TRANSITIONS\r\n") + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "TRANSITIONS\r\n\0");
@@ -3264,8 +3388,8 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 			}
 		}
 	}
-	
-	x = x + strlen("INITIAL\r\n")+1;
+
+	x = x + strlen("INITIAL\r\n") + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "INITIAL\r\n\0");
 
@@ -3322,7 +3446,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 	}
 
-	x = x + strlen("MARKED\r\n") +1;
+	x = x + strlen("MARKED\r\n") + 1;
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "MARKED\r\n\0");
 	int marked = 0;
@@ -3332,7 +3456,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	{
 		for (j = 0; j < load_automata->marked.size; j++)
 		{
-			if(findItemarray(load_canonical->states_to_combine[i].values, load_automata->marked.values[j], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
+			if (findItemarray(load_canonical->states_to_combine[i].values, load_automata->marked.values[j], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
 			{
 				marked++;
 				continue;
@@ -3340,7 +3464,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 		}
 		if (marked != 0)
 		{
-			
+
 
 			marked = 0;
 			for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
@@ -3388,9 +3512,39 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 
 	freeCanonical(load_canonical, load_automata);
 	freeData(load_automata);
-	parser(load_automata, new_automata_info);
+	printf("\n\nDo you wish to change the current automata? Press 1 if yes, any other number if not \n\n");
+	while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+	if (i == 1)
+	{
+		parser(load_automata, new_automata_info);
+		printf("\n\n\n-----------Automata in canonical form-----------\n\n\n");
+	}
+	else
+	{
+		printf("\n\nDo you wish to print the changed automata? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+		if (i == 1)
+		{
+			automato* provisory;
+			provisory = new_automata();
+			parser(provisory, new_automata_info);
+			printAutomata(provisory);
+			freeAutomata(provisory);
+		}
+
+		printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+		if (i == 1)
+		{
+			automato* provisory;
+			provisory = new_automata();
+			parser(provisory, new_automata_info);
+			writeAutomataToFile(provisory);
+			freeAutomata(provisory);
+		}
+	}
+
 	free(new_automata_info);
-	printf("\n\n\n-----------Automata in canonical form-----------\n\n\n");
 }
 
 void writeProductAutomata(automato* automata1, automato* automata2, product* load_product)
@@ -4008,11 +4162,10 @@ void parser(automato* load_automata, char* file_info)
 					//transitions made correctly
 					if (splitString(line, &trs_line, &trs_index, ';') == false)
 					{
-						printf("Invalid transition in file. Correct this transition:\n\nPress enter to continue");
+						printf("Invalid transition in file. Correct this transition:\n\nPress enter to continue\n");
 						puts(line);
-						getchar();
-						getchar();
-						exit(0);
+						load_automata->error = 1;
+						return;
 					}
 
 					//when it's not an event
@@ -4023,11 +4176,10 @@ void parser(automato* load_automata, char* file_info)
 						trs_state_index = findItemStringVector(trs_line, load_automata->states);
 						if (trs_state_index == load_automata->states.size)
 						{
-							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue");
+							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue\n");
 							puts(line);
-							getchar();
-							getchar();
-							exit(0);
+							load_automata->error = 1;
+							return;
 						}
 					}
 					if (i == 2)
@@ -4037,10 +4189,10 @@ void parser(automato* load_automata, char* file_info)
 						second_trs_state_index = findItemStringVector(trs_line, load_automata->states);
 						if (second_trs_state_index == load_automata->states.size)
 						{
-							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue");
+							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue\n");
 							puts(line);
-							getchar();
-							exit(0);
+							load_automata->error = 1;
+							return;
 						}
 					}
 					if (i == 1)
@@ -4049,11 +4201,10 @@ void parser(automato* load_automata, char* file_info)
 						trs_event_index = findItemStringVector(trs_line, load_automata->events);
 						if (trs_event_index == load_automata->events.size)
 						{
-							printf("Invalid event being used on the transition. Correct this transition:\n\nPress enter to continue");
+							printf("Invalid event being used on the transition. Correct this transition:\n\nPress enter to continue\n");
 							puts(line);
-							getchar();
-							getchar();
-							exit(0);
+							load_automata->error = 1;
+							return;
 						}
 					}
 
@@ -4096,10 +4247,9 @@ void parser(automato* load_automata, char* file_info)
 
 				if (initial_test > 1)
 				{
-					printf("More than one initial state. Press enter to continue!");
-					getchar();
-					getchar();
-					exit(0);
+					printf("More than one initial state. Press enter to continue!\n");
+					load_automata->error = 1;
+					return;
 				}
 			}
 
@@ -4134,10 +4284,9 @@ void parser(automato* load_automata, char* file_info)
 			break;
 
 		default:
-			printf("\nParser error!Automata's file not correct!\n\nPress enter to continue");
-			getchar();
-			getchar();
-			exit(0);
+			printf("\nParser error!Automata's file not correct!\n\nPress enter to continue\n");
+			load_automata->error = 1;
+			return;
 		}
 	}
 
@@ -4146,44 +4295,41 @@ void parser(automato* load_automata, char* file_info)
 
 	if (load_automata->states.size == 0)
 	{
-		printf("There are no states in the automata!\n\nPress enter to continue");
-		getchar();
-		getchar();
-		exit(0);
+		printf("There are no states in the automata!\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
 	}
 
 	if (load_automata->events.size == 0)
 	{
-		printf("There are no events in the automata!\n\nPress enter to continue");
-		getchar();
-		getchar();
-		exit(0);
+		printf("There are no events in the automata!\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
 	}
 
 	if (load_automata->marked.size == 0)
 	{
-		printf("There are no marked states in the automata\n\nPress enter to continue");
-		getchar();
-		getchar();
-		exit(0);
+		printf("There are no marked states in the automata\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
 	}
 
 
 	if (initial_test == 0)
 	{
-		printf("There is no initial state in this automata!\n\nPress enter to continue");
-		getchar();
-		getchar();
-		exit(0);
+		printf("There is no initial state in this automata!\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
 	}
 
 
 	if (load_automata->transitions == NULL)
 	{
-		printf("There are no transitions in this automata!\n\nPress enter to continue");
+		printf("There are no transitions in this automata!\n\nPress enter to continue\n");
 		getchar();
 		getchar();
-		exit(0);
+		load_automata->error = 1;
+		return;
 	}
 
 

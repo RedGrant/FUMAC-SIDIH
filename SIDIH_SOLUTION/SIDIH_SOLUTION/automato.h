@@ -46,6 +46,8 @@ typedef struct automato
 
 	int deterministic;
 
+	int error;
+
 } automato;
 
 
@@ -56,6 +58,8 @@ typedef struct dfa
 	int_vector* dfa_states;
 
 	int_vector** transitions_table;
+
+	int error;
 
 }dfa;
 
@@ -77,6 +81,8 @@ typedef struct canonical
 
 	int trs_size;
 
+	int error;
+
 }canonical;
 
 typedef struct product
@@ -86,18 +92,15 @@ typedef struct product
 	int product_trs_size;
 	int_vector* product_states;
 	int_vector** product_states_trs;
+	int error;
 
 }product;
-
-
-
-
 
 //the prototype of the used functions
 void menu();
 void load_file(automato* load_automata, char* file_path);
 void printAutomata(automato* load_automata);
-void checkAccessibilty(automato* load_automata);
+void checkAccessibilty(automato* load_automata, int dfa_canonical);
 void checkCoaccessibilty(automato* load_automata);
 void dfaOrNfa(automato* load_automata);
 void nfaToDfa(automato* load_automata, int nda_or_da);
