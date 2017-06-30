@@ -98,6 +98,7 @@ typedef struct product
 
 automato** automata;
 string_vector automata_name;
+int automata_number;
 
 //the prototype of the used functions
 void menu();
