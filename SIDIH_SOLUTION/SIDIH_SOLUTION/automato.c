@@ -64,7 +64,7 @@ void menu()
 	{
 		switch (i)
 		{
-		case 0:
+		case 0: 
 			printf("---------------------------------------------Finite automata's implementation menu--------------------------------------\n\n");
 			printf("1 - Load automata \n");
 			printf("2 - Print the automata to the console\n");
