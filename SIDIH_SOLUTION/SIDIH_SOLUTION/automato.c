@@ -840,13 +840,13 @@ void menu()
 			printf("\n");
 			do
 			{
-				for (i = 0; i < 20000000; i++)
+				for (i = 0; i < 100000000; i++)
 				{
 
 				}
 				j++;
 				printf("                                                    \n");
-			} while (j != 10);
+			} while (j != 30);
 			i = 0;
 			j = 0;
 
@@ -1700,6 +1700,8 @@ void automataProduct(automato* automata1, automato* automata2)
 	int i = 0, j = 0 , x = 0, k = 0, y = 0, z = 0, dummy = 0;
 	if (automata1->states.size > 1 && automata2->states.size > 1)
 	{
+		dfaOrNfa(automata1);
+		dfaOrNfa(automata2);
 		if (automata1->deterministic == 1 && automata2->deterministic == 1)
 		{
 			printf("\n\n\n-----------Making the product between the inserted automata-----------\n\n\n");
@@ -1799,36 +1801,6 @@ void automataProduct(automato* automata1, automato* automata2)
 					}
 				}
 			}
-			if (load_product->product_states_size > 0 && load_product->product_trs_size > 0)
-			{
-				for (i = 0; i < load_product->product_states_size; i++)
-				{
-					for (k = 0; k < automata1->events.size; k++)
-					{
-						for (j = 0; j < automata2->events.size; j++)
-						{
-							if (strcmp(automata1->events.string[k], automata2->events.string[j]) == 0)
-							{
-								if (load_product->product_states_trs[i][k].size != 0)
-								{
-									printf("{%s,%s},%s -> {%s,%s}\n\n", automata1->states.string[load_product->product_states[i].values[0]], automata2->states.string[load_product->product_states[i].values[1]], automata1->events.string[k], automata1->states.string[load_product->product_states[load_product->product_states_trs[i][k].values[0]].values[0]], automata2->states.string[load_product->product_states[load_product->product_states_trs[i][k].values[0]].values[1]]);
-								}
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				if (load_product->product_states_size > 0)
-				{
-					for (i = 0; i < load_product->product_states_size; i++)
-					{
-						printf("{%s,%s}\n\n", automata1->states.string[load_product->product_states[i].values[0]], automata2->states.string[load_product->product_states[i].values[1]]);
-					}
-				}
-			}
-
 			writeProductAutomata(automata1, automata2, load_product);
 		}
 		else
