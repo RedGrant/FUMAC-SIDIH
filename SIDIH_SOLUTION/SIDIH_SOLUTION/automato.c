@@ -44,6 +44,13 @@ void productStatescreation(product* load_product, automato* load_automata1, auto
 void freeProductStructure(product* load_product, automato* load_automata);
 void freeProduct(product* load_product, automato* load_automata);
 void writeProductAutomata(automato* automata1, automato* automata2, product* load_product);
+parallel* newParallel();
+void resetParallelStructure(parallel* load_parallel);
+void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index);
+void freeParallelStructure(parallel* load_parallel, automato* load_automata);
+void freeParallel(parallel* load_parallel, automato* load_automata);
+void writeParallelAutomata(automato* automata1, automato* automata2, parallel* load_parallel);
+
 //-----------------------Public functions--------------------
 
 //software's menu
@@ -4744,6 +4751,78 @@ int findItemarray(int* array_to_search, int item, int array_size)
 		}
 	}
 	return i;
+}
+
+
+
+
+
+parallel* newParallel()
+{
+	parallel* new_parallel;
+	new_parallel = (parallel*)malloc(sizeof(parallel));
+	resetParallelStructure(new_parallel);
+	return new_parallel;
+}
+
+void resetParallelStructure(parallel* load_parallel)
+{
+	load_parallel->error = 0;
+	load_parallel->parallel_trs_size = 0;
+	load_parallel->parallel_states_size = 0;
+	load_parallel->parallel_states = NULL;
+	load_parallel->parallel_states_trs = NULL;
+}
+
+void freeParallelStructure(parallel* load_parallel, automato* load_automata)
+{
+	int i = 0, j = 0;
+
+	if (load_parallel->parallel_states_size != 0)
+	{
+		for (i = 0; i < load_parallel->parallel_states_size; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_parallel->parallel_states_trs[i][j].size != 0)
+				{
+					free(load_parallel->parallel_states_trs[i][j].values);
+				}
+			}
+			free(load_parallel->parallel_states_trs[i]);
+		}
+		free(load_parallel->parallel_states_trs);
+	}
+
+	if (load_parallel->parallel_states_size != 0)
+	{
+		for (i = 0; i < load_parallel->parallel_states_size; i++)
+		{
+			if (load_parallel->parallel_states[i].size > 0)
+			{
+				free(load_parallel->parallel_states[i].values);
+			}
+		}
+		free(load_parallel->parallel_states);
+	}
+
+	resetParallelStructure(load_parallel);
+}
+
+void freeParallel(parallel* load_parallel, automato* load_automata)
+{
+	freeParallelStructure(load_parallel, load_automata);
+	free(load_parallel);
+}
+
+void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index)
+{
+
+}
+
+void writeParallelAutomata(automato* automata1, automato* automata2, parallel* load_parallel)
+{
+
 }
 
 

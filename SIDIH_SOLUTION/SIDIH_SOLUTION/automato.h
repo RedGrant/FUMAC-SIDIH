@@ -96,6 +96,17 @@ typedef struct product
 
 }product;
 
+typedef struct parallel
+
+{
+	int parallel_states_size;
+	int parallel_trs_size;
+	int_vector* parallel_states;
+	int_vector** parallel_states_trs;
+	int error;
+
+}parallel;
+
 automato** automata;
 string_vector automata_name;
 int automata_number;
