@@ -1937,6 +1937,19 @@ void automataParallel(automato* automata1, automato* automata2)
 			{
 				load_parallel->parallel_states = (int_vector*)malloc(sizeof(int_vector));
 			}
+			
+			for (i = 0; i < automata1->events.size; i++)
+			{
+				stringPushBack(&(load_parallel->parallel_events), automata1->events.string[i]);
+			}
+
+			for (i = 0; i < automata2->events.size; i++)
+			{
+				if (findItemStringVector(automata2->events.string[i], load_parallel->parallel_events) == load_parallel->parallel_events.size)
+				{
+					stringPushBack(&(load_parallel->parallel_events), automata2->events.string[i]);
+				}
+			}
 
 			load_parallel->parallel_states[0].size = 0;
 
@@ -1952,18 +1965,6 @@ void automataParallel(automato* automata1, automato* automata2)
 				printf("(%s,%s)\n", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]]);
 			}
 
-			for (i = 0; i < automata1->events.size; i++)
-			{
-				stringPushBack(&(load_parallel->parallel_events), automata1->events.string[i]);
-			}
-
-			for (i = 0; i < automata2->events.size; i++)
-			{
-				if (findItemStringVector(automata2->events.string[i], load_parallel->parallel_events) == load_parallel->parallel_events.size)
-				{
-					stringPushBack(&(load_parallel->parallel_events), automata2->events.string[i]);
-				}
-			}
 
 			if (load_parallel->parallel_states_trs == NULL)
 			{
@@ -2096,58 +2097,7 @@ void automataParallel(automato* automata1, automato* automata2)
 								if (automata1_event != -1)
 								{
 									if (automata2_event == -1)
-									{/*
-										if (load_parallel->parallel_trs_size == 0)
-										{
-											if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0 && automata2->transitions[load_parallel->parallel_states[i].values[1]][automata2_event]->size == 0)
-											{
-												for (k = 0; k < load_parallel->parallel_states_size; k++)
-												{
-													if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == load_parallel->parallel_states[i].values[1]))
-													{
-														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-														load_parallel->parallel_states_trs[i][y].values[0] = k;
-														load_parallel->parallel_states_trs[i][y].size = 1;
-														printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-														printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
-														load_parallel->parallel_trs_size++;
-														break;
-													}
-												}
-
-											}
-										}
-										else
-										{
-											if (load_parallel->parallel_states_trs[i][y].size != 0)
-											{
-												dummy++;
-											}
-
-											if (dummy == 0)
-											{
-												if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0 && automata2->transitions[load_parallel->parallel_states[i].values[1]][automata2_event]->size == 0)
-												{
-													for (k = 0; k < load_parallel->parallel_states_size; k++)
-													{
-														if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == load_parallel->parallel_states[i].values[1]))
-														{
-															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-															load_parallel->parallel_states_trs[i][y].values[0] = k;
-															load_parallel->parallel_states_trs[i][y].size = 1;
-															printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-															printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
-															load_parallel->parallel_trs_size++;
-															break;
-														}
-													}
-												}
-											}
-											else
-												dummy = 0;
-										}
-									}*/
-									
+									{
 										if (load_parallel->parallel_trs_size == 0)
 										{
 											if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0)
@@ -2248,57 +2198,6 @@ void automataParallel(automato* automata1, automato* automata2)
 
 									if (automata1_event == -1)
 									{
-										/*if (load_parallel->parallel_trs_size == 0)
-										{
-											if (automata1->transitions[load_parallel->parallel_states[i].values[0]][automata1_event]->size != 0 && automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size == 0)
-											{
-												for (k = 0; k < load_parallel->parallel_states_size; k++)
-												{
-													if ((load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]) && (load_parallel->parallel_states[k].values[0] == load_parallel->parallel_states[i].values[0]))
-													{
-														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-														load_parallel->parallel_states_trs[i][y].values[0] = k;
-														load_parallel->parallel_states_trs[i][y].size = 1;
-														printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-														printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
-														load_parallel->parallel_trs_size++;
-														break;
-													}
-												}
-
-											}
-										}
-										else
-										{
-											if (load_parallel->parallel_states_trs[i][y].size != 0)
-											{
-												dummy++;
-											}
-
-											if (dummy == 0)
-											{
-												if (automata1->transitions[load_parallel->parallel_states[i].values[0]][automata1_event]->size == 0 && automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
-												{
-													for (k = 0; k < load_parallel->parallel_states_size; k++)
-													{
-														if ((load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]) && (load_parallel->parallel_states[k].values[0] == load_parallel->parallel_states[i].values[0]))
-														{
-															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-															load_parallel->parallel_states_trs[i][y].values[0] = k;
-															load_parallel->parallel_states_trs[i][y].size = 1;
-															printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-															printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
-															load_parallel->parallel_trs_size++;
-															break;
-														}
-													}
-												}
-											}
-											else
-												dummy = 0;
-										}*/
-								
-									
 										if (load_parallel->parallel_trs_size == 0)
 										{
 											if (automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
@@ -5367,149 +5266,21 @@ void freeParallel(parallel* load_parallel, automato* load_automata)
 
 void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index)
 {
-	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0, trs1_provisory_value = 0, trs2_provisory_value = 0;
+	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0, trs1_provisory_value = 0, trs2_provisory_value = 0, automata1_event = 0, automata2_event = 0;
 
-	for (i = 0; i < load_automata1->events.size; i++)
+	for (y = 0; y < load_parallel->parallel_events.size; y++)
 	{
-		for (j = 0; j < load_automata2->events.size; j++)
+		for (i = 0; i < load_automata1->events.size; i++)
 		{
-			if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0)
+			for (j = 0; j < load_automata2->events.size; j++)
 			{
-				if ((load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->size != 0))
+				if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0 && (strcmp(load_parallel->parallel_events.string[y], load_automata1->events.string[i]) == 0))
 				{
-					for (z = 0; z < load_parallel->parallel_states_size; z++)
-					{
-						if ((load_parallel->parallel_states[z].values[0] == load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0])  && (load_parallel->parallel_states[z].values[1] == load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0]))
-						{
-							dummy++;
-						}
-					}
-
-					if (dummy == 0)
-					{
-
-						trs1_provisory_value = load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0];
-						trs2_provisory_value = load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0];
-						load_parallel->parallel_states = (int_vector*)realloc(load_parallel->parallel_states, sizeof(int_vector)*(load_parallel->parallel_states_size + 1));
-						load_parallel->parallel_states[load_parallel->parallel_states_size].size = 0;
-
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs1_provisory_value);
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
-						load_parallel->parallel_states_size++;
-
-						parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
-					}
-
-					else
-					{
-						dummy = 0;
-					}
-				}
-
-				if ((load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->size == 0))
-				{
-					for (z = 0; z < load_parallel->parallel_states_size; z++)
-					{
-						if ((load_parallel->parallel_states[z].values[0] == load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0]) && (load_parallel->parallel_states[z].values[1] == load_parallel->parallel_states[parallel_state_index].values[1]))
-						{
-							dummy++;
-						}
-					}
-
-					if (dummy == 0)
-					{
-
-						trs1_provisory_value = load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0];
-						trs2_provisory_value = load_parallel->parallel_states[parallel_state_index].values[1];
-						load_parallel->parallel_states = (int_vector*)realloc(load_parallel->parallel_states, sizeof(int_vector)*(load_parallel->parallel_states_size + 1));
-						load_parallel->parallel_states[load_parallel->parallel_states_size].size = 0;
-
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs1_provisory_value);
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
-						load_parallel->parallel_states_size++;
-
-						parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
-					}
-					else
-					{
-						dummy = 0;
-					}
-
-				}
-
-				if ((load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size == 0) && (load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->size != 0))
-				
-				{
-					for (z = 0; z < load_parallel->parallel_states_size; z++)
-					{
-						if ((load_parallel->parallel_states[z].values[0] == load_parallel->parallel_states[parallel_state_index].values[0]) && (load_parallel->parallel_states[z].values[1] == load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0]))
-						{
-							dummy++;
-						}
-					}
-
-					if (dummy == 0)
-					{
-
-						trs1_provisory_value = load_parallel->parallel_states[parallel_state_index].values[0];
-						trs2_provisory_value = load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0];
-					
-						load_parallel->parallel_states = (int_vector*)realloc(load_parallel->parallel_states, sizeof(int_vector)*(load_parallel->parallel_states_size + 1));
-						load_parallel->parallel_states[load_parallel->parallel_states_size].size = 0;
-
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs1_provisory_value);
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
-						load_parallel->parallel_states_size++;
-
-						parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
-					}
-					else
-					{
-						dummy = 0;
-					}
-				}
-			}
-
-			else
-			{
-				if (load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size != 0)
-				{
-					for (z = 0; z < load_parallel->parallel_states_size; z++)
-					{
-						if ((load_parallel->parallel_states[z].values[0] == load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0]) && (load_parallel->parallel_states[z].values[1] == load_parallel->parallel_states[parallel_state_index].values[1]))
-						{
-							dummy++;
-						}
-					}
-
-					if (dummy == 0)
-					{
-
-						trs1_provisory_value = load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0];
-						trs2_provisory_value = load_parallel->parallel_states[parallel_state_index].values[1];
-						load_parallel->parallel_states = (int_vector*)realloc(load_parallel->parallel_states, sizeof(int_vector)*(load_parallel->parallel_states_size + 1));
-						load_parallel->parallel_states[load_parallel->parallel_states_size].size = 0;
-
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs1_provisory_value);
-						intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
-						load_parallel->parallel_states_size++;
-
-						parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
-					}
-
-					else
-					{
-						dummy = 0;
-					}
-				}
-				else
-				{
-					if ((load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->size != 0))
-
+					if ((load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->size != 0))
 					{
 						for (z = 0; z < load_parallel->parallel_states_size; z++)
 						{
-							if ((load_parallel->parallel_states[z].values[0] == load_parallel->parallel_states[parallel_state_index].values[0]) && (load_parallel->parallel_states[z].values[1] == load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0]))
+							if ((load_parallel->parallel_states[z].values[0] == load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0]) && (load_parallel->parallel_states[z].values[1] == load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0]))
 							{
 								dummy++;
 							}
@@ -5518,9 +5289,8 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 						if (dummy == 0)
 						{
 
-							trs1_provisory_value = load_parallel->parallel_states[parallel_state_index].values[0];
+							trs1_provisory_value = load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0];
 							trs2_provisory_value = load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0];
-
 							load_parallel->parallel_states = (int_vector*)realloc(load_parallel->parallel_states, sizeof(int_vector)*(load_parallel->parallel_states_size + 1));
 							load_parallel->parallel_states[load_parallel->parallel_states_size].size = 0;
 
@@ -5530,9 +5300,171 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 
 							parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
 						}
+
 						else
 						{
 							dummy = 0;
+						}
+					}
+				}
+				else
+				{
+					dummy = 0;
+
+					if (strcmp(load_parallel->parallel_events.string[y], load_automata1->events.string[i]) == 0)
+					{
+						automata1_event = i;
+						dummy++;
+					}
+
+					if (dummy == 0)
+					{
+						automata1_event = -1;
+					}
+					else
+						dummy = 0;
+
+					if (automata1_event != -1)
+					{
+						for (x = 0; x < load_automata2->events.size; x++)
+						{
+
+							if (strcmp(load_parallel->parallel_events.string[automata1_event], load_automata2->events.string[x]) == 0)
+							{
+								automata2_event = x;
+								dummy++;
+								break;
+							}
+
+						}
+						if (dummy == 0)
+						{
+							automata2_event = -1;
+						}
+						else
+							dummy = 0;
+					}
+					else
+						automata2_event = -1;
+
+
+					if (automata1_event != -1)
+					{
+						if (automata2_event == -1)
+						{
+							if (load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size != 0)
+							{
+								for (z = 0; z < load_parallel->parallel_states_size; z++)
+								{
+									if ((load_parallel->parallel_states[z].values[0] == load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0]) && (load_parallel->parallel_states[z].values[1] == load_parallel->parallel_states[parallel_state_index].values[1]))
+									{
+										dummy++;
+									}
+								}
+
+								if (dummy == 0)
+								{
+
+									trs1_provisory_value = load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0];
+									trs2_provisory_value = load_parallel->parallel_states[parallel_state_index].values[1];
+									load_parallel->parallel_states = (int_vector*)realloc(load_parallel->parallel_states, sizeof(int_vector)*(load_parallel->parallel_states_size + 1));
+									load_parallel->parallel_states[load_parallel->parallel_states_size].size = 0;
+
+									intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs1_provisory_value);
+									intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
+									load_parallel->parallel_states_size++;
+
+									parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
+								}
+								else
+								{
+									dummy = 0;
+								}
+							}
+						}
+					}
+
+
+					dummy = 0;
+
+					if (strcmp(load_parallel->parallel_events.string[y], load_automata2->events.string[j]) == 0)
+					{
+						automata2_event = j;
+						dummy++;
+					}
+
+					if (dummy == 0)
+					{
+						automata2_event = -1;
+					}
+					else
+						dummy = 0;
+
+					if (automata2_event != -1)
+					{
+						for (x = 0; x < load_automata1->events.size; x++)
+						{
+							if (strcmp(load_parallel->parallel_events.string[automata2_event], load_automata1->events.string[x]) == 0)
+							{
+								automata1_event = x;
+								dummy++;
+								break;
+							}
+
+						}
+						if (dummy == 0)
+						{
+							automata1_event = -1;
+						}
+						else
+							dummy = 0;
+					}
+					else
+					{
+						automata1_event = -1;
+					}
+
+
+
+					if (automata2_event != -1)
+					{
+
+
+						if (automata1_event == -1)
+						{
+
+							if (load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->size != 0)
+							{
+
+
+								for (z = 0; z < load_parallel->parallel_states_size; z++)
+								{
+									if ((load_parallel->parallel_states[z].values[0] == load_parallel->parallel_states[parallel_state_index].values[0]) && (load_parallel->parallel_states[z].values[1] == load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0]))
+									{
+										dummy++;
+									}
+								}
+
+								if (dummy == 0)
+								{
+
+									trs1_provisory_value = load_parallel->parallel_states[parallel_state_index].values[0];
+									trs2_provisory_value = load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0];
+
+									load_parallel->parallel_states = (int_vector*)realloc(load_parallel->parallel_states, sizeof(int_vector)*(load_parallel->parallel_states_size + 1));
+									load_parallel->parallel_states[load_parallel->parallel_states_size].size = 0;
+
+									intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs1_provisory_value);
+									intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
+									load_parallel->parallel_states_size++;
+
+									parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
+								}
+								else
+								{
+									dummy = 0;
+								}
+							}
 						}
 					}
 				}
@@ -5540,6 +5472,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 		}
 	}
 }
+			
 
 void writeParallelAutomata(automato* automata1, automato* automata2, parallel* load_parallel)
 {
