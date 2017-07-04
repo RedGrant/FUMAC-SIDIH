@@ -47,8 +47,8 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 parallel* newParallel();
 void resetParallelStructure(parallel* load_parallel);
 void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index);
-void freeParallelStructure(parallel* load_parallel, automato* load_automata);
-void freeParallel(parallel* load_parallel, automato* load_automata);
+void freeParallelStructure(parallel* load_parallel);
+void freeParallel(parallel* load_parallel);
 void writeParallelAutomata(automato* automata1, automato* automata2, parallel* load_parallel);
 
 //-----------------------Public functions--------------------
@@ -5223,7 +5223,7 @@ void resetParallelStructure(parallel* load_parallel)
 	load_parallel->parallel_states_trs = NULL;
 }
 
-void freeParallelStructure(parallel* load_parallel, automato* load_automata)
+void freeParallelStructure(parallel* load_parallel)
 {
 	int i = 0, j = 0;
 
@@ -5231,7 +5231,7 @@ void freeParallelStructure(parallel* load_parallel, automato* load_automata)
 	{
 		for (i = 0; i < load_parallel->parallel_states_size; i++)
 		{
-			for (j = 0; j < load_automata->events.size; j++)
+			for (j = 0; j < load_parallel->parallel_events.size; j++)
 			{
 				if (load_parallel->parallel_states_trs[i][j].size != 0)
 				{
@@ -5267,9 +5267,9 @@ void freeParallelStructure(parallel* load_parallel, automato* load_automata)
 	resetParallelStructure(load_parallel);
 }
 
-void freeParallel(parallel* load_parallel, automato* load_automata)
+void freeParallel(parallel* load_parallel)
 {
-	freeParallelStructure(load_parallel, load_automata);
+	freeParallelStructure(load_parallel);
 	free(load_parallel);
 }
 
@@ -5485,7 +5485,248 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 
 void writeParallelAutomata(automato* automata1, automato* automata2, parallel* load_parallel)
 {
+	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
+	int* valid_events;
+	x = x + strlen("STATES\r\n");
+	char* new_automata_info;
+	int* buffer[1000];
+	char* buffer_name[1000];
+	char c;
+	new_automata_info = malloc(x);
+	x = x + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcpy(new_automata_info, "STATES\r\n\0");
 
+	for (i = 0; i < load_parallel->parallel_states_size; i++)
+	{
+		x = x + 2;
+		new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+		strcat(new_automata_info, "{");
+		strcat(new_automata_info, "\0");
+
+		x = x + strlen(automata1->states.string[load_parallel->parallel_states[i].values[0]]) + strlen(",") + 2;
+		new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+		strcat(new_automata_info, automata1->states.string[load_parallel->parallel_states[i].values[0]]);
+		strcat(new_automata_info, "\0");
+		strcat(new_automata_info, ",\0");
+
+		x = x + strlen(automata2->states.string[load_parallel->parallel_states[i].values[1]]) + strlen("\r\n") + 3 + strlen("}");
+		new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+		strcat(new_automata_info, automata2->states.string[load_parallel->parallel_states[i].values[1]]);
+		strcat(new_automata_info, "\0");
+		strcat(new_automata_info, "}");
+		strcat(new_automata_info, "\0");
+		strcat(new_automata_info, "\r\n\0");
+	}
+
+	x = x + strlen("EVENTS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "EVENTS\r\n\0");
+
+	
+	
+		for (i = 0; i < load_parallel->parallel_events.size; i++)
+		{
+				x = x + strlen(load_parallel->parallel_events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, load_parallel->parallel_events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+		}
+	
+
+	
+	x = x + strlen("TRANSITIONS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "TRANSITIONS\r\n\0");
+
+	for (i = 0; i < load_parallel->parallel_states_size; i++)
+	{
+		
+			for (j = 0; j < load_parallel->parallel_events.size ; j++)
+			{
+					if (load_parallel->parallel_states_trs[i][j].size != 0)
+					{
+
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_parallel->parallel_states[i].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_parallel->parallel_states[i].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_parallel->parallel_states[i].values[1]]) + strlen(";") + 3 + strlen("}");
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_parallel->parallel_states[i].values[1]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";");
+
+
+						x = x + strlen(load_parallel->parallel_events.string[j]) + strlen(";") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, load_parallel->parallel_events.string[j]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ";\0");
+
+						z = 0;
+						z = load_parallel->parallel_states_trs[i][j].values[0];
+
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_parallel->parallel_states[z].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_parallel->parallel_states[z].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_parallel->parallel_states[z].values[1]]) + strlen(";") + strlen("\r\n") + 4;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_parallel->parallel_states[z].values[1]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "\r\n\0");
+					}
+		}
+	}
+
+	x = x + strlen("INITIAL\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "INITIAL\r\n\0");
+
+	int dummy = 0;
+
+	x = x + 2;
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, "{");
+	strcat(new_automata_info, "\0");
+
+	x = x + strlen(automata1->states.string[load_parallel->parallel_states[0].values[0]]) + strlen(",") + 2;
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, automata1->states.string[load_parallel->parallel_states[0].values[0]]);
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, ",\0");
+
+	x = x + strlen(automata2->states.string[load_parallel->parallel_states[0].values[1]]) + strlen("\r\n") + 3 + strlen("}");
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, automata2->states.string[load_parallel->parallel_states[0].values[1]]);
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, "}");
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, "\r\n\0");
+
+	x = x + strlen("MARKED\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "MARKED\r\n\0");
+	int marked = 0;
+
+
+	for (i = 0; i < load_parallel->parallel_states_size; i++)
+	{
+		for (j = 0; j < automata1->marked.size; j++)
+		{
+			if (load_parallel->parallel_states[i].values[0] == automata1->marked.values[j])
+			{
+				for (k = 0; k < automata2->marked.size; k++)
+				{
+					if (load_parallel->parallel_states[i].values[1] == automata2->marked.values[k])
+					{
+						x = x + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, "{");
+						strcat(new_automata_info, "\0");
+
+						x = x + strlen(automata1->states.string[load_parallel->parallel_states[i].values[0]]) + strlen(",") + 2;
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata1->states.string[load_parallel->parallel_states[i].values[0]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, ",\0");
+
+						x = x + strlen(automata2->states.string[load_parallel->parallel_states[i].values[1]]) + strlen("\r\n") + 3 + strlen("}");
+						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+						strcat(new_automata_info, automata2->states.string[load_parallel->parallel_states[i].values[1]]);
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "}");
+						strcat(new_automata_info, "\0");
+						strcat(new_automata_info, "\r\n\0");
+					}
+				}
+			}
+		}
+	}
+
+	
+	freeParallel(load_parallel);
+
+
+	printf("\n\nDo you wish to save the parallel result? Press 1 if yes, any other number if not \n\n");
+	while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+	if (i == 1)
+	{
+		dummy = 0;
+
+		while (dummy == 0)
+		{
+			printf("Write the new automata name\n\n");
+			scanf("%s", buffer_name);
+			getchar();
+
+			for (z = 0; z < automata_number; z++)
+			{
+				if (strcmp(buffer_name, automata_name.string[z]) == 0)
+				{
+					dummy = 0;
+					printf("\n\nThis automata has already been loaded! Press enter to continue! \n\n");
+					break;
+				}
+				dummy = 1;
+			}
+		}
+
+
+		automata = (automato**)realloc(automata, sizeof(automato*)*(automata_number + 1));
+		automata[automata_number] = new_automata();
+		stringPushBack(&(automata_name), buffer_name);
+		memset(buffer, 0, 1000);
+
+		parser(automata[automata_number], new_automata_info);
+		automata_number++;
+	}
+	else
+	{
+		printf("\n\nDo you wish to print the changed automata? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+		if (i == 1)
+		{
+			automato* provisory;
+			provisory = new_automata();
+			parser(provisory, new_automata_info);
+			printAutomata(provisory);
+			freeAutomata(provisory);
+		}
+
+		printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
+		if (i == 1)
+		{
+			automato* provisory;
+			provisory = new_automata();
+			parser(provisory, new_automata_info);
+			writeAutomataToFile(provisory);
+			freeAutomata(provisory);
+		}
+	}
+	free(new_automata_info);
+	printf("\n\n\n-----------Parallel ended-----------\n\n\n");
 }
 
 
