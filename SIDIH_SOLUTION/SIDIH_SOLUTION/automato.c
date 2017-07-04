@@ -416,7 +416,7 @@ void menu()
 						automata[automata_to_load]->error = 0;
 						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
-						return;
+						break;
 					}
 
 					if (automata[automata_to_load]->deterministic == 1)
@@ -486,6 +486,15 @@ void menu()
 					dummy = 0;
 					
 					dfaOrNfa(automata[automata_to_load]);
+					if (automata[automata_to_load]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata[automata_to_load]->error = 0;
+						deleteAutomata(automata, &(automata_name), automata_to_load);
+						i = 0;
+						break;
+					}
 
 					if (automata[automata_to_load]->deterministic == 0)
 					{
@@ -559,7 +568,7 @@ void menu()
 						automata[automata_to_load]->error = 0;
 						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
-						return;
+						break;
 					}
 					if (automata[automata_to_load]->deterministic == 0)
 					{
@@ -576,7 +585,7 @@ void menu()
 						automata[automata_to_load]->error = 0;
 						deleteAutomata(automata, &(automata_name), automata_to_load);
 						i = 0;
-						return;
+						break;
 					}
 					
 					dfaCanonical(automata[automata_to_load]);
@@ -1800,7 +1809,7 @@ void dfaCanonical(automato* load_automata)
 void automataProduct(automato* automata1, automato* automata2)
 {
 	int i = 0, j = 0 , x = 0, k = 0, y = 0, z = 0, dummy = 0;
-	if (automata1->states.size > 1 && automata2->states.size > 1)
+	if (automata1->states.size > 0 && automata2->states.size > 0)
 	{
 		dfaOrNfa(automata1);
 		dfaOrNfa(automata2);
@@ -1920,7 +1929,7 @@ void automataProduct(automato* automata1, automato* automata2)
 void automataParallel(automato* automata1, automato* automata2)
 {
 	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0, automata1_event = 0, automata2_event = 0;
-	if (automata1->states.size > 1 && automata2->states.size > 1)
+	if (automata1->states.size > 0 && automata2->states.size > 0)
 	{
 		dfaOrNfa(automata1);
 		dfaOrNfa(automata2);
