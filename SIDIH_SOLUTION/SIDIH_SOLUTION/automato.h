@@ -99,6 +99,7 @@ typedef struct product
 typedef struct parallel
 
 {
+	string_vector parallel_events;
 	int parallel_states_size;
 	int parallel_trs_size;
 	int_vector* parallel_states;
