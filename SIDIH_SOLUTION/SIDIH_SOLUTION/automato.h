@@ -108,9 +108,15 @@ typedef struct parallel
 
 }parallel;
 
-automato** automata;
-string_vector automata_name;
-int automata_number;
+
+typedef struct automata_array
+{
+	automato** automata;
+	string_vector automata_name;
+	int automata_number;
+
+} automata_array;
+
 
 //the prototype of the used functions
 void menu();
@@ -122,8 +128,8 @@ void dfaOrNfa(automato* load_automata);
 void nfaToDfa(automato* load_automata, int nda_or_da);
 void freeAutomata(automato* load_automata);
 void dfaCanonical(automato* load_automata);
-void automataProduct(automato* automata1, automato* automata2);
-void automataParallel(automato* automata1, automato* automata2);
+void automataProduct(automata_array* automata_vector,automato* automata1, automato* automata2);
+void automataParallel(automata_array* automata_vector,automato* automata1, automato* automata2);
 void writeAutomataToFile(automato* load_automata);
-void deleteAutomata(automato** automata_array, string_vector* automata_name, int automata_to_delete);
+void deleteAutomata(automata_array* automata_vector, string_vector* automata_name, int automata_to_delete);
 automato* new_automata();

@@ -43,13 +43,15 @@ void resetProductStructure(product* load_product);
 void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index);
 void freeProductStructure(product* load_product, automato* load_automata);
 void freeProduct(product* load_product, automato* load_automata);
-void writeProductAutomata(automato* automata1, automato* automata2, product* load_product);
+void writeProductAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, product* load_product);
 parallel* newParallel();
 void resetParallelStructure(parallel* load_parallel);
 void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index);
 void freeParallelStructure(parallel* load_parallel);
 void freeParallel(parallel* load_parallel);
-void writeParallelAutomata(automato* automata1, automato* automata2, parallel* load_parallel);
+void writeParallelAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, parallel* load_parallel);
+automata_array* newAutomatonArray();
+resetAutomataArrayStructure(automata_array* load_array);
 
 //-----------------------Public functions--------------------
 
@@ -63,9 +65,9 @@ void menu()
 	char buffer[1000];
 	i = 13;
 	j = 0;
-	automata = (automato**)malloc(sizeof(automato*));
-	automata_name.size = 0;
-	automata_number = 0;
+	automata_array* automata_vector;
+	automata_vector = newAutomatonArray();
+	
 
 	while (1)
 	{
@@ -105,22 +107,23 @@ void menu()
 			break;
 
 		case 1:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
-				automata[automata_number] = new_automata();
+				automata_vector->automata = (automato**)malloc(sizeof(automato*));
+				automata_vector->automata[automata_vector->automata_number] = new_automata();
 				printf("Write the file path\n\n");
 				scanf("%s", buffer);
 				getchar();
-				load_file(automata[automata_number], buffer);
-				stringPushBack(&(automata_name), buffer);
+				load_file(automata_vector->automata[automata_vector->automata_number], buffer);
+				stringPushBack(&(automata_vector->automata_name), buffer);
 				memset(buffer, 0, 1000);
-				automata_number++;
-				if (automata[automata_number - 1]->error == 1)
+				automata_vector->automata_number++;
+				if (automata_vector->automata[automata_vector->automata_number - 1]->error == 1)
 				{
 					printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
 					getchar();
-					automata[automata_number - 1]->error = 0;
-					deleteAutomata(automata, &(automata_name), automata_number - 1);
+					automata_vector->automata[automata_vector->automata_number - 1]->error = 0;
+					deleteAutomata(automata_vector,  &(automata_vector->automata_name), (automata_vector->automata_number - 1));
 					i = 0;
 					break;
 				}
@@ -134,13 +137,14 @@ void menu()
 				printf("Write the file path\n\n");
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 						dummy = 1;
 				}
 				if (dummy == 1)
 				{
+					dummy = 0;
 					printf("\n\nThis automata has already been loaded! Press enter to continue! \n\n");
 					while (getchar() != '\n');
 					i = 0;
@@ -154,18 +158,18 @@ void menu()
 				}
 				else
 				{
-					automata = (automato**)realloc(automata, sizeof(automato*)*(automata_number + 1));
-					automata[automata_number] = new_automata();
-					load_file(automata[automata_number], buffer);
-					stringPushBack(&(automata_name), buffer);
+					automata_vector->automata = (automato**)realloc(automata_vector->automata, sizeof(automato*)*(automata_vector->automata_number + 1));
+					automata_vector->automata[automata_vector->automata_number] = new_automata();
+					load_file(automata_vector->automata[automata_vector->automata_number], buffer);
+					stringPushBack(&(automata_vector->automata_name), buffer);
 					memset(buffer, 0, 1000);
-					automata_number++;
-					if (automata[automata_number - 1]->error == 1)
+					automata_vector->automata_number++;
+					if (automata_vector->automata[automata_vector->automata_number - 1]->error == 1)
 					{
 						printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
 						getchar();
-						automata[automata_number - 1]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_number - 1);
+						automata_vector->automata[automata_vector->automata_number - 1]->error = 0;
+						deleteAutomata(automata_vector, &(automata_vector->automata_name), automata_vector->automata_number - 1);
 						i = 0;
 						break;
 					}
@@ -185,7 +189,7 @@ void menu()
 			break;
 
 		case 2:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -200,15 +204,15 @@ void menu()
 			else
 			{
 				printf("\nWhich automata do you wish to print? Available automata:\n\n");
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -218,7 +222,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-					printAutomata(automata[automata_to_load]);
+					printAutomata(automata_vector->automata[automata_to_load]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 
@@ -241,7 +245,7 @@ void menu()
 			break;
 
 		case 3:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -257,15 +261,15 @@ void menu()
 			{
 				printf("\nWhich automata do you wish to test accessibility? Available automata:\n\n");
 
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -276,13 +280,13 @@ void menu()
 				{
 					dummy = 0;
 					printf("\n");
-					checkAccessibilty(automata[automata_to_load], 0);
-					if (automata[automata_to_load]->error == 1)
+					checkAccessibilty(automata_vector->automata[automata_to_load], 0);
+					if (automata_vector->automata[automata_to_load]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
-						automata[automata_to_load]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_to_load);
+						automata_vector->automata[automata_to_load]->error = 0;
+						deleteAutomata(automata_vector,  &(automata_vector->automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
@@ -309,7 +313,7 @@ void menu()
 			break;
 
 		case 4:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -324,15 +328,15 @@ void menu()
 			else
 			{
 				printf("Which automata do you wish to test the coaccessibility? Available automata:\n\n");
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -342,13 +346,13 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-					checkCoaccessibilty(automata[automata_to_load], 0);
-					if (automata[automata_to_load]->error == 1)
+					checkCoaccessibilty(automata_vector->automata[automata_to_load], 0);
+					if (automata_vector->automata[automata_to_load]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
-						automata[automata_to_load]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_to_load);
+						automata_vector->automata[automata_to_load]->error = 0;
+						deleteAutomata(automata_vector,  &(automata_vector->automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
@@ -374,7 +378,7 @@ void menu()
 			break;
 
 		case 5:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -389,15 +393,15 @@ void menu()
 			else
 			{
 				printf("Which automata do you wish to test if it is deterministic or not? Available automata:\n\n");
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -408,18 +412,18 @@ void menu()
 				{
 					dummy = 0;
 
-					dfaOrNfa(automata[automata_to_load]);
-					if (automata[automata_to_load]->error == 1)
+					dfaOrNfa(automata_vector->automata[automata_to_load]);
+					if (automata_vector->automata[automata_to_load]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
-						automata[automata_to_load]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_to_load);
+						automata_vector->automata[automata_to_load]->error = 0;
+						deleteAutomata(automata_vector,  &(automata_vector->automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
 
-					if (automata[automata_to_load]->deterministic == 1)
+					if (automata_vector->automata[automata_to_load]->deterministic == 1)
 					{
 						printf("\n\nThe automata is deterministic!\n\n");
 					}
@@ -450,7 +454,7 @@ void menu()
 			break;
 
 		case 6:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -466,15 +470,15 @@ void menu()
 			{
 				printf("\nWhich automata do you wish to convert? Available automata:\n\n");
 
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -485,20 +489,20 @@ void menu()
 				{
 					dummy = 0;
 
-					dfaOrNfa(automata[automata_to_load]);
-					if (automata[automata_to_load]->error == 1)
+					dfaOrNfa(automata_vector->automata[automata_to_load]);
+					if (automata_vector->automata[automata_to_load]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
-						automata[automata_to_load]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_to_load);
+						automata_vector->automata[automata_to_load]->error = 0;
+						deleteAutomata(automata_vector,  &(automata_vector->automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
 
-					if (automata[automata_to_load]->deterministic == 0)
+					if (automata_vector->automata[automata_to_load]->deterministic == 0)
 					{
-						nfaToDfa(automata[automata_to_load], automata[automata_to_load]->deterministic);
+						nfaToDfa(automata_vector->automata[automata_to_load], automata_vector->automata[automata_to_load]->deterministic);
 					}
 					else
 						printf("\n\nThe automata is already deterministic!\n\n");
@@ -525,7 +529,7 @@ void menu()
 			break;
 
 		case 7:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -541,15 +545,15 @@ void menu()
 			{
 				printf("\nWhich automata do you wish to convert to the canonical form? Available automata:\n\n");
 
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -560,35 +564,35 @@ void menu()
 				{
 					dummy = 0;
 
-					dfaOrNfa(automata[automata_to_load]);
-					if (automata[automata_to_load]->error == 1)
+					dfaOrNfa(automata_vector->automata[automata_to_load]);
+					if (automata_vector->automata[automata_to_load]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
-						automata[automata_to_load]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_to_load);
+						automata_vector->automata[automata_to_load]->error = 0;
+						deleteAutomata(automata_vector,  &(automata_vector->automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
-					if (automata[automata_to_load]->deterministic == 0)
+					if (automata_vector->automata[automata_to_load]->deterministic == 0)
 					{
 						printf("The automata is NFA, try to convert it first to DFA!\n\n Press any key to return to menu\n");
 						getchar();
 						break;
 					}
 
-					checkAccessibilty(automata[automata_to_load], 1);
-					if (automata[automata_to_load]->error == 1)
+					checkAccessibilty(automata_vector->automata[automata_to_load], 1);
+					if (automata_vector->automata[automata_to_load]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
 						getchar();
-						automata[automata_to_load]->error = 0;
-						deleteAutomata(automata, &(automata_name), automata_to_load);
+						automata_vector->automata[automata_to_load]->error = 0;
+						deleteAutomata(automata_vector,  &(automata_vector->automata_name), automata_to_load);
 						i = 0;
 						break;
 					}
 
-					dfaCanonical(automata[automata_to_load]);
+					dfaCanonical(automata_vector->automata[automata_to_load]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
@@ -612,7 +616,7 @@ void menu()
 
 		case 8:
 			dummy = 0;
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -628,16 +632,16 @@ void menu()
 			{
 				printf("\nWhich automatas do you wish to do a product? Available automata:\n\n");
 
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				printf("First automata:\n\n");
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata1 = z;
@@ -663,9 +667,9 @@ void menu()
 				printf("\nSecond automata:\n\n");
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata2 = z;
@@ -689,7 +693,7 @@ void menu()
 
 				if (dummy == 1)
 				{
-					automataProduct(automata[automata1], automata[automata2]);
+					automataProduct(automata_vector ,automata_vector->automata[automata1], automata_vector->automata[automata2]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
@@ -707,7 +711,7 @@ void menu()
 		case 9:
 
 			dummy = 0;
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -723,16 +727,16 @@ void menu()
 			{
 				printf("\nWith which automaton do you wish to do a parallel? Available automata:\n\n");
 
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				printf("First automata:\n\n");
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata1 = z;
@@ -758,9 +762,9 @@ void menu()
 				printf("\nSecond automata:\n\n");
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata2 = z;
@@ -784,7 +788,7 @@ void menu()
 
 				if (dummy == 1)
 				{
-					automataParallel(automata[automata1], automata[automata2]);
+					automataParallel(automata_vector ,automata_vector->automata[automata1], automata_vector->automata[automata2]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
@@ -800,7 +804,7 @@ void menu()
 			break;
 
 		case 10:
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -815,17 +819,17 @@ void menu()
 			else
 			{
 				printf("\nWhich automata do you wish to print to a file? Available automata:\n\n");
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 
 				scanf("%s", buffer);
 				getchar();
 
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -835,7 +839,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-					writeAutomataToFile(automata[automata_to_load]);
+					writeAutomataToFile(automata_vector->automata[automata_to_load]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
@@ -857,7 +861,7 @@ void menu()
 		case 11:
 
 
-			if (automata_number == 0)
+			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
 				while (getchar() != '\n');
@@ -872,15 +876,15 @@ void menu()
 			else
 			{
 				printf("\nWhich automata do you wish to delete? Available automata:\n\n");
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					printf("%s\n\n", automata_name.string[z]);
+					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
 				scanf("%s", buffer);
 				getchar();
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					if (strcmp(buffer, automata_name.string[z]) == 0)
+					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
 					{
 						dummy = 1;
 						automata_to_load = z;
@@ -890,7 +894,7 @@ void menu()
 				if (dummy == 1)
 				{
 					dummy = 0;
-					deleteAutomata(automata, &(automata_name), automata_to_load);
+					deleteAutomata(automata_vector,  &(automata_vector->automata_name), automata_to_load);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
@@ -914,24 +918,26 @@ void menu()
 
 		case 12:
 
-			if (k == 1)
+			if (automata_vector->automata_number > 0)
 			{
-				for (z = 0; z < automata_number; z++)
+				for (z = 0; z < automata_vector->automata_number; z++)
 				{
-					freeAutomata(automata[z]);
+					freeAutomata(automata_vector->automata[z]);
 				}
-				free(automata);
+				free(automata_vector->automata);
 
-				if (automata_name.size != 0)
+				if (automata_vector->automata_name.size != 0)
 				{
-					for (z = 0; z < automata_name.size; z++)
+					for (z = 0; z < automata_vector->automata_name.size; z++)
 					{
-						free(automata_name.string[z]);
+						free(automata_vector->automata_name.string[z]);
 					}
-					free(automata_name.string);
-					automata_name.size = 0;
+					free(automata_vector->automata_name.string);
+					automata_vector->automata_name.size = 0;
 				}
+				
 			}
+			free(automata_vector);
 			return;
 			break;
 
@@ -1809,7 +1815,7 @@ void dfaCanonical(automato* load_automata)
 }
 
 
-void automataProduct(automato* automata1, automato* automata2)
+void automataProduct(automata_array* automata_vector, automato* automata1, automato* automata2)
 {
 	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0;
 	if (automata1->states.size > 0 && automata2->states.size > 0)
@@ -1915,7 +1921,7 @@ void automataProduct(automato* automata1, automato* automata2)
 					}
 				}
 			}
-			writeProductAutomata(automata1, automata2, load_product);
+			writeProductAutomata(automata_vector,automata1, automata2, load_product);
 		}
 		else
 		{
@@ -1929,7 +1935,7 @@ void automataProduct(automato* automata1, automato* automata2)
 
 }
 
-void automataParallel(automato* automata1, automato* automata2)
+void automataParallel(automata_array* automata_vector, automato* automata1, automato* automata2)
 {
 	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0, automata1_event = 0, automata2_event = 0;
 	if (automata1->states.size > 0 && automata2->states.size > 0)
@@ -2266,7 +2272,7 @@ void automataParallel(automato* automata1, automato* automata2)
 					}
 				}
 			}
-			writeParallelAutomata(automata1, automata2, load_parallel);
+			writeParallelAutomata(automata_vector, automata1, automata2, load_parallel);
 		}
 		else
 		{
@@ -4055,10 +4061,9 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	free(new_automata_info);
 }
 
-void writeProductAutomata(automato* automata1, automato* automata2, product* load_product)
+void writeProductAutomata(automata_array* automata_vector ,automato* automata1, automato* automata2, product* load_product)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
-	int* valid_events;
 	x = x + strlen("STATES\r\n");
 	char* new_automata_info;
 	int* buffer[1000];
@@ -4095,73 +4100,31 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "EVENTS\r\n\0");
 
-	if (automata1->events.size < automata2->events.size)
-	{
-		valid_events = (int*)malloc(sizeof(int)*automata1->events.size);
-
-		for (i = 0; i < automata1->events.size; i++)
-		{
-			valid_events[i] = 0;
-		}
-
-		for (i = 0; i < load_product->product_states_size; i++)
-		{
-			for (j = 0; j < automata1->events.size; j++)
-			{
-				if (load_product->product_states_trs[i][j].size != 0)
-				{
-					valid_events[j] = 1;
-				}
-			}
-		}
-	}
-	else
-	{
-		valid_events = (int*)malloc(sizeof(int)*automata2->events.size);
-
-		for (i = 0; i < automata1->events.size; i++)
-		{
-			valid_events[i] = 0;
-		}
-
-		for (i = 0; i < load_product->product_states_size; i++)
-		{
-			for (j = 0; j < automata2->events.size; j++)
-			{
-				if (load_product->product_states_trs[i][j].size != 0)
-				{
-					valid_events[j] = 1;
-				}
-			}
-		}
-	}
+	
 
 	if (automata1->events.size < automata2->events.size)
 	{
 		for (i = 0; i < automata1->events.size; i++)
 		{
-			if (valid_events[i] == 1)
-			{
+			
 				x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
 				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 				strcat(new_automata_info, automata1->events.string[i]);
 				strcat(new_automata_info, "\0");
 				strcat(new_automata_info, "\r\n\0");
-			}
 		}
 	}
 	else
 	{
 		for (i = 0; i < automata2->events.size; i++)
 		{
-			if (valid_events[i] == 1)
-			{
+			
 				x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
 				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
 				strcat(new_automata_info, automata2->events.string[i]);
 				strcat(new_automata_info, "\0");
 				strcat(new_automata_info, "\r\n\0");
-			}
+			
 		}
 	}
 
@@ -4176,8 +4139,7 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 		{
 			for (j = 0; j < automata1->events.size; j++)
 			{
-				if (valid_events[j] == 1)
-				{
+				
 					if (load_product->product_states_trs[i][j].size != 0)
 					{
 
@@ -4229,15 +4191,14 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 						strcat(new_automata_info, "\0");
 						strcat(new_automata_info, "\r\n\0");
 					}
-				}
+		
 			}
 		}
 		else
 		{
 			for (j = 0; j < automata2->events.size; j++)
 			{
-				if (valid_events[j] == 1)
-				{
+				
 					if (load_product->product_states_trs[i][j].size != 0)
 					{
 
@@ -4289,7 +4250,7 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 						strcat(new_automata_info, "\0");
 						strcat(new_automata_info, "\r\n\0");
 					}
-				}
+				
 			}
 		}
 	}
@@ -4379,9 +4340,9 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 			scanf("%s", buffer_name);
 			getchar();
 
-			for (z = 0; z < automata_number; z++)
+			for (z = 0; z < automata_vector->automata_number; z++)
 			{
-				if (strcmp(buffer_name, automata_name.string[z]) == 0)
+				if (strcmp(buffer_name, automata_vector->automata_name.string[z]) == 0)
 				{
 					dummy = 0;
 					printf("\n\nThis automata has already been loaded! Press enter to continue! \n\n");
@@ -4392,13 +4353,13 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 		}
 
 
-		automata = (automato**)realloc(automata, sizeof(automato*)*(automata_number + 1));
-		automata[automata_number] = new_automata();
-		stringPushBack(&(automata_name), buffer_name);
+		automata_vector->automata = (automato**)realloc(automata_vector->automata, sizeof(automato*)*(automata_vector->automata_number + 1));
+		automata_vector->automata[automata_vector->automata_number] = new_automata();
+		stringPushBack(&(automata_vector->automata_name), buffer_name);
 		memset(buffer, 0, 1000);
 
-		parser(automata[automata_number], new_automata_info);
-		automata_number++;
+		parser(automata_vector->automata[automata_vector->automata_number], new_automata_info);
+		automata_vector->automata_number++;
 	}
 	else
 	{
@@ -4425,7 +4386,6 @@ void writeProductAutomata(automato* automata1, automato* automata2, product* loa
 		}
 	}
 	free(new_automata_info);
-	free(valid_events);
 	printf("\n\n\n-----------Product ended-----------\n\n\n");
 }
 
@@ -5217,6 +5177,7 @@ parallel* newParallel()
 	return new_parallel;
 }
 
+
 void resetParallelStructure(parallel* load_parallel)
 {
 	load_parallel->error = 0;
@@ -5276,6 +5237,25 @@ void freeParallel(parallel* load_parallel)
 	freeParallelStructure(load_parallel);
 	free(load_parallel);
 }
+
+
+automata_array* newAutomatonArray()
+{
+	automata_array* new_array;
+	new_array = (automata_array*)malloc(sizeof(automata_array));
+	resetAutomataArrayStructure(new_array);
+	return new_array;
+}
+
+
+resetAutomataArrayStructure(automata_array* load_array)
+{
+	load_array->automata = NULL;
+	load_array->automata_name.size = 0;
+	load_array->automata_number = 0;
+}
+
+
 
 void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index)
 {
@@ -5487,7 +5467,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 }
 
 
-void writeParallelAutomata(automato* automata1, automato* automata2, parallel* load_parallel)
+void writeParallelAutomata(automata_array* automata_vector ,automato* automata1, automato* automata2, parallel* load_parallel)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
 	int* valid_events;
@@ -5684,9 +5664,9 @@ void writeParallelAutomata(automato* automata1, automato* automata2, parallel* l
 			scanf("%s", buffer_name);
 			getchar();
 
-			for (z = 0; z < automata_number; z++)
+			for (z = 0; z < automata_vector->automata_number; z++)
 			{
-				if (strcmp(buffer_name, automata_name.string[z]) == 0)
+				if (strcmp(buffer_name, automata_vector->automata_name.string[z]) == 0)
 				{
 					dummy = 0;
 					printf("\n\nThis automata has already been loaded! Press enter to continue! \n\n");
@@ -5697,13 +5677,13 @@ void writeParallelAutomata(automato* automata1, automato* automata2, parallel* l
 		}
 
 
-		automata = (automato**)realloc(automata, sizeof(automato*)*(automata_number + 1));
-		automata[automata_number] = new_automata();
-		stringPushBack(&(automata_name), buffer_name);
+		automata_vector->automata = (automato**)realloc(automata_vector->automata, sizeof(automato*)*(automata_vector->automata_number + 1));
+		automata_vector->automata[automata_vector->automata_number] = new_automata();
+		stringPushBack(&(automata_vector->automata_name), buffer_name);
 		memset(buffer, 0, 1000);
 
-		parser(automata[automata_number], new_automata_info);
-		automata_number++;
+		parser(automata_vector->automata[automata_vector->automata_number], new_automata_info);
+		automata_vector->automata_number++;
 	}
 	else
 	{
@@ -5734,25 +5714,25 @@ void writeParallelAutomata(automato* automata1, automato* automata2, parallel* l
 }
 
 
-void deleteAutomata(automato** automata_array, string_vector* automata_name, int automata_to_delete)
+void deleteAutomata(automata_array* automata_vector, string_vector* automata_name, int automata_to_delete)
 {
 	int i = 0;
-	freeAutomata(automata_array[automata_to_delete]);
-
-	if (automata_to_delete + 1 < automata_number)
+	freeAutomata(automata_vector->automata[automata_to_delete]);
+	
+	if (automata_to_delete + 1 < automata_vector->automata_number)
 	{
-		for (i = automata_to_delete; i < automata_number - 1; i++)
+		for (i = automata_to_delete; i <  automata_vector->automata_number - 1; i++)
 		{
-			automata_array[i] = automata_array[i + 1];
+			automata_vector->automata[i] = automata_vector->automata[i + 1];
 		}
 	}
 
 
 	free(automata_name->string[automata_to_delete]);
 
-	if (automata_to_delete + 1 < automata_number)
+	if (automata_to_delete + 1 <  automata_vector->automata_number)
 	{
-		for (i = automata_to_delete; i < automata_number - 1; i++)
+		for (i = automata_to_delete; i <  automata_vector->automata_number - 1; i++)
 		{
 			automata_name->string[i] = automata_name->string[i + 1];
 
@@ -5760,18 +5740,20 @@ void deleteAutomata(automato** automata_array, string_vector* automata_name, int
 	}
 
 
-	if (automata_number > 1)
+	if (automata_vector->automata_number > 1)
 	{
-		automata_number--;
-		automata_array = (automato**)realloc(automata_array, sizeof(automato*)* automata_number);
-		automata_name->string = (char**)realloc(automata_name->string, sizeof(char*)*automata_number);
+		automata_vector->automata_number--;
+		automata_vector->automata = (automato**)realloc(automata_vector->automata, sizeof(automato*)* automata_vector->automata_number);
+		automata_name->string = (char**)realloc(automata_name->string, sizeof(char*)*automata_vector->automata_number);
 		automata_name->size--;
 	}
 	else
 	{
+		
 		automata_name->size = 0;
 		free(automata_name->string);
-		automata_number--;
+		automata_vector->automata_number=0;
+		free(automata_vector->automata);
 	}
 
 }
