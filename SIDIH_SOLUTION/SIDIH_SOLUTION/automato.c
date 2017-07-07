@@ -1,6 +1,5 @@
 #include "automato.h"
 
-
 //---------------------function prototypes-------------------
 void parser(automato* load_automata, char* file_info);
 void nullEventSearcher(automato* load_automata, char* file_info);
@@ -1675,8 +1674,8 @@ void dfaCanonical(automato* load_automata)
 					createCanonicalStates(load_automata, load_canonical, load_canonical->pair[i].values[j], i, j);
 				}
 			}
-
 		}
+
 		dummy = 0;
 		for (i = 0; i < load_automata->states.size; i++)
 		{
