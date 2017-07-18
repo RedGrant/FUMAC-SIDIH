@@ -692,6 +692,32 @@ void menu()
 
 				if (dummy == 1)
 				{
+
+					checkAccessibilty(automata_vector->automata[automata1], 1);
+					if (automata_vector->automata[automata1]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata_vector->automata[automata1]->error = 0;
+						deleteAutomata(automata_vector, &(automata_vector->automata_name), automata1);
+						i = 0;
+						break;
+					}
+
+					checkAccessibilty(automata_vector->automata[automata2], 1);
+					if (automata_vector->automata[automata2]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata_vector->automata[automata2]->error = 0;
+						deleteAutomata(automata_vector, &(automata_vector->automata_name), automata2);
+						i = 0;
+						break;
+					}
+
+
+
+
 					automataProduct(automata_vector ,automata_vector->automata[automata1], automata_vector->automata[automata2]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
@@ -787,6 +813,29 @@ void menu()
 
 				if (dummy == 1)
 				{
+
+					checkAccessibilty(automata_vector->automata[automata1], 1);
+					if (automata_vector->automata[automata1]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata_vector->automata[automata1]->error = 0;
+						deleteAutomata(automata_vector, &(automata_vector->automata_name), automata1);
+						i = 0;
+						break;
+					}
+
+					checkAccessibilty(automata_vector->automata[automata2], 1);
+					if (automata_vector->automata[automata2]->error == 1)
+					{
+						printf("Press any key to return to the main menu\n\n");
+						getchar();
+						automata_vector->automata[automata2]->error = 0;
+						deleteAutomata(automata_vector, &(automata_vector->automata_name), automata2);
+						i = 0;
+						break;
+					}
+
 					automataParallel(automata_vector ,automata_vector->automata[automata1], automata_vector->automata[automata2]);
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
@@ -1496,6 +1545,7 @@ void freeAutomata(automato* load_automata)
 	free(load_automata);
 }
 
+//function that minimizes automata
 void dfaCanonical(automato* load_automata)
 {
 	if (load_automata->states.size > 1)
@@ -1503,9 +1553,11 @@ void dfaCanonical(automato* load_automata)
 		printf("\n\n\n-----------Checking if the automata needs to be converted to the canonical form.-----------\n\n\n");
 		int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, marked_test = 0, leave_iterations = 0;
 
+		//creation of canonical type variable
 		canonical* load_canonical = newCanonical();
 		resetCanonicalStructure(load_canonical);
 
+		//-----------------memory allocation and variables declaration-----------------// 
 		if (load_canonical->pair == NULL)
 		{
 			load_canonical->pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
@@ -1521,10 +1573,15 @@ void dfaCanonical(automato* load_automata)
 			load_canonical->pair[i].size = 0;
 			load_canonical->table_marked[i].size = 0;
 		}
+		//-----------------memory allocation and variables declaration-----------------// 
+		
 
+
+		//number of possible states' pairs
 		load_canonical->pair_size = nCr(load_automata);
 		printf("Number of pairs available in the automata: %d\n\n", load_canonical->pair_size);
 
+		//states' pairs creation
 		pairCreation(load_automata, load_canonical->pair);
 
 		for (i = 0; i < load_automata->states.size; i++)
@@ -1537,7 +1594,9 @@ void dfaCanonical(automato* load_automata)
 					marked_test++;
 				}
 			}
-
+			
+			//third step of the minimization algorithm:
+			// if the first element of the pair isn't final, then the 2nd element must be final, for the pair to be marked
 			if (marked_test == 0)
 			{
 				for (z = 0; z < load_canonical->pair[i].size; z++)
@@ -1564,6 +1623,8 @@ void dfaCanonical(automato* load_automata)
 					}
 				}
 			}
+
+			//since the first element of the pair is final, then to the pair be marked, the 2nd element mustn't be final
 			else
 			{
 				marked_test = 0;
@@ -1599,9 +1660,14 @@ void dfaCanonical(automato* load_automata)
 
 		int pair_one = 0, pair_two = 0, dummy = 0, trs1_not = 0, trs2_not = 0;
 
+		//4th step of the minimization algorithm
+		//step done while there are new marked pairs
 		do
 		{
+			//variable atribution needed to check if there are new marked pairs
 			marked_counter = load_canonical->marked_counter;
+			
+			
 			for (i = 0; i < load_automata->states.size; i++)
 			{
 				for (y = 0; y < load_canonical->table_marked[i].size; y++)
@@ -1610,24 +1676,32 @@ void dfaCanonical(automato* load_automata)
 					{
 						for (j = 0; j < load_automata->events.size; j++)
 						{
+							//if there is a transition save the value of the first pair
 							if (load_automata->transitions[i][j]->size != 0)
 							{
 								pair_one = load_automata->transitions[i][j]->values[0];
 							}
 							else
+								//this is flagged otherwised
 								trs1_not = 1;
+							
+							//same is done to the second element
 							if (load_automata->transitions[load_canonical->pair[i].values[y]][j]->size != 0)
 							{
 								pair_two = load_automata->transitions[load_canonical->pair[i].values[y]][j]->values[0];
 							}
 							else
 								trs2_not = 1;
+							
+							//ordenate the pairs
 							if (pair_one > pair_two)
 							{
 								dummy = pair_one;
 								pair_one = pair_two;
 								pair_two = dummy;
 							}
+							
+							//----------------mark if one of the states hasn't a transition----------------//
 							if (trs1_not == 1 && trs2_not == 0)
 							{
 								trs1_not = 0;
@@ -1642,6 +1716,9 @@ void dfaCanonical(automato* load_automata)
 									load_canonical->table_marked[i].values[y] = 1;
 									load_canonical->marked_counter++;
 								}
+							//----------------mark if one of the states hasn't a transition----------------//
+								
+							//if both states have transitions need to call the function checkIfIsMarkedOnTable
 								else
 								{
 									if (trs1_not == 0 && trs2_not == 0)
@@ -1664,7 +1741,7 @@ void dfaCanonical(automato* load_automata)
 
 		} while (marked_counter != load_canonical->marked_counter);
 
-
+		//create the combined states that belong to the unmarked pairs
 		for (i = 0; i < load_automata->states.size; i++)
 		{
 			for (j = 0; j < load_canonical->table_marked[i].size; j++)
@@ -1688,12 +1765,15 @@ void dfaCanonical(automato* load_automata)
 			}
 		}
 
+		//if the number of combined states is equal to the initial pair size, it means it was already in the canonical form
 		if (dummy == load_canonical->pair_size)
 		{
 			printf("The automata is already at the canonical form! All states are marked! Leaving function...\n\n");
 			freeCanonical(load_canonical, load_automata);
 			return;
 		}
+
+		//otherwise there is a new minimized automaton. Next steps are here to take care of the transitions of each combined state
 		else
 		{
 			dummy = 0;
@@ -1813,10 +1893,12 @@ void dfaCanonical(automato* load_automata)
 
 }
 
-
+//function responsible of making the product between two automatons 
 void automataProduct(automata_array* automata_vector, automato* automata1, automato* automata2)
 {
 	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0;
+	
+	//the product is made as long as there are states in the automatons and if both are deterministic
 	if (automata1->states.size > 0 && automata2->states.size > 0)
 	{
 		dfaOrNfa(automata1);
@@ -1825,6 +1907,7 @@ void automataProduct(automata_array* automata_vector, automato* automata1, autom
 		{
 			printf("\n\n\n-----------Making the product between the inserted automata-----------\n\n\n");
 
+			//---------------------------------memory allocation and variables initialization---------------------------------//
 			product* load_product = newProduct();
 			resetProductStructure(load_product);
 
@@ -1835,13 +1918,21 @@ void automataProduct(automata_array* automata_vector, automato* automata1, autom
 
 			load_product->product_states[0].size = 0;
 
+			//the first state is the combination of the initial state of both automata
 			intVectPushBack(&(load_product->product_states[0]), automata1->initial);
 			intVectPushBack(&(load_product->product_states[0]), automata2->initial);
 
 			load_product->product_states_size++;
-
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+			
+			
+			
+			//recursive function that creates the product states
 			productStatescreation(load_product, automata1, automata2, 0);
 
+			
+			
+			//---------------------------------memory allocation and variables initialization---------------------------------//
 			if (load_product->product_states_trs == NULL)
 			{
 				load_product->product_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_product->product_states_size);
@@ -1859,8 +1950,10 @@ void automataProduct(automata_array* automata_vector, automato* automata1, autom
 					load_product->product_states_trs[i][j].size = 0;
 				}
 			}
+			//---------------------------------memory allocation and variables initialization---------------------------------//
 
 
+			//-------------------------------------------product states transitions-------------------------------------------//
 			dummy = 0;
 			for (i = 0; i < load_product->product_states_size; i++)
 			{
@@ -1920,6 +2013,11 @@ void automataProduct(automata_array* automata_vector, automato* automata1, autom
 					}
 				}
 			}
+			//-------------------------------------------product states transitions-------------------------------------------//
+			
+			
+			
+			
 			writeProductAutomata(automata_vector,automata1, automata2, load_product);
 		}
 		else
@@ -1934,9 +2032,12 @@ void automataProduct(automata_array* automata_vector, automato* automata1, autom
 
 }
 
+//function responsible of making the parallel between two automatons 
 void automataParallel(automata_array* automata_vector, automato* automata1, automato* automata2)
 {
 	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0, automata1_event = 0, automata2_event = 0;
+	
+	//the parallel is made as long as there are states in the automatons and if both are deterministic
 	if (automata1->states.size > 0 && automata2->states.size > 0)
 	{
 		dfaOrNfa(automata1);
@@ -1946,7 +2047,7 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 			printf("\n\n\n-----------Making the parallel between the inserted automaton-----------\n\n\n");
 
 
-
+			//---------------------------------memory allocation and variables initialization---------------------------------//
 			parallel* load_parallel = newParallel();
 			resetParallelStructure(load_parallel);
 
@@ -1955,6 +2056,7 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 				load_parallel->parallel_states = (int_vector*)malloc(sizeof(int_vector));
 			}
 
+			//----------------------------save the events of both automata withouth repeating them----------------------------//
 			for (i = 0; i < automata1->events.size; i++)
 			{
 				stringPushBack(&(load_parallel->parallel_events), automata1->events.string[i]);
@@ -1967,22 +2069,26 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 					stringPushBack(&(load_parallel->parallel_events), automata2->events.string[i]);
 				}
 			}
+			//----------------------------save the events of both automata withouth repeating them----------------------------//
 
+
+
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+			
+			
 			load_parallel->parallel_states[0].size = 0;
-
+			
+			//the first state is the combination of the initial state of both automata
 			intVectPushBack(&(load_parallel->parallel_states[0]), automata1->initial);
 			intVectPushBack(&(load_parallel->parallel_states[0]), automata2->initial);
 
 			load_parallel->parallel_states_size++;
 
+			//recursive function that creates the parallel states
 			parallelStatescreation(load_parallel, automata1, automata2, 0);
 
-			for (i = 0; i < load_parallel->parallel_states_size; i++)
-			{
-				printf("(%s,%s)\n", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]]);
-			}
 
-
+			//-------------------------------------------product states transitions-------------------------------------------//
 			if (load_parallel->parallel_states_trs == NULL)
 			{
 				load_parallel->parallel_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_parallel->parallel_states_size);
@@ -2002,13 +2108,10 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 				}
 			}
 
-			for (i = 0; i < load_parallel->parallel_events.size; i++)
-			{
-				printf("Events : %s\n", load_parallel->parallel_events.string[i]);
-			}
 
 			dummy = 0;
 
+			//the procedure of saving the transitions is almost the same as the one found in parallelStatescreation
 			for (i = 0; i < load_parallel->parallel_states_size; i++)
 			{
 				for (y = 0; y < load_parallel->parallel_events.size; y++)
@@ -2030,8 +2133,6 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 												load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
 												load_parallel->parallel_states_trs[i][y].values[0] = k;
 												load_parallel->parallel_states_trs[i][y].size = 1;
-												printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-												printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
 												load_parallel->parallel_trs_size++;
 												break;
 											}
@@ -2053,8 +2154,6 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 													load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
 													load_parallel->parallel_states_trs[i][y].values[0] = k;
 													load_parallel->parallel_states_trs[i][y].size = 1;
-													printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-													printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
 													load_parallel->parallel_trs_size++;
 													break;
 
@@ -2126,8 +2225,6 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
 														load_parallel->parallel_states_trs[i][y].values[0] = k;
 														load_parallel->parallel_states_trs[i][y].size = 1;
-														printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-														printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
 														load_parallel->parallel_trs_size++;
 														break;
 													}
@@ -2153,8 +2250,6 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
 															load_parallel->parallel_states_trs[i][y].values[0] = k;
 															load_parallel->parallel_states_trs[i][y].size = 1;
-															printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-															printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
 															load_parallel->parallel_trs_size++;
 															break;
 														}
@@ -2226,8 +2321,6 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
 														load_parallel->parallel_states_trs[i][y].values[0] = k;
 														load_parallel->parallel_states_trs[i][y].size = 1;
-														printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-														printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
 														load_parallel->parallel_trs_size++;
 														break;
 													}
@@ -2253,8 +2346,6 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
 															load_parallel->parallel_states_trs[i][y].values[0] = k;
 															load_parallel->parallel_states_trs[i][y].size = 1;
-															printf("(%s,%s), %s", automata1->states.string[load_parallel->parallel_states[i].values[0]], automata2->states.string[load_parallel->parallel_states[i].values[1]], load_parallel->parallel_events.string[y]);
-															printf("- > (%s,%s)\n\n", automata1->states.string[load_parallel->parallel_states[k].values[0]], automata2->states.string[load_parallel->parallel_states[k].values[1]]);
 															load_parallel->parallel_trs_size++;
 															break;
 														}
@@ -2271,6 +2362,10 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 					}
 				}
 			}
+			//-------------------------------------------product states transitions-------------------------------------------//
+			
+			
+			
 			writeParallelAutomata(automata_vector, automata1, automata2, load_parallel);
 		}
 		else
@@ -2291,6 +2386,7 @@ int clean_stdin()
 }
 
 
+//creates pairs with the automaton's states
 void pairCreation(automato* load_automata, int_vector* pair)
 {
 	int i = 0, j = 0, pair_size = 0, temp = 0;
@@ -2304,6 +2400,7 @@ void pairCreation(automato* load_automata, int_vector* pair)
 	}
 }
 
+//the 4th step of the minimization algorithm. Checks if the pair of states resultant from the pair transition is one of the marked pairs or not
 void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two)
 {
 	int i = 0;
@@ -2323,6 +2420,8 @@ void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, 
 	}
 }
 
+
+//function responsible of creating the combined states out of the states that belong to the unmarked pairs
 void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index)
 {
 	int i = 0, j = 0, x = 0, test = 0;
@@ -3282,7 +3381,8 @@ void rewriteAutomata(automato* load_automata, int* valid_states, int dfa_canonic
 }
 
 
-
+//function that writes the DFA automata in the .aut format. Also it gives the user the choice of saving the automata in memory...
+//...or print it in the console or writing it to a file.
 void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
@@ -3676,7 +3776,7 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 
 	freeDfa(load_dfa, load_automata);
 
-
+	//user choices
 	printf("\n\nDo you wish to change the current automata? Press 1 if yes, any other number if not \n\n");
 	while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
 	if (i == 1)
@@ -3712,6 +3812,8 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 	free(new_automata_info);
 }
 
+//function that writes the minimized automata in the .aut format. Also it gives the user the choice of saving the automata in memory...
+//...or print it in the console or writing it to a file.
 void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
@@ -4024,6 +4126,7 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 
 	freeCanonical(load_canonical, load_automata);
 
+	//the user choices
 	printf("\n\nDo you wish to change the current automata? Press 1 if yes, any other number if not \n\n");
 	while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
 	if (i == 1)
@@ -4060,6 +4163,8 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	free(new_automata_info);
 }
 
+//function that writes the product result in the .aut format. Also it gives the user the choice of saving the automata in memory...
+//...or print it in the console or writing it to a file.
 void writeProductAutomata(automata_array* automata_vector ,automato* automata1, automato* automata2, product* load_product)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
@@ -4327,6 +4432,7 @@ void writeProductAutomata(automata_array* automata_vector ,automato* automata1, 
 		freeProduct(load_product, automata2);
 
 
+	//user choices
 	printf("\n\nDo you wish to save the product result? Press 1 if yes, any other number if not \n\n");
 	while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
 	if (i == 1)
@@ -5118,7 +5224,7 @@ int findItemarray(int* array_to_search, int item, int array_size)
 	return i;
 }
 
-
+//recursive function that creates the states that result in the product two automatons
 void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index)
 {
 	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0, trs1_provisory_value = 0, trs2_provisory_value = 0;
@@ -5127,10 +5233,13 @@ void productStatescreation(product* load_product, automato* load_automata1, auto
 	{
 		for (j = 0; j < load_automata2->events.size; j++)
 		{
+			//they must share the same event
 			if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0)
 			{
+				//both of them must have transitions with the same event
 				if ((load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->size != 0))
 				{
+					//check if the state already exists in memory
 					for (z = 0; z < load_product->product_states_size; z++)
 					{
 						if ((load_product->product_states[z].values[0] == load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->values[0]) && (load_product->product_states[z].values[1] == load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->values[0]))
@@ -5139,6 +5248,7 @@ void productStatescreation(product* load_product, automato* load_automata1, auto
 						}
 					}
 
+					//if it doesn't add the new state
 					if (dummy == 0)
 					{
 
@@ -5151,6 +5261,7 @@ void productStatescreation(product* load_product, automato* load_automata1, auto
 						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs2_provisory_value);
 						load_product->product_states_size++;
 
+						//and the function is called recursively with each new state
 						productStatescreation(load_product, load_automata1, load_automata2, load_product->product_states_size - 1);
 					}
 
@@ -5255,21 +5366,25 @@ resetAutomataArrayStructure(automata_array* load_array)
 }
 
 
-
+//recursive function that creates the states that result of the parallel between two automatons
 void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index)
 {
 	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0, trs1_provisory_value = 0, trs2_provisory_value = 0, automata1_event = 0, automata2_event = 0;
 
+	//check the global events that exist in the parallel automata (Reunion of the events)
 	for (y = 0; y < load_parallel->parallel_events.size; y++)
 	{
 		for (i = 0; i < load_automata1->events.size; i++)
 		{
 			for (j = 0; j < load_automata2->events.size; j++)
 			{
+				//this situtation is equal to the product . When both of automatons have the same event 
 				if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0 && (strcmp(load_parallel->parallel_events.string[y], load_automata1->events.string[i]) == 0))
 				{
+					//if both of them have transitions with the same event 
 					if ((load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->size != 0))
 					{
+						//and if the resultant pair is different of any parallel state ( avoid states repetition)
 						for (z = 0; z < load_parallel->parallel_states_size; z++)
 						{
 							if ((load_parallel->parallel_states[z].values[0] == load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0]) && (load_parallel->parallel_states[z].values[1] == load_automata2->transitions[load_parallel->parallel_states[parallel_state_index].values[1]][j]->values[0]))
@@ -5277,7 +5392,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 								dummy++;
 							}
 						}
-
+						//if it isn't repeated save the new state
 						if (dummy == 0)
 						{
 
@@ -5290,6 +5405,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 							intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
 							load_parallel->parallel_states_size++;
 
+							//call the function again with the new state
 							parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
 						}
 
@@ -5303,12 +5419,14 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 				{
 					dummy = 0;
 
+					//the situation that the first automaton has an event that the 2nd hasn't
 					if (strcmp(load_parallel->parallel_events.string[y], load_automata1->events.string[i]) == 0)
 					{
 						automata1_event = i;
 						dummy++;
 					}
 
+					//if the 1st automaton doesn't have the event
 					if (dummy == 0)
 					{
 						automata1_event = -1;
@@ -5316,6 +5434,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 					else
 						dummy = 0;
 
+					//if the first automaton has that event check if the 2nd doesn't have it
 					if (automata1_event != -1)
 					{
 						for (x = 0; x < load_automata2->events.size; x++)
@@ -5339,13 +5458,15 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 					else
 						automata2_event = -1;
 
-
+					//if only the 1st has the event
 					if (automata1_event != -1)
 					{
 						if (automata2_event == -1)
 						{
+							//if there are transitions with that event
 							if (load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->size != 0)
 							{
+								//confirm that the state isn't repeated
 								for (z = 0; z < load_parallel->parallel_states_size; z++)
 								{
 									if ((load_parallel->parallel_states[z].values[0] == load_automata1->transitions[load_parallel->parallel_states[parallel_state_index].values[0]][i]->values[0]) && (load_parallel->parallel_states[z].values[1] == load_parallel->parallel_states[parallel_state_index].values[1]))
@@ -5354,6 +5475,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 									}
 								}
 
+								//if it isn't repeated save the new state
 								if (dummy == 0)
 								{
 
@@ -5366,6 +5488,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 									intVectPushBack(&(load_parallel->parallel_states[load_parallel->parallel_states_size]), trs2_provisory_value);
 									load_parallel->parallel_states_size++;
 
+									//call the function with the new state
 									parallelStatescreation(load_parallel, load_automata1, load_automata2, load_parallel->parallel_states_size - 1);
 								}
 								else
@@ -5379,6 +5502,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 
 					dummy = 0;
 
+					//the same is made when there is an event of the 2nd automaton and not on the first
 					if (strcmp(load_parallel->parallel_events.string[y], load_automata2->events.string[j]) == 0)
 					{
 						automata2_event = j;
@@ -5465,7 +5589,8 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 	}
 }
 
-
+//function that writes the parallel result in the .aut format. Also it gives the user the choice of saving the automata in memory...
+//...or print it in the console or writing it to a file.
 void writeParallelAutomata(automata_array* automata_vector ,automato* automata1, automato* automata2, parallel* load_parallel)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
@@ -5650,7 +5775,7 @@ void writeParallelAutomata(automata_array* automata_vector ,automato* automata1,
 
 	freeParallel(load_parallel);
 
-
+	//user choices
 	printf("\n\nDo you wish to save the parallel result? Press 1 if yes, any other number if not \n\n");
 	while ((scanf("%d%c", &i, &c) != 2 || c != '\n') && clean_stdin());
 	if (i == 1)
@@ -5713,11 +5838,14 @@ void writeParallelAutomata(automata_array* automata_vector ,automato* automata1,
 }
 
 
+//function that deletes an automaton chosen by the user
 void deleteAutomata(automata_array* automata_vector, string_vector* automata_name, int automata_to_delete)
 {
 	int i = 0;
+	//frees the memory of the mentioned automata
 	freeAutomata(automata_vector->automata[automata_to_delete]);
 	
+	//changes the array positions if necessary
 	if (automata_to_delete + 1 < automata_vector->automata_number)
 	{
 		for (i = automata_to_delete; i <  automata_vector->automata_number - 1; i++)
@@ -5726,9 +5854,10 @@ void deleteAutomata(automata_array* automata_vector, string_vector* automata_nam
 		}
 	}
 
-
+	//frees the memory of the name of the said automaton
 	free(automata_name->string[automata_to_delete]);
 
+	//changes the array positions if necessary.
 	if (automata_to_delete + 1 <  automata_vector->automata_number)
 	{
 		for (i = automata_to_delete; i <  automata_vector->automata_number - 1; i++)
@@ -5738,7 +5867,7 @@ void deleteAutomata(automata_array* automata_vector, string_vector* automata_nam
 		}
 	}
 
-
+	//if there are more than one automaton there is the need to reallocate everything
 	if (automata_vector->automata_number > 1)
 	{
 		automata_vector->automata_number--;
@@ -5746,6 +5875,8 @@ void deleteAutomata(automata_array* automata_vector, string_vector* automata_nam
 		automata_name->string = (char**)realloc(automata_name->string, sizeof(char*)*automata_vector->automata_number);
 		automata_name->size--;
 	}
+	
+	//otherwise just free the memory and redefine the size of each variable
 	else
 	{
 		
