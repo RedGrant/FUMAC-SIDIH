@@ -120,16 +120,4 @@ typedef struct automata_array
 
 //the prototype of the used functions
 void menu();
-void load_file(automato* load_automata, char* file_path);
-void printAutomata(automato* load_automata);
-void checkAccessibilty(automato* load_automata, int dfa_canonical);
-void checkCoaccessibilty(automato* load_automata, int dfa_canonical);
-void dfaOrNfa(automato* load_automata);
-void nfaToDfa(automato* load_automata, int nda_or_da);
-void freeAutomata(automato* load_automata);
-void dfaCanonical(automato* load_automata);
-void automataProduct(automata_array* automata_vector,automato* automata1, automato* automata2);
-void automataParallel(automata_array* automata_vector,automato* automata1, automato* automata2);
-void writeAutomataToFile(automato* load_automata);
-void deleteAutomata(automata_array* automata_vector, string_vector* automata_name, int automata_to_delete);
-automato* new_automata();
+
