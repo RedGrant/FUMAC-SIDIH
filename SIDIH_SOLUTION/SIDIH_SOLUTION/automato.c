@@ -520,7 +520,7 @@ void menu()
 				memset(buffer, 0, 1000);
 
 		//if the inserted automaton is valid, dfaOrNfa function will be called 
-		//in order to the user see the changes caused by this function
+
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -615,10 +615,7 @@ void menu()
 				}
 				memset(buffer, 0, 1000);
 
-
-		//if the inserted automaton is valid, dfaOrNfa function will be called 
-		//in order to the user see the changes caused by this function
-
+		//if the inserted automaton is valid, dfaOrNfa function will be called
 
 				if (dummy == 1)
 				{
@@ -791,6 +788,9 @@ void menu()
 
 		case 8:
 			dummy = 0;
+
+		//if there aren't automatons in memory write a warning in the console
+
 			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
@@ -803,6 +803,9 @@ void menu()
 				j = 0;
 				i = 0;
 			}
+
+		//otherwise the user will choose the first automaton for the product
+
 			else
 			{
 				printf("\nWhich automatas do you wish to do a product? Available automata:\n\n");
@@ -823,6 +826,9 @@ void menu()
 					}
 				}
 				memset(buffer, 0, 1000);
+
+		//otherwise a warning will be written in the console
+
 				if (dummy == 0)
 				{
 					printf("\n\nInvalid automata was written, try again!\n\n");
@@ -837,6 +843,8 @@ void menu()
 					j = 0;
 					break;
 				}
+
+		//and then, the 2nd automaton
 
 				dummy = 0;
 				printf("\nSecond automata:\n\n");
@@ -851,6 +859,9 @@ void menu()
 					}
 				}
 				memset(buffer, 0, 1000);
+
+		//otherwise a warning will be written in the console
+
 				if (dummy == 0)
 				{
 					printf("\n\nInvalid automata was written, try again!\n\n");
@@ -866,10 +877,17 @@ void menu()
 					break;
 				}
 
+
+		//if both automata are valid, checkAccesibilty function will be called with 2nd argument 1
+		//in order to the user to not see the changes caused by this function, in both automatons
+
 				if (dummy == 1)
 				{
 
 					checkAccessibilty(automata_vector->automata[automata1], 1);
+
+		//if the resulting automaton didn't pass the parser, it will be removed from the array
+
 					if (automata_vector->automata[automata1]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
@@ -881,6 +899,9 @@ void menu()
 					}
 
 					checkAccessibilty(automata_vector->automata[automata2], 1);
+
+		//if the resulting automaton didn't pass the parser, it will be removed from the array
+
 					if (automata_vector->automata[automata2]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
@@ -892,7 +913,7 @@ void menu()
 					}
 
 
-
+		//finally, the function automataProduct is called, to make the composition of the inserted automata
 
 					automataProduct(automata_vector ,automata_vector->automata[automata1], automata_vector->automata[automata2]);
 					printf("\n\nPress enter to procede to the menu!\n");
@@ -909,9 +930,16 @@ void menu()
 
 			break;
 
+
+
+		//eigth option -> parallel of automata
+
 		case 9:
 
 			dummy = 0;
+
+		//if there aren't automatons in memory write a warning in the console
+
 			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
@@ -932,6 +960,9 @@ void menu()
 				{
 					printf("%s\n\n", automata_vector->automata_name.string[z]);
 				}
+
+		//otherwise the user will choose the first automaton for the product
+
 				printf("First automata:\n\n");
 				scanf("%s", buffer);
 				getchar();
@@ -943,6 +974,8 @@ void menu()
 						automata1 = z;
 					}
 				}
+
+		//if it's not valid a warning will be written in the console
 				memset(buffer, 0, 1000);
 				if (dummy == 0)
 				{
@@ -958,6 +991,8 @@ void menu()
 					j = 0;
 					break;
 				}
+
+		//and then, the 2nd automaton
 
 				dummy = 0;
 				printf("\nSecond automata:\n\n");
@@ -972,6 +1007,9 @@ void menu()
 					}
 				}
 				memset(buffer, 0, 1000);
+
+		//if it's not valid a warning will be written in the console
+
 				if (dummy == 0)
 				{
 					printf("\n\nInvalid automata was written, try again!\n\n");
@@ -987,10 +1025,17 @@ void menu()
 					break;
 				}
 
+
+		//if both automata are valid, checkAccesibilty function will be called with 2nd argument 1
+		//in order to the user to not see the changes caused by this function, in both automatons
+
 				if (dummy == 1)
 				{
 
 					checkAccessibilty(automata_vector->automata[automata1], 1);
+
+		//if the resulting automaton didn't pass the parser, it will be removed from the array
+
 					if (automata_vector->automata[automata1]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
@@ -1001,7 +1046,11 @@ void menu()
 						break;
 					}
 
+
 					checkAccessibilty(automata_vector->automata[automata2], 1);
+
+		//if the resulting automaton didn't pass the parser, it will be removed from the array
+
 					if (automata_vector->automata[automata2]->error == 1)
 					{
 						printf("Press any key to return to the main menu\n\n");
@@ -1011,6 +1060,8 @@ void menu()
 						i = 0;
 						break;
 					}
+
+		//finally, the function automataParallel is called, to make the composition of the inserted automata
 
 					automataParallel(automata_vector ,automata_vector->automata[automata1], automata_vector->automata[automata2]);
 					printf("\n\nPress enter to procede to the menu!\n");
@@ -1027,7 +1078,12 @@ void menu()
 
 			break;
 
+		//ninth option -> save a given automaton in a file
+
 		case 10:
+
+		//if there aren't automatons in memory write a warning in the console
+
 			if (automata_vector->automata_number == 0)
 			{
 				printf("\n\nNo automata has been loaded yet! Press enter to continue! \n\n");
@@ -1040,6 +1096,9 @@ void menu()
 				} while (j != 10);
 				j = 0;
 			}
+
+		//otherwise the user chooses what automaton he wants to save in a file
+
 			else
 			{
 				printf("\nWhich automata do you wish to print to a file? Available automata:\n\n");
@@ -1060,6 +1119,9 @@ void menu()
 					}
 				}
 				memset(buffer, 0, 1000);
+
+		//if the inserted automaton is valid, writeAutomataToFile function will be called 
+
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -1067,6 +1129,9 @@ void menu()
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
+
+		//otherwise a warning will be written in the console
+
 				else
 				{
 					printf("\n\nInvalid automata was written, try again!\n\n");
@@ -1082,7 +1147,12 @@ void menu()
 			i = 0;
 			break;
 
+
+		//tenth option -> delete a given automaton
+
 		case 11:
+
+		//if there aren't automatons in memory write a warning in the console
 
 
 			if (automata_vector->automata_number == 0)
@@ -1097,6 +1167,9 @@ void menu()
 				} while (j != 10);
 				j = 0;
 			}
+
+		//otherwise the user chooses what automaton he wants to delete
+
 			else
 			{
 				printf("\nWhich automata do you wish to delete? Available automata:\n\n");
@@ -1115,6 +1188,9 @@ void menu()
 					}
 				}
 				memset(buffer, 0, 1000);
+
+		//if the inserted automaton is valid, deleteAutomata function will be called 
+
 				if (dummy == 1)
 				{
 					dummy = 0;
@@ -1122,6 +1198,9 @@ void menu()
 					printf("\n\nPress enter to procede to the menu!\n");
 					while (getchar() != '\n');
 				}
+
+		//otherwise a warning will be written in the console
+
 				else
 				{
 					printf("\n\nInvalid automata was written, try again!\n\n");
@@ -1139,6 +1218,8 @@ void menu()
 			i = 0;
 			break;
 
+
+		//eleventh option -> exit the program freeing the memory
 
 		case 12:
 
@@ -1164,6 +1245,9 @@ void menu()
 			free(automata_vector);
 			return;
 			break;
+
+
+		//twelfth option -> writing the authors' names in the console
 
 		case 13:
 			do

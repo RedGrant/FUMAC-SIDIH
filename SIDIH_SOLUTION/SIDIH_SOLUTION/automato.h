@@ -51,6 +51,8 @@ typedef struct automato
 } automato;
 
 
+//the dfa's structure
+
 typedef struct dfa
 {
 	int dfa_states_size;
@@ -62,6 +64,9 @@ typedef struct dfa
 	int error;
 
 }dfa;
+
+
+//the canonical's structure
 
 typedef struct canonical
 {
@@ -85,6 +90,9 @@ typedef struct canonical
 
 }canonical;
 
+
+//the product's structure
+
 typedef struct product
 
 {
@@ -95,6 +103,8 @@ typedef struct product
 	int error;
 
 }product;
+
+//the parallel's structure
 
 typedef struct parallel
 
@@ -109,6 +119,8 @@ typedef struct parallel
 }parallel;
 
 
+//the automata_array's structure
+
 typedef struct automata_array
 {
 	automato** automata;
@@ -118,6 +130,6 @@ typedef struct automata_array
 } automata_array;
 
 
-//the prototype of the used functions
+//the prototype of the publi
 void menu();
 
