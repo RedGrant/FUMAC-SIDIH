@@ -1704,8 +1704,10 @@ void dfaOrNfa(automato* load_automata)
 }
 
 
+//function that converts nfa automaton to dfa
 void nfaToDfa(automato* load_automata, int nda_or_da)
 {
+//if it is NFA then it needs to be converted
 	if (nda_or_da == 0)
 	{
 		printf("\n\n\n-----------Converting the not deterministic finite automata to a deterministic finite automata-----------\n\n\n");
@@ -1717,12 +1719,13 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 		load_dfa->dfa_states_size = 0;
 		load_dfa->dfa_states_size++;
 
+		//create the initial DFA state, that is made of the NFA states that correspond to the eclosure of the initial state
 		for (i = 0; i < load_automata->e_closure[load_automata->initial].size; i++)
 		{
 			intVectPushBack(&(load_dfa->dfa_states[0]), load_automata->e_closure[load_automata->initial].values[i]);
 		}
 
-
+		//allocate memory for the DFA states' transitions
 		if (load_dfa->transitions_table == NULL)
 		{
 			if (load_dfa->dfa_states_size == 1)
@@ -1735,13 +1738,15 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 				}
 			}
 		}
+
+
 		for (i = 0; i < load_dfa->dfa_states_size; i++)
 		{
-
+			//all states but the first
 			if (i != 0)
 			{
 
-
+				//------------if there are more states reallocate memory---------//
 				if (load_dfa->dfa_states_size > old_size)
 				{
 					load_dfa->dfa_states = (int_vector*)realloc(load_dfa->dfa_states, sizeof(int_vector)*load_dfa->dfa_states_size);
@@ -1756,9 +1761,12 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 				{
 					load_dfa->transitions_table[i] = (int_vector*)malloc(sizeof(int_vector)*(load_automata->events.size));
 				}
+				//------------if there are more states reallocate memory---------//
 
+				//the current value will be saved to be compared to the next iterations
 				old_size = load_dfa->dfa_states_size;
 
+				//initialize the variables to the current DFA state
 				if (load_automata->null_event == 1)
 				{
 					for (y = 1; y < load_automata->events.size; y++)
@@ -1774,6 +1782,7 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 					}
 				}
 			}
+			//for the first state (there is no need for memory allocation) already done
 			else
 			{
 				if (load_automata->null_event == 1)
@@ -1794,11 +1803,13 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 			}
 
 
-
+			//if there is a null event, only transitions without it will be considered
+			
 			if (load_automata->null_event == 1)
 			{
 				for (x = 1; x < load_automata->events.size; x++)
 				{
+					//this function will be called in order to find new dfa states and their transitions
 					checkDfaTransitions(load_automata, load_dfa->dfa_states[i], load_dfa, i, x);
 				}
 			}
@@ -1807,11 +1818,13 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 			{
 				for (x = 0; x < load_automata->events.size; x++)
 				{
+					//this function will be called in order to find new dfa states and their transitions
 					checkDfaTransitions(load_automata, load_dfa->dfa_states[i], load_dfa, i, x);
 				}
 			}
 
 		}
+		//the new converted automaton will be rewriten in the predefined format and passed in the parser
 		writeDfaAutomata(load_automata, load_dfa);
 		printf("\n\n\n-----------Automata converted-----------\n\n\n");
 
@@ -2659,9 +2672,6 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 }
 
 
-//----------------------Private functions---------------------------
-
-
 //waits for the user to insert an enter after writing on the console
 int clean_stdin()
 {
@@ -2946,6 +2956,7 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 
 	}
 
+	//free memory 
 	if (provisory_states_size > 0)
 	{
 		free(provisory_states);
@@ -5524,17 +5535,23 @@ int findItemIntVector(int_vector myvect, int item)
 	return i;
 }
 
+//function created to be called recursively to create each state eclosure. The original index will be always the same
+//...since it only changes in the parser. The value that changes it's the new state (if there is one transitio)
 void eclosureFilling(automato* load_automata, int original_index, int index_next)
 {
 	int i = 0, j = 0, value = 0, x = 0;
 
+//the original already takes part in the eclosure. Otherwise this new state will belong to the eclosure
 	if (original_index != index_next)
 	{
 		intVectPushBack(&(load_automata->e_closure[original_index]), index_next);
 	}
 
+//now it's necessary to check if the new state has transitions
 	if (load_automata->transitions[index_next][0]->size != 0)
 	{
+//if there are transitions and if the resulting state is different from any of the current eclosure, the function...
+//will be called with the new state (index_next)
 		for (i = 0; i < load_automata->transitions[index_next][0]->size; i++)
 		{
 			if (findItemIntVector(load_automata->e_closure[original_index], load_automata->transitions[index_next][0]->values[i]) == load_automata->e_closure[original_index].size)
