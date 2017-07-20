@@ -52,7 +52,7 @@ void freeParallelStructure(parallel* load_parallel);
 void freeParallel(parallel* load_parallel);
 void writeParallelAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, parallel* load_parallel);
 automata_array* newAutomatonArray();
-resetAutomataArrayStructure(automata_array* load_array);
+void resetAutomataArrayStructure(automata_array* load_array);
 void load_file(automato* load_automata, char* file_path);
 void printAutomata(automato* load_automata);
 void checkAccessibilty(automato* load_automata, int dfa_canonical);
@@ -1335,7 +1335,7 @@ void load_file(automato* load_automata, char* file_path)
 	free(file_info);
 }
 
-//function responsible to write on the console the automata
+//function responsible of writing a selected automaton in the console
 void printAutomata(automato* load_automata)
 {
 
@@ -1429,7 +1429,7 @@ void printAutomata(automato* load_automata)
 	}
 }
 
-//check accessibility of a state and delete those that aren't accessible
+//check accessibility of all states, removing the unreachable. the 2nd argument refers to showing info or not in the console
 void checkAccessibilty(automato* load_automata, int dfa_canonical)
 {
 	int i = 0, j = 0, x = 0, initial_confirmation = 0;
@@ -1498,6 +1498,7 @@ void checkAccessibilty(automato* load_automata, int dfa_canonical)
 			}
 		}
 	}
+	//how many states need to be deleted
 	for (i = 0; i < load_automata->states.size; i++)
 	{
 		if (accessible_states[i] == 0)
@@ -1508,6 +1509,7 @@ void checkAccessibilty(automato* load_automata, int dfa_canonical)
 	{
 		if (dfa_canonical == 0)
 		{
+	//show the states that are going to be removed
 			printf("-----------The automata had non-accessible states. They are going to be removed-----------\n\n\n");
 			printf("Removed states:\n");
 			for (i = 0; i < load_automata->states.size; i++)
@@ -1517,6 +1519,7 @@ void checkAccessibilty(automato* load_automata, int dfa_canonical)
 			}
 		}
 
+	//rewrites the automaton to be passed in the parser without the removed states
 		rewriteAutomata(load_automata, accessible_states, dfa_canonical);
 
 	}
@@ -1533,6 +1536,7 @@ void checkAccessibilty(automato* load_automata, int dfa_canonical)
 	free(accessible_states_check);
 }
 
+//check coaccessibility of all states, removing the unreachable. the 2nd argument refers to showing info or not in the console
 void checkCoaccessibilty(automato* load_automata, int dfa_canonical)
 {
 	int i = 0, j = 0, x = 0, initial_confirmation = 0;
@@ -1621,13 +1625,14 @@ void checkCoaccessibilty(automato* load_automata, int dfa_canonical)
 			continue_loop = 0;
 		}
 	}
-
+	//how many states need to be deleted
 	for (i = 0; i < load_automata->states.size; i++)
 	{
 		if (coaccessible_states[i] == 0)
 			delete_counter++;
 	}
-
+	
+	//show the states that are going to be removed
 	if (delete_counter > 0)
 	{
 		printf("\n\n\n-----------The automata had non-coaccessible states. They are going to be removed-----------\n\n\n");
@@ -1637,6 +1642,8 @@ void checkCoaccessibilty(automato* load_automata, int dfa_canonical)
 			if (coaccessible_states[i] == 0)
 				printf("%s \n", load_automata->states.string[i]);
 		}
+
+	//rewrites the automaton to be passed in the parser without the removed states
 		rewriteAutomata(load_automata, coaccessible_states, dfa_canonical);
 	}
 	else
@@ -1646,11 +1653,14 @@ void checkCoaccessibilty(automato* load_automata, int dfa_canonical)
 	free(coaccessible_states_check);
 }
 
+
+//checks if an automaton is DFA or NFA
 void dfaOrNfa(automato* load_automata)
 {
 	int i = 0, j = 0, x = 0, t = 0, y = 0, confirmation = 0;
 	if (load_automata->null_event == 1)
 	{
+//returns a warning if the automaton only has a state. It will later be removed
 		if (load_automata->states.size == 1)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
@@ -1658,11 +1668,13 @@ void dfaOrNfa(automato* load_automata)
 			load_automata->error = 1;
 			return;
 		}
+//otherwise, since it has null events, it will be NFA
 		load_automata->deterministic = 0;
 		return;
 	}
 	else
 	{
+//returns a warning if the automaton only has a state. It will later be removed
 		if (load_automata->states.size == 1)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
@@ -1670,6 +1682,8 @@ void dfaOrNfa(automato* load_automata)
 			load_automata->error = 1;
 			return;
 		}
+//otherwise, if for a certain state and event the automaton has more than 1 transition, the automaton...
+//...will be marked as NFA
 		for (i = 0; i < load_automata->states.size; i++)
 		{
 			for (j = 0; j < load_automata->events.size; j++)
@@ -1684,6 +1698,7 @@ void dfaOrNfa(automato* load_automata)
 				}
 			}
 		}
+//if any of the above conditions are not met, the automaton will be marked as DFA
 		load_automata->deterministic = 1;
 	}
 }
@@ -3335,18 +3350,24 @@ void freeProductStructure(product* load_product, automato* load_automata)
 	resetProductStructure(load_product);
 }
 
+
+//function that saves new DFA states and transitions, created with the transitions made with the entry state and event 
 void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events)
 {
 	int* dfa_provisory_state = (int*)malloc(sizeof(int));
 	int dfa_provisory_state_size = 0;
 	int i = 0, y = 0, j = 0, z = 0, test = 0, counter = 0, different_state = 0;
 
+//the number of NFA states that belong to this DFA state
+	
 	for (j = 0; j < dfa_states.size; j++)
 	{
+		//each transition of the NFA states that belong to the DFA state will be tested with the event that entered in the function
 		if (load_automata->transitions[dfa_states.values[j]][events]->size != 0)
 		{
 			for (y = 0; y < load_automata->transitions[dfa_states.values[j]][events]->size; y++)
 			{
+				//----------then, for the resulting state of the transition, it will be saved each state of its eclosure----------//
 				for (z = 0; z < load_automata->e_closure[load_automata->transitions[dfa_states.values[j]][events]->values[y]].size; z++)
 				{
 					if (dfa_provisory_state_size == 0)
@@ -3365,14 +3386,18 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 						}
 					}
 				}
+				//----------then, for the resulting state of the transition, it will be saved each state of its eclosure----------//
 			}
 		}
 	}
+	//if there are no transitions with the state and event that entered, leave the function
 	if (dfa_provisory_state_size == 0)
 	{
 		free(dfa_provisory_state);
 		return;
 	}
+
+	//otherwise, it will be tested if the size of the provisory dfa state is different from the DFA states in memory
 	for (j = 0; j < load_dfa->dfa_states_size; j++)
 	{
 		if (load_dfa->dfa_states[j].size == dfa_provisory_state_size)
@@ -3380,6 +3405,7 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 			test++;
 		}
 	}
+	//if it is, it must be a new DFA state, and it will be saved
 	if (test == 0)
 	{
 		for (j = 0; j < dfa_provisory_state_size; j++)
@@ -3393,6 +3419,7 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 			else
 				intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
 		}
+		//the states must be sorted, to be easier to compare with other DFA states
 		sortArrayAscending(&(load_dfa->dfa_states[load_dfa->dfa_states_size]));
 
 		load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
@@ -3404,16 +3431,20 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 	else
 	{
 		test = 0;
+		//if in the previous condition a dfa state was saved the size must be tested again 
 		for (j = 0; j < load_dfa->dfa_states_size; j++)
 		{
 			if (load_dfa->dfa_states[j].size == dfa_provisory_state_size)
 			{
 				test++;
 			}
+			//if the size is different, than each NFA STATE that belongs to a DFA will be compared with each NFA state of the provisory state
 			if (test != 0)
 			{
 				test = 0;
 				counter = 0;
+				
+				//the variable counter will be incremented each time a NFA state from the provisory DFA state is different from the j's DFA state
 				for (z = 0; z < dfa_provisory_state_size; z++)
 				{
 					if (findItemIntVector(load_dfa->dfa_states[j], dfa_provisory_state[z]) != load_dfa->dfa_states[j].size)
@@ -3422,6 +3453,8 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 						continue;
 					}
 				}
+
+				//if the counter value is different from the j's dfa size, it means the NFA states are different from one another
 				if (counter != load_dfa->dfa_states[j].size)
 				{
 					different_state++;
@@ -3431,13 +3464,17 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 			}
 			else
 			{
+				//if the dfa's provisory state size is null, the function will end
 				if (dfa_provisory_state_size == 0)
 				{
 					return;
 				}
+				//otherwise, since the size of this provisory state was different from the dfa's j size, it will be different 
 				different_state++;
 			}
 		}
+		
+		//if the provisory dfa state is different from all the dfa states, this DFA state will be added 
 		if (different_state == load_dfa->dfa_states_size)
 		{
 			test = 0;
@@ -3454,13 +3491,17 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 				else
 					intVectPushBack(&(load_dfa->dfa_states[load_dfa->dfa_states_size]), dfa_provisory_state[j]);
 			}
+			//after it is added, it will be sorted
 			sortArrayAscending(&(load_dfa->dfa_states[load_dfa->dfa_states_size]));
 
+			//afterwards the transition will be saved with the state and event that entered the function 
 			load_dfa->transitions_table[index][events].values = (int_vector*)malloc(sizeof(int*));
 			load_dfa->transitions_table[index][events].values[0] = load_dfa->dfa_states_size;
 			load_dfa->transitions_table[index][events].size++;
 			load_dfa->dfa_states_size++;
 		}
+		
+		//otherwise, only the transition will be saved
 		else
 		{
 			test = 0;
@@ -5687,7 +5728,7 @@ automata_array* newAutomatonArray()
 }
 
 //reset the variables that are in the parallel's structure
-resetAutomataArrayStructure(automata_array* load_array)
+void resetAutomataArrayStructure(automata_array* load_array)
 {
 	load_array->automata = NULL;
 	load_array->automata_name.size = 0;
