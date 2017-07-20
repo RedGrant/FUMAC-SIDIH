@@ -1805,7 +1805,7 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 
 
 
-
+//function that clears the memory of an variable of type automato
 void freeAutomata(automato* load_automata)
 {
 	freeData(load_automata);
@@ -2646,6 +2646,8 @@ void automataParallel(automata_array* automata_vector, automato* automata1, auto
 
 //----------------------Private functions---------------------------
 
+
+//waits for the user to insert an enter after writing on the console
 int clean_stdin()
 {
 	while (getchar() != '\n');
@@ -2935,7 +2937,7 @@ void createCanonicalStates(automato* load_automata, canonical* load_canonical, i
 	}
 }
 
-
+//calculates the pairs (k=2) that are possible to combine with a number of states (n)
 int nCr(automato* load_automata)
 {
 	int result = 0;
@@ -2950,6 +2952,7 @@ int nCr(automato* load_automata)
 	return(result);
 }
 
+//computes the factorial of a given number
 int factorial(int number)
 {
 	int i, fact = 1;
@@ -2961,10 +2964,13 @@ int factorial(int number)
 	return(fact);
 }
 
-
+//function that frees the memory of all the variables that belong to the structure of the type automato
 void freeData(automato* load_automata)
 {
 	int i = 0, j = 0, x = 0, z = 0;
+	
+//----------------------------freeing the transitions----------------------------//
+
 	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
@@ -2981,7 +2987,10 @@ void freeData(automato* load_automata)
 		}
 		free(load_automata->transitions);
 	}
+//----------------------------freeing the transitions----------------------------//
 
+
+//------------------------freeing the inverse transitions------------------------//
 	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
@@ -2998,8 +3007,10 @@ void freeData(automato* load_automata)
 		}
 		free(load_automata->inverse_transitions);
 	}
+//------------------------freeing the inverse transitions------------------------//
 
 
+//----------------------------freeing the eclosure-------------------------------//
 	if (load_automata->states.size > 0 && load_automata->e_closure != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
@@ -3011,12 +3022,18 @@ void freeData(automato* load_automata)
 		}
 		free(load_automata->e_closure);
 	}
+//----------------------------freeing the eclosure-------------------------------//
 
+
+//----------------------------freeing marked states------------------------------//
 	if (load_automata->marked.size > 0)
 	{
 		free(load_automata->marked.values);
 	}
+//----------------------------freeing marked states------------------------------//
 
+
+//-----------------------------freeing the states--------------------------------//
 	if (load_automata->states.size > 0)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
@@ -3025,7 +3042,10 @@ void freeData(automato* load_automata)
 		}
 		free(load_automata->states.string);
 	}
+//-----------------------------freeing the states--------------------------------//
 
+
+//-----------------------------freeing the events--------------------------------//
 	if (load_automata->events.size)
 	{
 		for (i = 0; i < load_automata->events.size; i++)
@@ -3034,10 +3054,13 @@ void freeData(automato* load_automata)
 		}
 		free(load_automata->events.string);
 	}
+//-----------------------------freeing the events--------------------------------//
 
+//reset the variables
 	resetAutomataStruct(load_automata);
 }
 
+//reset the variables that are in the automato's structure
 void resetAutomataStruct(automato* load_automata)
 {
 	load_automata->error = 0;
@@ -3052,17 +3075,21 @@ void resetAutomataStruct(automato* load_automata)
 	load_automata->deterministic = 0;
 }
 
+//function that frees the dfa's type structure and its variables
 void freeDfa(dfa* load_dfa, automato* load_automata)
 {
 	freeDfaStructure(load_dfa, load_automata);
 	free(load_dfa);
 }
 
+//function that frees the memory of all the variables that belong to the structure of the type dfa
 void freeDfaStructure(dfa* load_dfa, automato* load_automata)
 {
 	int i = 0, j = 0;
+//----------------------------freeing the transitions----------------------------//
 	if (load_dfa->dfa_states_size > 0)
 	{
+//if there are null events in the automaton
 		if (load_automata->null_event == 1)
 		{
 			for (i = 0; i < load_dfa->dfa_states_size; i++)
@@ -3080,7 +3107,7 @@ void freeDfaStructure(dfa* load_dfa, automato* load_automata)
 			}
 
 		}
-
+//if there aren't null events in the automaton
 		else
 		{
 			for (i = 0; i < load_dfa->dfa_states_size; i++)
@@ -3099,9 +3126,10 @@ void freeDfaStructure(dfa* load_dfa, automato* load_automata)
 		}
 		free(load_dfa->transitions_table);
 	}
+//----------------------------freeing the transitions----------------------------//
 
 
-
+//-----------------------------freeing the states--------------------------------//
 	if (load_dfa->dfa_states_size > 0)
 	{
 		for (i = 0; i < load_dfa->dfa_states_size; i++)
@@ -3113,10 +3141,13 @@ void freeDfaStructure(dfa* load_dfa, automato* load_automata)
 		}
 		free(load_dfa->dfa_states);
 	}
+	//-----------------------------freeing the states--------------------------------//
 
+//reset the variables
 	resetDfaStructure(load_dfa);
 }
 
+//function responsible for creating a variable of the type dfa
 dfa* newDfa()
 {
 	dfa* new_dfa;
@@ -3125,6 +3156,7 @@ dfa* newDfa()
 	return new_dfa;
 }
 
+//reset the variables that are in the dfa's structure
 void resetDfaStructure(dfa* load_dfa)
 {
 	load_dfa->transitions_table = NULL;
@@ -3133,7 +3165,7 @@ void resetDfaStructure(dfa* load_dfa)
 	load_dfa->error = 0;
 }
 
-
+//function responsible for creating a variable of the type canonical
 canonical* newCanonical()
 {
 	canonical* new_canonical;
@@ -3142,6 +3174,7 @@ canonical* newCanonical()
 	return new_canonical;
 }
 
+//reset the variables that are in the canonical's structure
 void resetCanonicalStructure(canonical* load_canonical)
 {
 	load_canonical->error = 0;
@@ -3155,17 +3188,19 @@ void resetCanonicalStructure(canonical* load_canonical)
 	load_canonical->combined_states_trs = NULL;
 }
 
-
+//function that frees the canonical's type structure and its variables
 void freeCanonical(canonical* load_canonical, automato* load_automata)
 {
 	freeCanonicalStructure(load_canonical, load_automata);
 	free(load_canonical);
 }
 
+//function that frees the memory of all the variables that belong to the structure of the type canonical
 void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 {
 	int i = 0, j = 0;
 
+//----------------------------freeing the transitions----------------------------//
 	if (load_canonical->combined_states != 0)
 	{
 		for (i = 0; i < load_canonical->combined_states; i++)
@@ -3181,9 +3216,12 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 		}
 		free(load_canonical->combined_states_trs);
 	}
+//----------------------------freeing the transitions----------------------------//
+
 
 	if (load_automata->states.size > 0)
 	{
+//---------------------------freeing the states' pairs---------------------------//
 		for (i = 0; i < load_automata->states.size; i++)
 		{
 			if (load_canonical->pair[i].size > 0)
@@ -3192,7 +3230,10 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 			}
 		}
 		free(load_canonical->pair);
+//---------------------------freeing the states' pairs---------------------------//
 
+
+//---------------------------freeing the marked pairs----------------------------//
 		for (i = 0; i < load_automata->states.size; i++)
 		{
 			if (load_canonical->table_marked[i].size > 0)
@@ -3202,7 +3243,10 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 		}
 		free(load_canonical->table_marked);
 	}
+//---------------------------freeing the marked pairs----------------------------//
 
+
+//--------------------------freeing the minimized states-------------------------//
 	if (load_canonical->combined_states != 0)
 	{
 		for (i = 0; i < load_canonical->combined_states; i++)
@@ -3214,16 +3258,16 @@ void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
 		}
 		free(load_canonical->states_to_combine);
 	}
+//--------------------------freeing the minimized states-------------------------//
 
 
-
-
+//reset the variables
 	resetCanonicalStructure(load_canonical);
 }
 
 
 
-
+//function responsible for creating a variable of the type product
 product* newProduct()
 {
 	product* new_product;
@@ -3232,6 +3276,7 @@ product* newProduct()
 	return new_product;
 }
 
+//reset the variables that are in the product's structure
 void resetProductStructure(product* load_product)
 {
 	load_product->error = 0;
@@ -3242,18 +3287,19 @@ void resetProductStructure(product* load_product)
 }
 
 
-
+//function that frees the product's type structure and its variables
 void freeProduct(product* load_product, automato* load_automata)
 {
 	freeProductStructure(load_product, load_automata);
 	free(load_product);
 }
 
-
+//function that frees the memory of all the variables that belong to the structure of the type product
 void freeProductStructure(product* load_product, automato* load_automata)
 {
 	int i = 0, j = 0;
 
+//----------------------------freeing the transitions----------------------------//
 	if (load_product->product_states_size != 0)
 	{
 		for (i = 0; i < load_product->product_states_size; i++)
@@ -3269,7 +3315,9 @@ void freeProductStructure(product* load_product, automato* load_automata)
 		}
 		free(load_product->product_states_trs);
 	}
+//----------------------------freeing the transitions----------------------------//
 
+//------------------------------freeing the states-------------------------------//
 	if (load_product->product_states_size != 0)
 	{
 		for (i = 0; i < load_product->product_states_size; i++)
@@ -3281,15 +3329,11 @@ void freeProductStructure(product* load_product, automato* load_automata)
 		}
 		free(load_product->product_states);
 	}
+//------------------------------freeing the states-------------------------------//
 
+//reset variables
 	resetProductStructure(load_product);
 }
-
-
-
-
-
-
 
 void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events)
 {
@@ -4761,6 +4805,7 @@ void writeProductAutomata(automata_array* automata_vector ,automato* automata1, 
 	printf("\n\n\n-----------Product ended-----------\n\n\n");
 }
 
+//writes a choosen automaton to a file with a name inserted by the user
 void writeAutomataToFile(automato* load_automata)
 {
 	printf("\n\n\n-----------Writing automata to file-----------\n\n\n");
@@ -4888,13 +4933,15 @@ void writeAutomataToFile(automato* load_automata)
 }
 
 
-//check if a state is accessible or not. if it is, the reached state will be accessible
+
+//mark the reached states made from an accessible state through transitions, as accessible 
 void accesibleState(automato* load_automata, int state_index, int *accessible_states)
 {
 	int i = 0, j = 0, x = 0;
 
 	for (i = 0; i < load_automata->events.size; i++)
 	{
+//if the the state that entered has transitions, any state resulting from a transition will be marked as accessible
 		if (load_automata->transitions[state_index][i]->size != 0)
 		{
 			for (x = 0; x < load_automata->transitions[state_index][i]->size; x++)
@@ -4905,12 +4952,14 @@ void accesibleState(automato* load_automata, int state_index, int *accessible_st
 	}
 }
 
+//mark the reached states made from an accessible state through inverse transitions, as coaccessible 
 void coaccesibleState(automato* load_automata, int state_index, int *coaccessible_states)
 {
 	int i = 0, j = 0, x = 0;
 
 	for (i = 0; i < load_automata->events.size; i++)
 	{
+//if the the state that entered has inverse transitions, any state resulting from an inverse transition will be marked as coaccessible
 		if (load_automata->inverse_transitions[state_index][i]->size != 0)
 		{
 			for (x = 0; x < load_automata->inverse_transitions[state_index][i]->size; x++)
@@ -5455,6 +5504,7 @@ void eclosureFilling(automato* load_automata, int original_index, int index_next
 	}
 }
 
+//function that sorts any int_vector array
 void sortArrayAscending(int_vector* array_to_sort)
 {
 	int i = 0, j = 0, min = 0, swap = 0, first = 0, second = 0;
@@ -5478,6 +5528,7 @@ void sortArrayAscending(int_vector* array_to_sort)
 	}
 }
 
+//function that searchs an int type array for an int type item. If it's found returns its position otherwise returns the array size
 int findItemarray(int* array_to_search, int item, int array_size)
 {
 	int i = 0;
@@ -5545,7 +5596,7 @@ void productStatescreation(product* load_product, automato* load_automata1, auto
 }
 
 
-
+//function responsible for creating a variable of the type parallel
 parallel* newParallel()
 {
 	parallel* new_parallel;
@@ -5554,7 +5605,7 @@ parallel* newParallel()
 	return new_parallel;
 }
 
-
+//reset the variables that are in the parallel's structure
 void resetParallelStructure(parallel* load_parallel)
 {
 	load_parallel->error = 0;
@@ -5565,10 +5616,13 @@ void resetParallelStructure(parallel* load_parallel)
 	load_parallel->parallel_states_trs = NULL;
 }
 
+
+//function that frees the memory of all the variables that belong to the structure of the type parallel
 void freeParallelStructure(parallel* load_parallel)
 {
 	int i = 0, j = 0;
 
+//----------------------------freeing the transitions----------------------------//
 	if (load_parallel->parallel_states_size != 0)
 	{
 		for (i = 0; i < load_parallel->parallel_states_size; i++)
@@ -5584,7 +5638,9 @@ void freeParallelStructure(parallel* load_parallel)
 		}
 		free(load_parallel->parallel_states_trs);
 	}
+//----------------------------freeing the transitions----------------------------//
 
+//------------------------------freeing the states-------------------------------//
 	if (load_parallel->parallel_states_size != 0)
 	{
 		for (i = 0; i < load_parallel->parallel_states_size; i++)
@@ -5596,7 +5652,10 @@ void freeParallelStructure(parallel* load_parallel)
 		}
 		free(load_parallel->parallel_states);
 	}
+//------------------------------freeing the states-------------------------------//
 
+
+//------------------------------freeing the events-------------------------------//
 	if (load_parallel->parallel_events.size != 0)
 	{
 		for (i = 0; i < load_parallel->parallel_events.size; i++)
@@ -5605,17 +5664,20 @@ void freeParallelStructure(parallel* load_parallel)
 		}
 		free(load_parallel->parallel_events.string);
 	}
+//------------------------------freeing the events-------------------------------//
 
+//reset variables
 	resetParallelStructure(load_parallel);
 }
 
+//function that frees the parallel's type structure and its variables
 void freeParallel(parallel* load_parallel)
 {
 	freeParallelStructure(load_parallel);
 	free(load_parallel);
 }
 
-
+//function responsible for creating a variable of the type automata_array
 automata_array* newAutomatonArray()
 {
 	automata_array* new_array;
@@ -5624,7 +5686,7 @@ automata_array* newAutomatonArray()
 	return new_array;
 }
 
-
+//reset the variables that are in the parallel's structure
 resetAutomataArrayStructure(automata_array* load_array)
 {
 	load_array->automata = NULL;
