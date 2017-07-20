@@ -5077,12 +5077,15 @@ void parser(automato* load_automata, char* file_info)
 		switch (parser_state)
 		{
 
-			//state case
+		//state case
 		case 1:
+		
+		//avoid paragraphs with null content
 			if (strcmp(line, "") != 0)
 			{
 				if (load_automata->states.size != 0)
 				{
+		//to avoid repetition of states
 					for (i = 0; i < load_automata->states.size; i++)
 					{
 						if (strcmp(line, load_automata->states.string[i]) == 0)
@@ -5093,17 +5096,21 @@ void parser(automato* load_automata, char* file_info)
 					else
 						states_test = 0;
 				}
+		//for the first time
 				else
 					stringPushBack(&(load_automata->states), line);
 			}
 			break;
 
-			//event case
+		//event case
 		case 2:
+		
+		//avoid paragraphs with null content
 			if (strcmp(line, "") != 0)
 			{
 				if (load_automata->events.size != 0)
 				{
+		//to avoid repetition of events
 					for (i = 0; i < load_automata->events.size; i++)
 					{
 						if (strcmp(line, load_automata->events.string[i]) == 0)
@@ -5114,13 +5121,16 @@ void parser(automato* load_automata, char* file_info)
 					else
 						events_test = 0;
 				}
+		//for the first time
 				else
 					stringPushBack(&(load_automata->events), line);
 			}
 			break;
 
-			//transition case
+		//transition case
 		case 3:
+
+		//avoid paragraphs with null content
 			if (strcmp(line, "") != 0)
 			{
 				trs_index = 0;
@@ -5210,6 +5220,7 @@ void parser(automato* load_automata, char* file_info)
 					}
 
 				}
+				//avoid repeated transitions 
 				if (load_automata->transitions[trs_state_index][trs_event_index]->size != 0)
 				{
 					for (i = 0; i < load_automata->transitions[trs_state_index][trs_event_index]->size; i++)
@@ -5225,6 +5236,7 @@ void parser(automato* load_automata, char* file_info)
 					trs_test = 0;
 				}
 
+				//for the first time
 				else
 				{
 					intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
@@ -5233,8 +5245,9 @@ void parser(automato* load_automata, char* file_info)
 			}
 			break;
 
+		//initial state
 		case 4:
-
+		//avoid paragraphs with null content
 			if (strcmp(line, "") != 0)
 			{
 				for (j = 0; j < load_automata->states.size; j++)
@@ -5246,6 +5259,7 @@ void parser(automato* load_automata, char* file_info)
 					}
 				}
 
+		//check if the file has more than one initial state
 				if (initial_test > 1)
 				{
 					printf("More than one initial state. Press enter to continue!\n");
@@ -5258,14 +5272,18 @@ void parser(automato* load_automata, char* file_info)
 			break;
 
 		case 5:
+
+		//avoid paragraphs with null content
 			if (strcmp(line, "") != 0)
 			{
 				for (x = 0; x < load_automata->states.size; x++)
 				{
 					if (strcmp(line, load_automata->states.string[x]) == 0)
 					{
+		//to avoid repeated marked states
 						if (load_automata->marked.size != 0)
 						{
+							
 							for (i = 0; i < load_automata->marked.size; i++)
 							{
 								if (load_automata->marked.values[i] == x)
@@ -5277,6 +5295,7 @@ void parser(automato* load_automata, char* file_info)
 							else
 								marked_test = 0;
 						}
+			//for the first time
 						else
 							intVectPushBack(&(load_automata->marked), x);
 					}
@@ -5285,62 +5304,69 @@ void parser(automato* load_automata, char* file_info)
 			break;
 
 		default:
-			printf("\nParser error!Automata's file not correct!\n\nPress enter to continue\n");
+			printf("\nParser error!Automaton's file not correct!\n\nPress enter to continue\n");
 			load_automata->error = 1;
 			return;
 		}
 	}
-
+	
 	free(line);
 	free(trs_line);
 
+	//if there aren't states in the automaton, write an warning (the automaton will be later deleted)
 	if (load_automata->states.size == 0)
 	{
-		printf("There are no states in the automata!\n\nPress enter to continue\n");
+		printf("There are no states in the automaton!\n\nPress enter to continue\n");
 		load_automata->error = 1;
 		return;
 	}
-
+	
+	//if there aren't events in the automaton, write an warning (the automaton will be later deleted)
 	if (load_automata->events.size == 0)
 	{
-		printf("There are no events in the automata!\n\nPress enter to continue\n");
+		printf("There are no events in the automaton!\n\nPress enter to continue\n");
 		load_automata->error = 1;
 		return;
 	}
 
+	//if there aren't marked states in the automaton, write an warning (the automaton will be later deleted)
 	if (load_automata->marked.size == 0)
 	{
-		printf("There are no marked states in the automata\n\nPress enter to continue\n");
+		printf("There are no marked states in the automaton\n\nPress enter to continue\n");
 		load_automata->error = 1;
 		return;
 	}
 
-
+	//if there isn't an inital in the automaton, write an warning (the automaton will be later deleted)
 	if (initial_test == 0)
 	{
-		printf("There is no initial state in this automata!\n\nPress enter to continue\n");
+		printf("There is no initial state in this automaton!\n\nPress enter to continue\n");
 		load_automata->error = 1;
 		return;
 	}
 
-
+	//if there aren't transitions in the automaton, write an warning (the automaton will be later deleted)
 	if (load_automata->transitions == NULL)
 	{
-		printf("There are no transitions in this automata!\n\nPress enter to continue\n");
+		printf("There are no transitions in this automaton!\n\nPress enter to continue\n");
 		getchar();
 		getchar();
 		load_automata->error = 1;
 		return;
 	}
 
-
+	//allocate memory for the eclosure with the size of the available states
 	load_automata->e_closure = (int_vector*)malloc(sizeof(int_vector)*((load_automata)->states.size));
+	
+	//for the begining, the eclosure will only have the state it refers to
 	for (i = 0; i < load_automata->states.size; i++)
 	{
 		load_automata->e_closure[i].size = 0;
 		intVectPushBack(&(load_automata->e_closure[i]), i);
 	}
 
+	//if there are null events, there is need to use eclosure filling, otherwise the eclosure of each state
+	//will only be itself
 	if (load_automata->null_event == 1)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
@@ -5349,7 +5375,7 @@ void parser(automato* load_automata, char* file_info)
 		}
 	}
 
-
+	//sort each eclosure
 	for (i = 0; i < (load_automata)->states.size; i++)
 	{
 		if (load_automata->e_closure[i].size > 1)
@@ -5463,7 +5489,7 @@ void stringPushBack(string_vector* char_vector, char* item)
 
 
 
-//function to split strings 
+//function to split strings with the selected delimitator
 bool splitString(char* string_to_split, char** substring, int* index, char delimitator)
 {
 	int initial_index;
@@ -5536,7 +5562,8 @@ int findItemIntVector(int_vector myvect, int item)
 }
 
 //function created to be called recursively to create each state eclosure. The original index will be always the same
-//...since it only changes in the parser. The value that changes it's the new state (if there is one transitio)
+//...since it only changes in the parser. The value that changes it's the new state (if there is at least one transition...
+//with the null event
 void eclosureFilling(automato* load_automata, int original_index, int index_next)
 {
 	int i = 0, j = 0, value = 0, x = 0;
@@ -5547,7 +5574,7 @@ void eclosureFilling(automato* load_automata, int original_index, int index_next
 		intVectPushBack(&(load_automata->e_closure[original_index]), index_next);
 	}
 
-//now it's necessary to check if the new state has transitions
+//now it's necessary to check if the new state has transitions with the null event 
 	if (load_automata->transitions[index_next][0]->size != 0)
 	{
 //if there are transitions and if the resulting state is different from any of the current eclosure, the function...
