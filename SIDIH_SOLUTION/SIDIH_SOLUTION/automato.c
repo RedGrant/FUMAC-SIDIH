@@ -54,6 +54,7 @@ void load_file(automato* load_automata, char* file_path);
 void parser(automato* load_automata, char* file_info);
 void nullEventSearcher(automato* load_automata, char* file_info);
 bool splitString(char* string_to_split, char** substring, int* index, char delimitator);
+bool splitStringMenu(char* string_to_split, char** substring, int* index, char delimitator);
 void deleteCharacter(char* str, char c);
 void eclosureFilling(automato* load_automata, int original_index, int index_next);
 
@@ -97,11 +98,13 @@ void menu()
 	int count = 0;
 	char c;
 	char buffer[1000];
+	char buffer2[1000];
 	i = 13;
 	j = 0;
 	automata_array* automata_vector;
 	automata_vector = newAutomatonArray();
-	
+	char* line;
+	int index = 0;
 
 	while (1)
 	{
@@ -150,6 +153,8 @@ void menu()
 		
 		case 1:
 		
+			line = (char*)malloc(1);
+			index = 0;
 		//if the automata array doesn't have any automaton, allocate memory and load the file
 			
 			if (automata_vector->automata_number == 0)
@@ -160,12 +165,22 @@ void menu()
 		//ask the user to write the file path
 
 				printf("Write the file path\n\n");
-				scanf("%s", buffer);
-				getchar();
+				fgets(buffer, 100, stdin);
+				deleteCharacter(buffer, '\n');
+				strcpy(buffer2, buffer);
+				deleteCharacter(buffer2, ' ');
+				deleteCharacter(buffer2, '\0');
+				while (splitStringMenu(buffer2, &line, &index, '\\'));
+				deleteCharacter(buffer2, '\r');
+				deleteCharacter(buffer2, '\n');
 				load_file(automata_vector->automata[automata_vector->automata_number], buffer);
-				stringPushBack(&(automata_vector->automata_name), buffer);
+				stringPushBack(&(automata_vector->automata_name), line);
 				memset(buffer, 0, 1000);
+				memset(buffer2, 0, 1000);
 				automata_vector->automata_number++;
+				
+				free(line);
+				
 				
 		//if the inserted automaton hasn't pass the parser succesfully, it will be deleted
 				
@@ -189,59 +204,66 @@ void menu()
 			{
 
 				printf("Write the file path\n\n");
-				scanf("%s", buffer);
-				getchar();
-		
+				fgets(buffer, 100, stdin);
+				deleteCharacter(buffer, '\n');
+				strcpy(buffer2, buffer);
+				deleteCharacter(buffer2, ' ');
+				deleteCharacter(buffer2, '\0');
+				while (splitStringMenu(buffer2, &line, &index, '\\'));
+				deleteCharacter(buffer2, '\r');
+				deleteCharacter(buffer2, '\n');
 
-		//-----------avoid repeatead automaton-----------//
 
-				for (z = 0; z < automata_vector->automata_number; z++)
-				{
-					if (strcmp(buffer, automata_vector->automata_name.string[z]) == 0)
-						dummy = 1;
-				}
-				if (dummy == 1)
-				{
-					dummy = 0;
-					printf("\n\nThis automata has already been loaded! Press enter to continue! \n\n");
-					while (getchar() != '\n');
-					i = 0;
-					do
+					//-----------avoid repeatead automaton-----------//
+
+					for (z = 0; z < automata_vector->automata_number; z++)
 					{
-						j++;
-						printf("\n");
-					} while (j != 10);
-					j = 0;
-					break;
-				}
-
-		//-----------avoid repeatead automaton-----------//
-		
-
-		//if it isn't, add it to the automata's array
-				else
-				{
-					automata_vector->automata = (automato**)realloc(automata_vector->automata, sizeof(automato*)*(automata_vector->automata_number + 1));
-					automata_vector->automata[automata_vector->automata_number] = new_automata();
-					load_file(automata_vector->automata[automata_vector->automata_number], buffer);
-					stringPushBack(&(automata_vector->automata_name), buffer);
-					memset(buffer, 0, 1000);
-					automata_vector->automata_number++;
-					
-		//if the inserted automaton didn't pass the parser, it will be removed from the array
-
-					if (automata_vector->automata[automata_vector->automata_number - 1]->error == 1)
+						if (strcmp(line, automata_vector->automata_name.string[z]) == 0)
+							dummy = 1;
+					}
+					if (dummy == 1)
 					{
-						printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
-						getchar();
-						automata_vector->automata[automata_vector->automata_number - 1]->error = 0;
-						deleteAutomata(automata_vector, &(automata_vector->automata_name), automata_vector->automata_number - 1);
+						dummy = 0;
+						printf("\n\nThis automata has already been loaded! Press enter to continue! \n\n");
+						while (getchar() != '\n');
 						i = 0;
+						do
+						{
+							j++;
+							printf("\n");
+						} while (j != 10);
+						j = 0;
 						break;
 					}
-					k = 1;
 
-				}
+					//-----------avoid repeatead automaton-----------//
+
+
+					//if it isn't, add it to the automata's array
+					else
+					{
+						automata_vector->automata = (automato**)realloc(automata_vector->automata, sizeof(automato*)*(automata_vector->automata_number + 1));
+						automata_vector->automata[automata_vector->automata_number] = new_automata();
+						load_file(automata_vector->automata[automata_vector->automata_number], buffer);
+						stringPushBack(&(automata_vector->automata_name), line);
+						memset(buffer, 0, 1000);
+						automata_vector->automata_number++;
+
+						//if the inserted automaton didn't pass the parser, it will be removed from the array
+
+						if (automata_vector->automata[automata_vector->automata_number - 1]->error == 1)
+						{
+							printf("The automata was not correctly loaded! Press any key to return to the menu\n\n");
+							getchar();
+							automata_vector->automata[automata_vector->automata_number - 1]->error = 0;
+							deleteAutomata(automata_vector, &(automata_vector->automata_name), automata_vector->automata_number - 1);
+							i = 0;
+							break;
+						}
+						k = 1;
+
+					}
+				free(line);
 			}
 
 		//otherwise, this message will be printed
@@ -5390,6 +5412,57 @@ bool splitString(char* string_to_split, char** substring, int* index, char delim
 
 	return true;
 }
+
+
+//function to split strings with the selected delimitator of inserted path
+bool splitStringMenu(char* string_to_split, char** substring, int* index, char delimitator)
+{
+	int initial_index;
+	while (string_to_split[*index] != '\0')
+	{
+		initial_index = *index;
+
+		if (string_to_split[*index] == '\0') {
+
+			return false;
+		}
+
+		while (true)
+		{
+			if (string_to_split[*index] == delimitator)
+			{
+				*index += 1;
+				break;
+			}
+
+			*index += 1;
+
+			if (string_to_split[*index] == '\0') {
+				break;
+			}
+		}
+
+		if (string_to_split[*index] == '\0') {
+			*substring = (char*)realloc(*substring, sizeof(char) * (*index - initial_index + 1));
+			strncpy(*substring, (string_to_split + initial_index), (*index - initial_index + 1));
+			deleteCharacter(*substring, '\r');
+			deleteCharacter(*substring, '\n');
+			return true;
+		}
+		else
+		{
+			*substring = (char*)realloc(*substring, sizeof(char) * (*index - initial_index));
+			strncpy(*substring, (string_to_split + initial_index), (*index - initial_index - 1));
+		}
+
+
+	
+	}
+
+	
+}
+
+
 
 //delete a character (ignores the selected characters)
 void deleteCharacter(char* str, char c)
