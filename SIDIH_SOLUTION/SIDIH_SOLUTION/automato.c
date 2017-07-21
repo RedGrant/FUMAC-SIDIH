@@ -2,78 +2,93 @@
 
 //----------------------------------------------------------private functions prototypes----------------------------------------------------------//
 
+automata_array* newAutomatonArray();
+void resetAutomataArrayStructure(automata_array* load_array);
 
-void parser(automato* load_automata, char* file_info);
-void nullEventSearcher(automato* load_automata, char* file_info);
-void deleteCharacter(char* str, char c);
-bool splitString(char* string_to_split, char** substring, int* index, char delimitator);
-int findItemStringVector(char* string, string_vector vect);
-int findItemIntVector(int_vector myvect, int item);
-void intVectPushBack(int_vector* vector, int item);
-void stringPushBack(string_vector* char_vector, char* item);
-void writeIntVectorInConsole(int_vector* vector, string_vector* string_vect);
-void writeStringVectorInConsole(string_vector* string_vect);
-void accesibleState(automato* load_automata, int state_index, int *accessible_states);
-void rewriteAutomata(automato* load_automata, int* valid_states, int dfa_canonical);
-void freeData(automato* load_automata);
-void coaccesibleState(automato* load_automata, int state_index, int *coaccessible_states);
-void sortArrayAscending(int_vector* array_to_sort);
-void eclosureFilling(automato* load_automata, int original_index, int index_next);
-void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events);
-int findItemarray(int* array_to_search, int item, int array_size);
-void writeDfaAutomata(automato* load_automata, dfa* load_dfa);
+automato* new_automata();
 void resetAutomataStruct(automato* load_automata);
-void resetDfaStructure(dfa* load_dfa);
-void freeDfaStructure(dfa* load_dfa, automato* load_automata);
+void freeAutomata(automato* load_automata);
+void freeData(automato* load_automata);
+
+
 dfa* newDfa();
+void resetDfaStructure(dfa* load_dfa);
 void freeDfa(dfa* load_dfa, automato* load_automata);
-void pairCreation(automato* load_automata, int_vector* pair);
-int nCr(automato* load_automata);
-int factorial(int number);
+void freeDfaStructure(dfa* load_dfa, automato* load_automata);
+void dfaOrNfa(automato* load_automata);
+void nfaToDfa(automato* load_automata, int nda_or_da);
+void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events);
+void writeDfaAutomata(automato* load_automata, dfa* load_dfa);
+
+
 canonical* newCanonical();
 void resetCanonicalStructure(canonical* load_canonical);
 void freeCanonical(canonical* load_canonical, automato* load_automata);
-void resetDfaStructure(dfa* load_dfa);
 void freeCanonicalStructure(canonical* load_canonical, automato* load_automata);
+void dfaCanonical(automato* load_automata);
+void pairCreation(automato* load_automata, int_vector* pair);
 void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two);
 void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index);
 void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical);
-int clean_stdin();
+
+
 product* newProduct();
 void resetProductStructure(product* load_product);
-void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index);
-void freeProductStructure(product* load_product, automato* load_automata);
 void freeProduct(product* load_product, automato* load_automata);
+void freeProductStructure(product* load_product, automato* load_automata);
+void automataProduct(automata_array* automata_vector, automato* automata1, automato* automata2);
+void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index);
 void writeProductAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, product* load_product);
+
+
 parallel* newParallel();
 void resetParallelStructure(parallel* load_parallel);
-void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index);
-void freeParallelStructure(parallel* load_parallel);
 void freeParallel(parallel* load_parallel);
-void writeParallelAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, parallel* load_parallel);
-automata_array* newAutomatonArray();
-void resetAutomataArrayStructure(automata_array* load_array);
-void load_file(automato* load_automata, char* file_path);
-void printAutomata(automato* load_automata);
-void checkAccessibilty(automato* load_automata, int dfa_canonical);
-void checkCoaccessibilty(automato* load_automata, int dfa_canonical);
-void dfaOrNfa(automato* load_automata);
-void nfaToDfa(automato* load_automata, int nda_or_da);
-void freeAutomata(automato* load_automata);
-void dfaCanonical(automato* load_automata);
-void automataProduct(automata_array* automata_vector, automato* automata1, automato* automata2);
+void freeParallelStructure(parallel* load_parallel);
 void automataParallel(automata_array* automata_vector, automato* automata1, automato* automata2);
+void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index);
+void writeParallelAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, parallel* load_parallel);
+
+
+void load_file(automato* load_automata, char* file_path);
+void parser(automato* load_automata, char* file_info);
+void nullEventSearcher(automato* load_automata, char* file_info);
+bool splitString(char* string_to_split, char** substring, int* index, char delimitator);
+void deleteCharacter(char* str, char c);
+void eclosureFilling(automato* load_automata, int original_index, int index_next);
+
+
+void checkAccessibilty(automato* load_automata, int dfa_canonical);
+void accesibleState(automato* load_automata, int state_index, int *accessible_states);
+void checkCoaccessibilty(automato* load_automata, int dfa_canonical);
+void coaccesibleState(automato* load_automata, int state_index, int *coaccessible_states);
+
+
+void printAutomata(automato* load_automata);
+void writeIntVectorInConsole(int_vector* vector, string_vector* string_vect);
+void writeStringVectorInConsole(string_vector* string_vect);
+void rewriteAutomata(automato* load_automata, int* valid_states, int dfa_canonical);
+
+
 void writeAutomataToFile(automato* load_automata);
 void deleteAutomata(automata_array* automata_vector, string_vector* automata_name, int automata_to_delete);
-automato* new_automata();
 
 
-//----------------------------------------------------------private functions prototypes----------------------------------------------------------//
+int clean_stdin();
+int nCr(automato* load_automata);
+int factorial(int number);
+void sortArrayAscending(int_vector* array_to_sort);
+void intVectPushBack(int_vector* vector, int item);
+void stringPushBack(string_vector* char_vector, char* item);
+int findItemStringVector(char* string, string_vector vect);
+int findItemIntVector(int_vector myvect, int item);
+int findItemarray(int* array_to_search, int item, int array_size);
 
+//----------------------------------------------------------private functions prototypes-----------------------------------------------------------//
 
+//*************************************************************************************************************************************************//
 
-
-//----------------------------------------------------------------Public functions----------------------------------------------------------------//
+//----------------------------------------------------------------Public functions-----------------------------------------------------------------//
 
 //solution's menu called in the main function
 void menu()
@@ -1289,13 +1304,32 @@ void menu()
 	}
 }
 
-//----------------------------------------------------------------Public functions----------------------------------------------------------------//
+//----------------------------------------------------------------Public functions-----------------------------------------------------------------//
 
-
-
-
+//*************************************************************************************************************************************************//
 
 //----------------------------------------------------------------Private functions----------------------------------------------------------------//
+
+
+//----------------------------------------------------automaton creation private functions---------------------------------------------------------//
+
+
+//function responsible for creating a variable of the type automata_array
+automata_array* newAutomatonArray()
+{
+	automata_array* new_array;
+	new_array = (automata_array*)malloc(sizeof(automata_array));
+	resetAutomataArrayStructure(new_array);
+	return new_array;
+}
+
+//reset the variables that are in the parallel's structure
+void resetAutomataArrayStructure(automata_array* load_array)
+{
+	load_array->automata = NULL;
+	load_array->automata_name.size = 0;
+	load_array->automata_number = 0;
+}
 
 //function responsible for creating a new automata
 automato* new_automata()
@@ -1306,53 +1340,36 @@ automato* new_automata()
 	return new_aut;
 }
 
-//function that loads to an automata a new file
-void load_file(automato* load_automata, char* file_path)
+//reset the variables that are in the automato's structure
+void resetAutomataStruct(automato* load_automata)
 {
-	FILE* fp;
-	int size = 0;
-	char* file_info;
-	fp = fopen(file_path, "rb");
-	//check if there's something in the file
-	if (fp == NULL)
-	{
-		printf("Error opening file");
-		load_automata->error = 1;
-		return;
-	}
-	//get amount of characters in file
-	fseek(fp, 0, SEEK_END);
-	size = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-	//load file to a file_info string
-	file_info = (char *)malloc(size + 1);
-	fread(file_info, sizeof(char), size, fp);
-	//last character is atributted with an end string
-	file_info[size] = '\0';
-	fclose(fp);
-	//calls private function 
-	parser(load_automata, file_info);
-	free(file_info);
+	load_automata->error = 0;
+	load_automata->states.size = 0;
+	load_automata->events.size = 0;
+	load_automata->marked.size = 0;
+	load_automata->initial = 0;
+	load_automata->transitions = NULL;
+	load_automata->inverse_transitions = NULL;
+	load_automata->e_closure = NULL;
+	load_automata->null_event = 0;
+	load_automata->deterministic = 0;
 }
 
-//function responsible of writing a selected automaton in the console
-void printAutomata(automato* load_automata)
+//function that clears the memory of an variable of type automato
+void freeAutomata(automato* load_automata)
 {
+	freeData(load_automata);
+	free(load_automata);
+}
 
-	printf("G=(X,E,f,Xinit,Xmarked)\n\n");
-	int i = 0, j = 0, x = 0, comma_counter = 0;
+//function that frees the memory of all the variables that belong to the structure of the type automato
+void freeData(automato* load_automata)
+{
+	int i = 0, j = 0, x = 0, z = 0;
 
-	printf("States\n");
-	printf("X=");
-	writeStringVectorInConsole(&(load_automata->states));
+	//----------------------------freeing the transitions----------------------------//
 
-	printf("Events\n");
-	printf("E=");
-	writeStringVectorInConsole(&(load_automata->events));
-
-	printf("Transitions");
-
-	if (load_automata->transitions != NULL)
+	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
 		{
@@ -1360,299 +1377,184 @@ void printAutomata(automato* load_automata)
 			{
 				if (load_automata->transitions[i][j]->size != 0)
 				{
-					printf("\nf(%s", load_automata->states.string[i]);
-					printf(",%s)=", load_automata->events.string[j]);
-
-					for (x = 0; x < load_automata->transitions[i][j]->size; x++)
-					{
-						if (load_automata->transitions[i][j]->size != 0 && load_automata->transitions[i][j]->size == 1)
-						{
-							printf("(%s)", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
-							continue;
-						}
-
-						if (load_automata->transitions[i][j]->size != 0 && load_automata->transitions[i][j]->size > 1 && (x < ((load_automata->transitions[i][j]->size) - 1)))
-						{
-							if (x == 0)
-							{
-								printf("(%s,", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
-							}
-							else
-								printf("%s,", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
-						}
-						if (load_automata->transitions[i][j]->size != 0 && (x == ((load_automata->transitions[i][j]->size) - 1)))
-							printf("%s)", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
-					}
+					free(load_automata->transitions[i][j]->values);
 				}
+				free(load_automata->transitions[i][j]);
 			}
+			free(load_automata->transitions[i]);
 		}
+		free(load_automata->transitions);
 	}
+	//----------------------------freeing the transitions----------------------------//
 
-	printf("\n\n");
 
-	printf("Initial\n");
-	printf("Xinit=%s\n\n", load_automata->states.string[load_automata->initial]);
-
-	printf("Marked\n");
-	printf("Xmarked=");
-	writeIntVectorInConsole(&(load_automata->marked), &(load_automata->states));
-
-	if (load_automata->e_closure != NULL)
+	//------------------------freeing the inverse transitions------------------------//
+	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
 	{
 		for (i = 0; i < load_automata->states.size; i++)
 		{
-			printf("EClosure(%s)=", load_automata->states.string[i]);
-			for (j = 0; j < load_automata->e_closure[i].size; j++)
+			for (j = 0; j < load_automata->events.size; j++)
 			{
-				if (load_automata->e_closure[i].size == 1)
+				if (load_automata->inverse_transitions[i][j]->size != 0)
 				{
-					printf("{%s}", (load_automata)->states.string[(load_automata)->e_closure[i].values[j]]);
+					free(load_automata->inverse_transitions[i][j]->values);
 				}
-				if (load_automata->e_closure[i].size > 1)
-				{
-					if (j == 0)
-					{
-						printf("{%s,", (load_automata)->states.string[load_automata->e_closure[i].values[j]]);
-					}
-					if (j > 0 && j != (load_automata->e_closure[i].size - 1))
-					{
-						printf("%s,", (load_automata)->states.string[(load_automata)->e_closure[i].values[j]]);
-					}
-					if (j == load_automata->e_closure[i].size - 1)
-					{
-						printf("%s}", (load_automata)->states.string[load_automata->e_closure[i].values[j]]);
-					}
-				}
+				free(load_automata->inverse_transitions[i][j]);
 			}
-			printf("\n\n");
+			free(load_automata->inverse_transitions[i]);
 		}
+		free(load_automata->inverse_transitions);
 	}
-}
+	//------------------------freeing the inverse transitions------------------------//
 
-//check accessibility of all states, removing the unreachable. the 2nd argument refers to showing info or not in the console
-void checkAccessibilty(automato* load_automata, int dfa_canonical)
-{
-	int i = 0, j = 0, x = 0, initial_confirmation = 0;
-	int *accessible_states;
-	int *accessible_states_check;
-	int continue_loop = 1, delete_counter = 0;
 
-	accessible_states = malloc(sizeof(int)*(load_automata->states.size));
-	accessible_states_check = malloc(sizeof(int)*(load_automata->states.size));
-
-	for (i = 0; i < load_automata->events.size; i++)
+	//----------------------------freeing the eclosure-------------------------------//
+	if (load_automata->states.size > 0 && load_automata->e_closure != NULL)
 	{
-		if ((load_automata->transitions[load_automata->initial][i]->size) != 0)
-		{
-			initial_confirmation = 0;
-			break;
-		}
-		else initial_confirmation = 1;
-	}
-	if (initial_confirmation == 1)
-	{
-		printf("No state is acessible through the initial state!\n\n");
-		getchar();
-		load_automata->error = 1;
-		return;
-	}
-	else
-	{
-		//initially say that no state is accessilbe
 		for (i = 0; i < load_automata->states.size; i++)
 		{
-			accessible_states[i] = 0;
-		}
-		//the initial state must be accessible 
-		accessible_states[load_automata->initial] = 1;
-		x = load_automata->initial;
-		//after that check the transitions of the initial state any state that comes from initial will be accessible 
-		accesibleState(load_automata, x, accessible_states);
-
-		//while it's still one, it will continue.
-		while (continue_loop)
-		{
-			//every state will be checked and if it is accessible we'll see if its transitions are too
-			for (i = 0; i < load_automata->states.size; i++)
+			if (load_automata->e_closure[i].size > 0)
 			{
-				if (accessible_states[i] == 1)
-				{
-					accesibleState(load_automata, i, accessible_states);
-				}
-			}
-
-			continue_loop = 0;
-
-			for (i = 0; i < load_automata->states.size; i++)
-			{
-				//if there are differences in the accessible states array and it's "copy", there are still paths to take
-				if (accessible_states[i] != accessible_states_check[i])
-				{
-					for (j = 0; j < load_automata->states.size; j++)
-					{
-						accessible_states_check[j] = accessible_states[j];
-					}
-					continue_loop = 1;
-					break;
-				}
+				free(load_automata->e_closure[i].values);
 			}
 		}
+		free(load_automata->e_closure);
 	}
-	//how many states need to be deleted
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		if (accessible_states[i] == 0)
-			delete_counter++;
-	}
+	//----------------------------freeing the eclosure-------------------------------//
 
-	if (delete_counter > 0)
+
+	//----------------------------freeing marked states------------------------------//
+	if (load_automata->marked.size > 0)
 	{
-		if (dfa_canonical == 0)
+		free(load_automata->marked.values);
+	}
+	//----------------------------freeing marked states------------------------------//
+
+
+	//-----------------------------freeing the states--------------------------------//
+	if (load_automata->states.size > 0)
+	{
+		for (i = 0; i < load_automata->states.size; i++)
 		{
-	//show the states that are going to be removed
-			printf("-----------The automata had non-accessible states. They are going to be removed-----------\n\n\n");
-			printf("Removed states:\n");
-			for (i = 0; i < load_automata->states.size; i++)
-			{
-				if (accessible_states[i] == 0)
-					printf("%s \n", load_automata->states.string[i]);
-			}
+			free(load_automata->states.string[i]);
 		}
-
-	//rewrites the automaton to be passed in the parser without the removed states
-		rewriteAutomata(load_automata, accessible_states, dfa_canonical);
-
+		free(load_automata->states.string);
 	}
-	else
-	{
-		if (dfa_canonical == 0)
-		{
-			printf("\n\n\n-----------All states in the automata are accessible!-----------\n\n\n");
-		}
-	}
+	//-----------------------------freeing the states--------------------------------//
 
 
-	free(accessible_states);
-	free(accessible_states_check);
-}
-
-//check coaccessibility of all states, removing the unreachable. the 2nd argument refers to showing info or not in the console
-void checkCoaccessibilty(automato* load_automata, int dfa_canonical)
-{
-	int i = 0, j = 0, x = 0, initial_confirmation = 0;
-	int *coaccessible_states;
-	int *coaccessible_states_check;
-	int continue_loop = 1, delete_counter = 0;
-
-	coaccessible_states = malloc(sizeof(int)*(load_automata->states.size));
-	coaccessible_states_check = malloc(sizeof(int)*(load_automata->states.size));
-
-
-	for (j = 0; j < load_automata->marked.size; j++)
+	//-----------------------------freeing the events--------------------------------//
+	if (load_automata->events.size)
 	{
 		for (i = 0; i < load_automata->events.size; i++)
 		{
-
-			if ((load_automata->inverse_transitions[load_automata->marked.values[j]][i]->size) != 0)
-			{
-				initial_confirmation = 0;
-				break;
-			}
-			else initial_confirmation = 1;
+			free(load_automata->events.string[i]);
 		}
+		free(load_automata->events.string);
 	}
+	//-----------------------------freeing the events--------------------------------//
 
-	if (initial_confirmation == 1)
-	{
-		printf("No state is coacessible through any marked state(s)!\n\n");
-		getchar();
-		load_automata->error = 1;
-		return;
-	}
-	else
-	{
-		//initially say that no state is coaccessilbe
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			coaccessible_states[i] = 0;
-		}
-		//the marked state(s) must be coaccessible 
-		for (j = 0; j < load_automata->marked.size; j++)
-		{
-			for (i = 0; i < load_automata->states.size; i++)
-			{
-				if (load_automata->marked.values[j] == i)
-				{
-					coaccessible_states[i] = 1;
-				}
-			}
-		}
-
-
-		for (x = 0; x < load_automata->marked.size; x++)
-		{
-			//after that check the transitions of the marked state any state that comes from marked will be coacessible
-			coaccesibleState(load_automata, load_automata->marked.values[x], coaccessible_states);
-
-			//while it's still one, it will continue.
-			while (continue_loop)
-			{
-				//every state will be checked and if it is coaccessible we'll see if its transitions are too
-				for (i = 0; i < load_automata->states.size; i++)
-				{
-					if (coaccessible_states[i] == 1)
-					{
-						coaccesibleState(load_automata, i, coaccessible_states);
-					}
-				}
-
-				continue_loop = 0;
-
-				for (i = 0; i < load_automata->states.size; i++)
-				{
-					//if there are differences in the accessible states array and it's "copy", there are still paths to take
-					if (coaccessible_states[i] != coaccessible_states_check[i])
-					{
-						for (j = 0; j < load_automata->states.size; j++)
-						{
-							coaccessible_states_check[j] = coaccessible_states[j];
-						}
-						continue_loop = 1;
-						break;
-					}
-				}
-			}
-			continue_loop = 0;
-		}
-	}
-	//how many states need to be deleted
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		if (coaccessible_states[i] == 0)
-			delete_counter++;
-	}
-	
-	//show the states that are going to be removed
-	if (delete_counter > 0)
-	{
-		printf("\n\n\n-----------The automata had non-coaccessible states. They are going to be removed-----------\n\n\n");
-		printf("Removed states:\n");
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			if (coaccessible_states[i] == 0)
-				printf("%s \n", load_automata->states.string[i]);
-		}
-
-	//rewrites the automaton to be passed in the parser without the removed states
-		rewriteAutomata(load_automata, coaccessible_states, dfa_canonical);
-	}
-	else
-		printf("\n\n\n-----------All states in the automata are coaccessible!-----------\n\n\n");
-
-	free(coaccessible_states);
-	free(coaccessible_states_check);
+	//reset the variables
+	resetAutomataStruct(load_automata);
 }
 
+
+//----------------------------------------------------automaton creation private functions---------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//--------------------------------------------------------conversion private functions-------------------------------------------------------------//
+
+
+//function responsible for creating a variable of the type dfa
+dfa* newDfa()
+{
+	dfa* new_dfa;
+	new_dfa = (dfa*)malloc(sizeof(dfa));
+	resetDfaStructure(new_dfa);
+	return new_dfa;
+}
+
+//reset the variables that are in the dfa's structure
+void resetDfaStructure(dfa* load_dfa)
+{
+	load_dfa->transitions_table = NULL;
+	load_dfa->dfa_states = NULL;
+	load_dfa->dfa_states_size = 0;
+	load_dfa->error = 0;
+}
+
+//function that frees the dfa's type structure and its variables
+void freeDfa(dfa* load_dfa, automato* load_automata)
+{
+	freeDfaStructure(load_dfa, load_automata);
+	free(load_dfa);
+}
+
+//function that frees the memory of all the variables that belong to the structure of the type dfa
+void freeDfaStructure(dfa* load_dfa, automato* load_automata)
+{
+	int i = 0, j = 0;
+	//----------------------------freeing the transitions----------------------------//
+	if (load_dfa->dfa_states_size > 0)
+	{
+		//if there are null events in the automaton
+		if (load_automata->null_event == 1)
+		{
+			for (i = 0; i < load_dfa->dfa_states_size; i++)
+			{
+
+				for (j = 1; j < load_automata->events.size; j++)
+				{
+					if (load_dfa->transitions_table[i][j].size != 0)
+					{
+						free(load_dfa->transitions_table[i][j].values);
+					}
+
+				}
+				free(load_dfa->transitions_table[i]);
+			}
+
+		}
+		//if there aren't null events in the automaton
+		else
+		{
+			for (i = 0; i < load_dfa->dfa_states_size; i++)
+			{
+				for (j = 0; j < load_automata->events.size; j++)
+				{
+					if (load_dfa->transitions_table[i][j].size != 0)
+					{
+						free(load_dfa->transitions_table[i][j].values);
+					}
+
+				}
+				free(load_dfa->transitions_table[i]);
+			}
+
+		}
+		free(load_dfa->transitions_table);
+	}
+	//----------------------------freeing the transitions----------------------------//
+
+
+	//-----------------------------freeing the states--------------------------------//
+	if (load_dfa->dfa_states_size > 0)
+	{
+		for (i = 0; i < load_dfa->dfa_states_size; i++)
+		{
+			if (load_dfa->dfa_states[i].size > 0)
+			{
+				free(load_dfa->dfa_states[i].values);
+			}
+		}
+		free(load_dfa->dfa_states);
+	}
+	//-----------------------------freeing the states--------------------------------//
+
+	//reset the variables
+	resetDfaStructure(load_dfa);
+}
 
 //checks if an automaton is DFA or NFA
 void dfaOrNfa(automato* load_automata)
@@ -1660,7 +1562,7 @@ void dfaOrNfa(automato* load_automata)
 	int i = 0, j = 0, x = 0, t = 0, y = 0, confirmation = 0;
 	if (load_automata->null_event == 1)
 	{
-//returns a warning if the automaton only has a state. It will later be removed
+		//returns a warning if the automaton only has a state. It will later be removed
 		if (load_automata->states.size == 1)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
@@ -1668,13 +1570,13 @@ void dfaOrNfa(automato* load_automata)
 			load_automata->error = 1;
 			return;
 		}
-//otherwise, since it has null events, it will be NFA
+		//otherwise, since it has null events, it will be NFA
 		load_automata->deterministic = 0;
 		return;
 	}
 	else
 	{
-//returns a warning if the automaton only has a state. It will later be removed
+		//returns a warning if the automaton only has a state. It will later be removed
 		if (load_automata->states.size == 1)
 		{
 			printf("The automata only has one state. Please rewrite the automata! \n");
@@ -1682,8 +1584,8 @@ void dfaOrNfa(automato* load_automata)
 			load_automata->error = 1;
 			return;
 		}
-//otherwise, if for a certain state and event the automaton has more than 1 transition, the automaton...
-//...will be marked as NFA
+		//otherwise, if for a certain state and event the automaton has more than 1 transition, the automaton...
+		//...will be marked as NFA
 		for (i = 0; i < load_automata->states.size; i++)
 		{
 			for (j = 0; j < load_automata->events.size; j++)
@@ -1698,16 +1600,15 @@ void dfaOrNfa(automato* load_automata)
 				}
 			}
 		}
-//if any of the above conditions are not met, the automaton will be marked as DFA
+		//if any of the above conditions are not met, the automaton will be marked as DFA
 		load_automata->deterministic = 1;
 	}
 }
 
-
 //function that converts nfa automaton to dfa
 void nfaToDfa(automato* load_automata, int nda_or_da)
 {
-//if it is NFA then it needs to be converted
+	//if it is NFA then it needs to be converted
 	if (nda_or_da == 0)
 	{
 		printf("\n\n\n-----------Converting the not deterministic finite automata to a deterministic finite automata-----------\n\n\n");
@@ -1804,7 +1705,7 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 
 
 			//if there is a null event, only transitions without it will be considered
-			
+
 			if (load_automata->null_event == 1)
 			{
 				for (x = 1; x < load_automata->events.size; x++)
@@ -1831,1537 +1732,6 @@ void nfaToDfa(automato* load_automata, int nda_or_da)
 	}
 }
 
-
-
-//function that clears the memory of an variable of type automato
-void freeAutomata(automato* load_automata)
-{
-	freeData(load_automata);
-	free(load_automata);
-}
-
-//function that minimizes automata
-void dfaCanonical(automato* load_automata)
-{
-	if (load_automata->states.size > 1)
-	{
-		printf("\n\n\n-----------Checking if the automata needs to be converted to the canonical form.-----------\n\n\n");
-		int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, marked_test = 0, leave_iterations = 0;
-
-		//creation of canonical type variable
-		canonical* load_canonical = newCanonical();
-		resetCanonicalStructure(load_canonical);
-
-		//-----------------memory allocation and variables declaration-----------------// 
-		if (load_canonical->pair == NULL)
-		{
-			load_canonical->pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
-		}
-
-		if (load_canonical->table_marked == NULL)
-		{
-			load_canonical->table_marked = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
-		}
-
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			load_canonical->pair[i].size = 0;
-			load_canonical->table_marked[i].size = 0;
-		}
-		//-----------------memory allocation and variables declaration-----------------// 
-		
-
-
-		//number of possible states' pairs
-		load_canonical->pair_size = nCr(load_automata);
-		printf("Number of pairs available in the automata: %d\n\n", load_canonical->pair_size);
-
-		//states' pairs creation
-		pairCreation(load_automata, load_canonical->pair);
-
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-
-			for (j = 0; j < load_automata->marked.size; j++)
-			{
-				if (i == load_automata->marked.values[j])
-				{
-					marked_test++;
-				}
-			}
-			
-			//third step of the minimization algorithm:
-			// if the first element of the pair isn't final, then the 2nd element must be final, for the pair to be marked
-			if (marked_test == 0)
-			{
-				for (z = 0; z < load_canonical->pair[i].size; z++)
-				{
-					for (j = 0; j < load_automata->marked.size; j++)
-					{
-						if (load_canonical->pair[i].values[z] == load_automata->marked.values[j])
-						{
-							marked_test++;
-							break;
-						}
-
-					}
-					if (marked_test > 0)
-					{
-						intVectPushBack(&(load_canonical->table_marked[i]), 1);
-						load_canonical->marked_counter++;
-						marked_test = 0;
-					}
-					else
-					{
-						intVectPushBack(&(load_canonical->table_marked[i]), 0);
-						marked_test = 0;
-					}
-				}
-			}
-
-			//since the first element of the pair is final, then to the pair be marked, the 2nd element mustn't be final
-			else
-			{
-				marked_test = 0;
-				for (z = 0; z < load_canonical->pair[i].size; z++)
-				{
-					for (x = 0; x < load_automata->marked.size; x++)
-					{
-						if (load_canonical->pair[i].values[z] == load_automata->marked.values[x])
-						{
-							marked_test++;
-							break;
-						}
-
-					}
-					if (marked_test == 0)
-					{
-						intVectPushBack(&(load_canonical->table_marked[i]), 1);
-						load_canonical->marked_counter++;
-						marked_test = 0;
-					}
-
-					else
-					{
-						marked_test = 0;
-						intVectPushBack(&(load_canonical->table_marked[i]), 0);
-					}
-
-				}
-			}
-		}
-
-		int marked_counter = 0;
-
-		int pair_one = 0, pair_two = 0, dummy = 0, trs1_not = 0, trs2_not = 0;
-
-		//4th step of the minimization algorithm
-		//step done while there are new marked pairs
-		do
-		{
-			//variable atribution needed to check if there are new marked pairs
-			marked_counter = load_canonical->marked_counter;
-			
-			
-			for (i = 0; i < load_automata->states.size; i++)
-			{
-				for (y = 0; y < load_canonical->table_marked[i].size; y++)
-				{
-					if (load_canonical->table_marked[i].values[y] == 0)
-					{
-						for (j = 0; j < load_automata->events.size; j++)
-						{
-							//if there is a transition save the value of the first pair
-							if (load_automata->transitions[i][j]->size != 0)
-							{
-								pair_one = load_automata->transitions[i][j]->values[0];
-							}
-							else
-								//this is flagged otherwised
-								trs1_not = 1;
-							
-							//same is done to the second element
-							if (load_automata->transitions[load_canonical->pair[i].values[y]][j]->size != 0)
-							{
-								pair_two = load_automata->transitions[load_canonical->pair[i].values[y]][j]->values[0];
-							}
-							else
-								trs2_not = 1;
-							
-							//ordenate the pairs
-							if (pair_one > pair_two)
-							{
-								dummy = pair_one;
-								pair_one = pair_two;
-								pair_two = dummy;
-							}
-							
-							//----------------mark if one of the states hasn't a transition----------------//
-							if (trs1_not == 1 && trs2_not == 0)
-							{
-								trs1_not = 0;
-								load_canonical->table_marked[i].values[y] = 1;
-								load_canonical->marked_counter++;
-							}
-							else
-							{
-								if (trs1_not == 0 && trs2_not == 1)
-								{
-									trs2_not = 0;
-									load_canonical->table_marked[i].values[y] = 1;
-									load_canonical->marked_counter++;
-								}
-							//----------------mark if one of the states hasn't a transition----------------//
-								
-							//if both states have transitions need to call the function checkIfIsMarkedOnTable
-								else
-								{
-									if (trs1_not == 0 && trs2_not == 0)
-									{
-
-										if (pair_one != pair_two)
-										{
-											checkIfIsMarkedOnTable(load_automata, load_canonical, i, y, load_canonical->pair[i].values[y], pair_one, pair_two);
-										}
-									}
-
-								}
-							}
-							trs1_not = 0;
-							trs2_not = 0;
-						}
-					}
-				}
-			}
-
-		} while (marked_counter != load_canonical->marked_counter);
-
-		//create the combined states that belong to the unmarked pairs
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			for (j = 0; j < load_canonical->table_marked[i].size; j++)
-			{
-				if (load_canonical->table_marked[i].values[j] == 0)
-				{
-					createCanonicalStates(load_automata, load_canonical, load_canonical->pair[i].values[j], i, j);
-				}
-			}
-		}
-
-		dummy = 0;
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			for (j = 0; j < load_canonical->table_marked[i].size; j++)
-			{
-				if (load_canonical->table_marked[i].values[j] == 1)
-				{
-					dummy++;
-				}
-			}
-		}
-
-		//if the number of combined states is equal to the initial pair size, it means it was already in the canonical form
-		if (dummy == load_canonical->pair_size)
-		{
-			printf("The automata is already at the canonical form! All states are marked! Leaving function...\n\n");
-			freeCanonical(load_canonical, load_automata);
-			return;
-		}
-
-		//otherwise there is a new minimized automaton. Next steps are here to take care of the transitions of each combined state
-		else
-		{
-			dummy = 0;
-			if (load_canonical->combined_states != 0)
-			{
-				printf("\n\n-----------The automata needs to be converted to the canonical form... Converting-----------\n\n");
-				for (i = 0; i < load_automata->states.size; i++)
-				{
-					for (j = 0; j < load_canonical->combined_states; j++)
-					{
-						if (findItemarray(load_canonical->states_to_combine[j].values, i, load_canonical->states_to_combine[j].size) != load_canonical->states_to_combine[j].size)
-							dummy++;
-					}
-					if (dummy == 0)
-					{
-						load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
-						load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
-						intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), i);
-						load_canonical->combined_states++;
-					}
-					else
-						dummy = 0;
-				}
-			}
-			else
-			{
-				load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector)*load_automata->states.size);
-				for (i = 0; i < load_automata->states.size; i++)
-				{
-					intVectPushBack(&(load_canonical->states_to_combine[i]), i);
-				}
-			}
-
-
-			if (load_canonical->combined_states_trs == NULL)
-			{
-				load_canonical->combined_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_canonical->combined_states);
-
-				for (i = 0; i < load_canonical->combined_states; i++)
-				{
-					load_canonical->combined_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(load_automata->events.size));
-				}
-			}
-
-			for (i = 0; i < load_canonical->combined_states; i++)
-			{
-				for (j = 0; j < load_automata->events.size; j++)
-				{
-					load_canonical->combined_states_trs[i][j].size = 0;
-				}
-			}
-
-
-			dummy = 0;
-			for (i = 0; i < load_canonical->combined_states; i++)
-			{
-				for (x = 0; x < load_canonical->states_to_combine[i].size; x++)
-				{
-					for (j = 0; j < load_automata->events.size; j++)
-					{
-						if (load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->size != 0)
-						{
-							if (load_canonical->trs_size == 0)
-							{
-
-								for (k = 0; k < load_canonical->combined_states; k++)
-								{
-									if (findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
-									{
-										load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
-										load_canonical->combined_states_trs[i][j].values[0] = k;
-										load_canonical->combined_states_trs[i][j].size = 1;
-										load_canonical->trs_size++;
-										break;
-									}
-								}
-
-							}
-							else
-							{
-								if (load_canonical->combined_states_trs[i][j].size != 0)
-								{
-									dummy++;
-								}
-
-								if (dummy == 0)
-								{
-									for (k = 0; k < load_canonical->combined_states; k++)
-									{
-										if (findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
-										{
-											load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
-											load_canonical->combined_states_trs[i][j].values[0] = k;
-											load_canonical->combined_states_trs[i][j].size = 1;
-											load_canonical->trs_size++;
-											break;
-										}
-									}
-								}
-								else
-								{
-									dummy = 0;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			writeCanonicalAutomata(load_automata, load_canonical);
-		}
-	}
-	else
-	{
-		printf("Not enough states to make pairs! The automata is already at canonical form! \n\n ");
-	}
-
-}
-
-//function responsible of making the product between two automatons 
-void automataProduct(automata_array* automata_vector, automato* automata1, automato* automata2)
-{
-	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0;
-	
-	//the product is made as long as there are states in the automatons and if both are deterministic
-	if (automata1->states.size > 0 && automata2->states.size > 0)
-	{
-		dfaOrNfa(automata1);
-		dfaOrNfa(automata2);
-		if (automata1->deterministic == 1 && automata2->deterministic == 1)
-		{
-			printf("\n\n\n-----------Making the product between the inserted automata-----------\n\n\n");
-
-			//---------------------------------memory allocation and variables initialization---------------------------------//
-			product* load_product = newProduct();
-			resetProductStructure(load_product);
-
-			if (load_product->product_states == NULL)
-			{
-				load_product->product_states = (int_vector*)malloc(sizeof(int_vector));
-			}
-
-			load_product->product_states[0].size = 0;
-
-			//the first state is the combination of the initial state of both automata
-			intVectPushBack(&(load_product->product_states[0]), automata1->initial);
-			intVectPushBack(&(load_product->product_states[0]), automata2->initial);
-
-			load_product->product_states_size++;
-			//---------------------------------memory allocation and variables initialization---------------------------------//
-			
-			
-			
-			//recursive function that creates the product states
-			productStatescreation(load_product, automata1, automata2, 0);
-
-			
-			
-			//---------------------------------memory allocation and variables initialization---------------------------------//
-			if (load_product->product_states_trs == NULL)
-			{
-				load_product->product_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_product->product_states_size);
-
-				for (i = 0; i < load_product->product_states_size; i++)
-				{
-					load_product->product_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(automata1->events.size));
-				}
-			}
-
-			for (i = 0; i < load_product->product_states_size; i++)
-			{
-				for (j = 0; j < automata1->events.size; j++)
-				{
-					load_product->product_states_trs[i][j].size = 0;
-				}
-			}
-			//---------------------------------memory allocation and variables initialization---------------------------------//
-
-
-			//-------------------------------------------product states transitions-------------------------------------------//
-			dummy = 0;
-			for (i = 0; i < load_product->product_states_size; i++)
-			{
-				for (j = 0; j < automata1->events.size; j++)
-				{
-					for (z = 0; z < automata2->events.size; z++)
-					{
-						if (strcmp(automata1->events.string[j], automata2->events.string[z]) == 0)
-						{
-							if (automata1->transitions[load_product->product_states[i].values[0]][j]->size != 0 && automata2->transitions[load_product->product_states[i].values[1]][z]->size != 0)
-							{
-								if (load_product->product_trs_size == 0)
-								{
-									for (k = 0; k < load_product->product_states_size; k++)
-									{
-										if (findItemarray(load_product->product_states[k].values, automata1->transitions[load_product->product_states[i].values[0]][j]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size &&
-											findItemarray(load_product->product_states[k].values, automata2->transitions[load_product->product_states[i].values[1]][z]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size)
-										{
-											load_product->product_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
-											load_product->product_states_trs[i][j].values[0] = k;
-											load_product->product_states_trs[i][j].size = 1;
-											load_product->product_trs_size++;
-											break;
-										}
-									}
-
-								}
-								else
-								{
-									if (load_product->product_states_trs[i][j].size != 0)
-									{
-										dummy++;
-									}
-
-									if (dummy == 0)
-									{
-										for (k = 0; k < load_product->product_states_size; k++)
-										{
-											if (findItemarray(load_product->product_states[k].values, automata1->transitions[load_product->product_states[i].values[0]][j]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size &&
-												findItemarray(load_product->product_states[k].values, automata2->transitions[load_product->product_states[i].values[1]][z]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size)
-											{
-												load_product->product_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
-												load_product->product_states_trs[i][j].values[0] = k;
-												load_product->product_states_trs[i][j].size = 1;
-												load_product->product_trs_size++;
-												break;
-											}
-										}
-									}
-									else
-									{
-										dummy = 0;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			//-------------------------------------------product states transitions-------------------------------------------//
-			
-			
-			
-			
-			writeProductAutomata(automata_vector,automata1, automata2, load_product);
-		}
-		else
-		{
-			printf("One of the automata is NFA, please use the other functions in the menu to change that!\n\n");
-			return;
-		}
-
-	}
-
-
-
-}
-
-//function responsible of making the parallel between two automatons 
-void automataParallel(automata_array* automata_vector, automato* automata1, automato* automata2)
-{
-	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0, automata1_event = 0, automata2_event = 0;
-	
-	//the parallel is made as long as there are states in the automatons and if both are deterministic
-	if (automata1->states.size > 0 && automata2->states.size > 0)
-	{
-		dfaOrNfa(automata1);
-		dfaOrNfa(automata2);
-		if (automata1->deterministic == 1 && automata2->deterministic == 1)
-		{
-			printf("\n\n\n-----------Making the parallel between the inserted automaton-----------\n\n\n");
-
-
-			//---------------------------------memory allocation and variables initialization---------------------------------//
-			parallel* load_parallel = newParallel();
-			resetParallelStructure(load_parallel);
-
-			if (load_parallel->parallel_states == NULL)
-			{
-				load_parallel->parallel_states = (int_vector*)malloc(sizeof(int_vector));
-			}
-
-			//----------------------------save the events of both automata withouth repeating them----------------------------//
-			for (i = 0; i < automata1->events.size; i++)
-			{
-				stringPushBack(&(load_parallel->parallel_events), automata1->events.string[i]);
-			}
-
-			for (i = 0; i < automata2->events.size; i++)
-			{
-				if (findItemStringVector(automata2->events.string[i], load_parallel->parallel_events) == load_parallel->parallel_events.size)
-				{
-					stringPushBack(&(load_parallel->parallel_events), automata2->events.string[i]);
-				}
-			}
-			//----------------------------save the events of both automata withouth repeating them----------------------------//
-
-
-
-			//---------------------------------memory allocation and variables initialization---------------------------------//
-			
-			
-			load_parallel->parallel_states[0].size = 0;
-			
-			//the first state is the combination of the initial state of both automata
-			intVectPushBack(&(load_parallel->parallel_states[0]), automata1->initial);
-			intVectPushBack(&(load_parallel->parallel_states[0]), automata2->initial);
-
-			load_parallel->parallel_states_size++;
-
-			//recursive function that creates the parallel states
-			parallelStatescreation(load_parallel, automata1, automata2, 0);
-
-
-			//-------------------------------------------product states transitions-------------------------------------------//
-			if (load_parallel->parallel_states_trs == NULL)
-			{
-				load_parallel->parallel_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_parallel->parallel_states_size);
-
-				for (i = 0; i < load_parallel->parallel_states_size; i++)
-				{
-					load_parallel->parallel_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(load_parallel->parallel_events.size));
-				}
-			}
-
-
-			for (i = 0; i < load_parallel->parallel_states_size; i++)
-			{
-				for (j = 0; j < load_parallel->parallel_events.size; j++)
-				{
-					load_parallel->parallel_states_trs[i][j].size = 0;
-				}
-			}
-
-
-			dummy = 0;
-
-			//the procedure of saving the transitions is almost the same as the one found in parallelStatescreation
-			for (i = 0; i < load_parallel->parallel_states_size; i++)
-			{
-				for (y = 0; y < load_parallel->parallel_events.size; y++)
-				{
-					for (j = 0; j < automata1->events.size; j++)
-					{
-						for (z = 0; z < automata2->events.size; z++)
-						{
-							if (strcmp(automata1->events.string[j], automata2->events.string[z]) == 0 && (strcmp(load_parallel->parallel_events.string[y], automata1->events.string[j]) == 0))
-							{
-								if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0 && automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
-								{
-									if (load_parallel->parallel_trs_size == 0)
-									{
-										for (k = 0; k < load_parallel->parallel_states_size; k++)
-										{
-											if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]))
-											{
-												load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-												load_parallel->parallel_states_trs[i][y].values[0] = k;
-												load_parallel->parallel_states_trs[i][y].size = 1;
-												load_parallel->parallel_trs_size++;
-												break;
-											}
-										}
-									}
-									else
-									{
-										if (load_parallel->parallel_states_trs[i][y].size != 0)
-										{
-											dummy++;
-										}
-
-										if (dummy == 0)
-										{
-											for (k = 0; k < load_parallel->parallel_states_size; k++)
-											{
-												if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]))
-												{
-													load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-													load_parallel->parallel_states_trs[i][y].values[0] = k;
-													load_parallel->parallel_states_trs[i][y].size = 1;
-													load_parallel->parallel_trs_size++;
-													break;
-
-												}
-											}
-										}
-										else
-										{
-											dummy = 0;
-										}
-									}
-								}
-							}
-
-							else
-							{
-
-								dummy = 0;
-
-								if (strcmp(load_parallel->parallel_events.string[y], automata1->events.string[j]) == 0)
-								{
-									automata1_event = j;
-									dummy++;
-								}
-
-								if (dummy == 0)
-								{
-									automata1_event = -1;
-								}
-								else
-									dummy = 0;
-
-								if (automata1_event != -1)
-								{
-									for (x = 0; x < automata2->events.size; x++)
-									{
-
-										if (strcmp(load_parallel->parallel_events.string[automata1_event], automata2->events.string[x]) == 0)
-										{
-											automata2_event = x;
-											dummy++;
-											break;
-										}
-
-									}
-									if (dummy == 0)
-									{
-										automata2_event = -1;
-									}
-									else
-										dummy = 0;
-								}
-								else
-									automata2_event = -1;
-
-
-								if (automata1_event != -1)
-								{
-									if (automata2_event == -1)
-									{
-										if (load_parallel->parallel_trs_size == 0)
-										{
-											if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0)
-											{
-												for (k = 0; k < load_parallel->parallel_states_size; k++)
-												{
-													if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == load_parallel->parallel_states[i].values[1]))
-													{
-														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-														load_parallel->parallel_states_trs[i][y].values[0] = k;
-														load_parallel->parallel_states_trs[i][y].size = 1;
-														load_parallel->parallel_trs_size++;
-														break;
-													}
-												}
-
-											}
-										}
-										else
-										{
-											if (load_parallel->parallel_states_trs[i][y].size != 0)
-											{
-												dummy++;
-											}
-
-											if (dummy == 0)
-											{
-												if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0)
-												{
-													for (k = 0; k < load_parallel->parallel_states_size; k++)
-													{
-														if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == load_parallel->parallel_states[i].values[1]))
-														{
-															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-															load_parallel->parallel_states_trs[i][y].values[0] = k;
-															load_parallel->parallel_states_trs[i][y].size = 1;
-															load_parallel->parallel_trs_size++;
-															break;
-														}
-													}
-												}
-											}
-											else
-												dummy = 0;
-										}
-									}
-								}
-
-
-								dummy = 0;
-
-								if (strcmp(load_parallel->parallel_events.string[y], automata2->events.string[z]) == 0)
-								{
-									automata2_event = z;
-									dummy++;
-								}
-
-								if (dummy == 0)
-								{
-									automata2_event = -1;
-								}
-								else
-									dummy = 0;
-
-								if (automata2_event != -1)
-								{
-									for (x = 0; x < automata1->events.size; x++)
-									{
-										if (strcmp(load_parallel->parallel_events.string[automata2_event], automata1->events.string[x]) == 0)
-										{
-											automata1_event = x;
-											dummy++;
-											break;
-										}
-
-									}
-									if (dummy == 0)
-									{
-										automata1_event = -1;
-									}
-									else
-										dummy = 0;
-								}
-								else
-								{
-									automata1_event = -1;
-								}
-
-
-
-								if (automata2_event != -1)
-								{
-
-
-									if (automata1_event == -1)
-									{
-										if (load_parallel->parallel_trs_size == 0)
-										{
-											if (automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
-											{
-												for (k = 0; k < load_parallel->parallel_states_size; k++)
-												{
-													if ((load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]) && (load_parallel->parallel_states[k].values[0] == load_parallel->parallel_states[i].values[0]))
-													{
-														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-														load_parallel->parallel_states_trs[i][y].values[0] = k;
-														load_parallel->parallel_states_trs[i][y].size = 1;
-														load_parallel->parallel_trs_size++;
-														break;
-													}
-												}
-
-											}
-										}
-										else
-										{
-											if (load_parallel->parallel_states_trs[i][y].size != 0)
-											{
-												dummy++;
-											}
-
-											if (dummy == 0)
-											{
-												if (automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
-												{
-													for (k = 0; k < load_parallel->parallel_states_size; k++)
-													{
-														if ((load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]) && (load_parallel->parallel_states[k].values[0] == load_parallel->parallel_states[i].values[0]))
-														{
-															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
-															load_parallel->parallel_states_trs[i][y].values[0] = k;
-															load_parallel->parallel_states_trs[i][y].size = 1;
-															load_parallel->parallel_trs_size++;
-															break;
-														}
-													}
-												}
-											}
-											else
-												dummy = 0;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			//-------------------------------------------product states transitions-------------------------------------------//
-			
-			
-			
-			writeParallelAutomata(automata_vector, automata1, automata2, load_parallel);
-		}
-		else
-		{
-			printf("One of the automaton is NFA, please use the other functions in the menu to change that!\n\n");
-			return;
-		}
-	}
-}
-
-
-//waits for the user to insert an enter after writing on the console
-int clean_stdin()
-{
-	while (getchar() != '\n');
-	return 1;
-}
-
-
-//creates pairs with the automaton's states
-void pairCreation(automato* load_automata, int_vector* pair)
-{
-	int i = 0, j = 0, pair_size = 0, temp = 0;
-
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		for (j = i + 1; j <= (load_automata->states.size - 1); j++)
-		{
-			intVectPushBack(&(pair[i]), j);
-		}
-	}
-}
-
-//the 4th step of the minimization algorithm. Checks if the pair of states resultant from the pair transition is one of the marked pairs or not
-void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two)
-{
-	int i = 0;
-
-
-	for (i = 0; i < load_canonical->pair[pair_one].size; i++)
-	{
-		if (load_canonical->pair[pair_one].values[i] == pair_two)
-			pair_two = i;
-	}
-
-	if (load_canonical->table_marked[pair_one].values[pair_two] == 1)
-	{
-		load_canonical->table_marked[pair_index].values[y] = 1;
-		load_canonical->marked_counter++;
-		table_index = 1;
-	}
-}
-
-
-//function responsible of creating the combined states out of the states that belong to the unmarked pairs
-void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index)
-{
-	int i = 0, j = 0, x = 0, test = 0;
-	int* provisory_states;
-	int provisory_states_size = 0;
-	for (i = pair_1st_index; i < load_automata->states.size; i++)
-	{
-		if (i == pair_1st_index)
-		{
-			for (j = pair_index + 1; j < load_canonical->pair[i].size; j++)
-			{
-				if (load_canonical->table_marked[i].values[j] == 0)
-				{
-					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
-					{
-						if (provisory_states_size == 0)
-						{
-							provisory_states_size++;
-							provisory_states = (int*)malloc(sizeof(int));
-							provisory_states[provisory_states_size - 1] = pair_1st_index;
-
-							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = result_pair;
-							}
-
-							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = i;
-							}
-
-							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
-							}
-
-						}
-						else
-						{
-							if (findItemarray(provisory_states, pair_1st_index, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = pair_1st_index;
-							}
-
-							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = result_pair;
-							}
-
-							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = i;
-							}
-
-							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
-							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			for (j = 0; j < load_canonical->pair[i].size; j++)
-			{
-				if (load_canonical->table_marked[i].values[j] == 0)
-				{
-					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
-					{
-						if (provisory_states_size == 0)
-						{
-							provisory_states_size++;
-							provisory_states = (int*)malloc(sizeof(int));
-							provisory_states[provisory_states_size - 1] = pair_1st_index;
-
-							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = result_pair;
-							}
-
-							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = i;
-							}
-
-							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
-							}
-						}
-						else
-						{
-							if (findItemarray(provisory_states, pair_1st_index, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = pair_1st_index;
-							}
-
-							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = result_pair;
-							}
-
-							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = i;
-							}
-
-							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
-							{
-								provisory_states_size++;
-								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (provisory_states_size > 0)
-	{
-		if (load_canonical->combined_states == 0)
-		{
-			load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector));
-			load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
-			for (i = 0; i < provisory_states_size; i++)
-			{
-				intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
-			}
-			sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
-			load_canonical->combined_states++;
-		}
-		else
-		{
-			for (i = 0; i < load_canonical->combined_states; i++)
-			{
-				for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
-				{
-					for (x = 0; x < provisory_states_size; x++)
-					{
-						if (findItemarray(load_canonical->states_to_combine[i].values, provisory_states[x], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
-							test++;
-					}
-				}
-			}
-			if (test == 0)
-			{
-				load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
-				load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
-				for (i = 0; i < provisory_states_size; i++)
-				{
-					intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
-				}
-				sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
-				load_canonical->combined_states++;
-			}
-
-		}
-	}
-	else
-	{
-		provisory_states_size++;
-		provisory_states = (int*)malloc(sizeof(int));
-		provisory_states[provisory_states_size - 1] = pair_1st_index;
-
-		if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
-		{
-			provisory_states_size++;
-			provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
-			provisory_states[provisory_states_size - 1] = result_pair;
-		}
-	}
-
-	if (load_canonical->combined_states == 0)
-	{
-		load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector));
-		load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
-		for (i = 0; i < provisory_states_size; i++)
-		{
-			intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
-		}
-		sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
-		load_canonical->combined_states++;
-	}
-	else
-	{
-		for (i = 0; i < load_canonical->combined_states; i++)
-		{
-			for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
-			{
-				for (x = 0; x < provisory_states_size; x++)
-				{
-					if (findItemarray(load_canonical->states_to_combine[i].values, provisory_states[x], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
-						test++;
-				}
-			}
-		}
-		if (test == 0)
-		{
-			load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
-			load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
-			for (i = 0; i < provisory_states_size; i++)
-			{
-				intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
-			}
-			sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
-			load_canonical->combined_states++;
-		}
-
-	}
-
-	//free memory 
-	if (provisory_states_size > 0)
-	{
-		free(provisory_states);
-	}
-}
-
-//calculates the pairs (k=2) that are possible to combine with a number of states (n)
-int nCr(automato* load_automata)
-{
-	int result = 0;
-	int n = load_automata->states.size;
-	int k = 2;
-	int n_fact = factorial(n);
-	int k_fact = factorial(k);
-	int n_k = n - k;
-	int n_k_factorial = factorial(n_k);
-	result = n_fact / (k_fact * n_k_factorial);
-
-	return(result);
-}
-
-//computes the factorial of a given number
-int factorial(int number)
-{
-	int i, fact = 1;
-
-	for (i = 1; i <= number; i++)
-	{
-		fact = fact * i;
-	}
-	return(fact);
-}
-
-//function that frees the memory of all the variables that belong to the structure of the type automato
-void freeData(automato* load_automata)
-{
-	int i = 0, j = 0, x = 0, z = 0;
-	
-//----------------------------freeing the transitions----------------------------//
-
-	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
-	{
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			for (j = 0; j < load_automata->events.size; j++)
-			{
-				if (load_automata->transitions[i][j]->size != 0)
-				{
-					free(load_automata->transitions[i][j]->values);
-				}
-				free(load_automata->transitions[i][j]);
-			}
-			free(load_automata->transitions[i]);
-		}
-		free(load_automata->transitions);
-	}
-//----------------------------freeing the transitions----------------------------//
-
-
-//------------------------freeing the inverse transitions------------------------//
-	if (load_automata->states.size > 0 && load_automata->transitions != NULL)
-	{
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			for (j = 0; j < load_automata->events.size; j++)
-			{
-				if (load_automata->inverse_transitions[i][j]->size != 0)
-				{
-					free(load_automata->inverse_transitions[i][j]->values);
-				}
-				free(load_automata->inverse_transitions[i][j]);
-			}
-			free(load_automata->inverse_transitions[i]);
-		}
-		free(load_automata->inverse_transitions);
-	}
-//------------------------freeing the inverse transitions------------------------//
-
-
-//----------------------------freeing the eclosure-------------------------------//
-	if (load_automata->states.size > 0 && load_automata->e_closure != NULL)
-	{
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			if (load_automata->e_closure[i].size > 0)
-			{
-				free(load_automata->e_closure[i].values);
-			}
-		}
-		free(load_automata->e_closure);
-	}
-//----------------------------freeing the eclosure-------------------------------//
-
-
-//----------------------------freeing marked states------------------------------//
-	if (load_automata->marked.size > 0)
-	{
-		free(load_automata->marked.values);
-	}
-//----------------------------freeing marked states------------------------------//
-
-
-//-----------------------------freeing the states--------------------------------//
-	if (load_automata->states.size > 0)
-	{
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			free(load_automata->states.string[i]);
-		}
-		free(load_automata->states.string);
-	}
-//-----------------------------freeing the states--------------------------------//
-
-
-//-----------------------------freeing the events--------------------------------//
-	if (load_automata->events.size)
-	{
-		for (i = 0; i < load_automata->events.size; i++)
-		{
-			free(load_automata->events.string[i]);
-		}
-		free(load_automata->events.string);
-	}
-//-----------------------------freeing the events--------------------------------//
-
-//reset the variables
-	resetAutomataStruct(load_automata);
-}
-
-//reset the variables that are in the automato's structure
-void resetAutomataStruct(automato* load_automata)
-{
-	load_automata->error = 0;
-	load_automata->states.size = 0;
-	load_automata->events.size = 0;
-	load_automata->marked.size = 0;
-	load_automata->initial = 0;
-	load_automata->transitions = NULL;
-	load_automata->inverse_transitions = NULL;
-	load_automata->e_closure = NULL;
-	load_automata->null_event = 0;
-	load_automata->deterministic = 0;
-}
-
-//function that frees the dfa's type structure and its variables
-void freeDfa(dfa* load_dfa, automato* load_automata)
-{
-	freeDfaStructure(load_dfa, load_automata);
-	free(load_dfa);
-}
-
-//function that frees the memory of all the variables that belong to the structure of the type dfa
-void freeDfaStructure(dfa* load_dfa, automato* load_automata)
-{
-	int i = 0, j = 0;
-//----------------------------freeing the transitions----------------------------//
-	if (load_dfa->dfa_states_size > 0)
-	{
-//if there are null events in the automaton
-		if (load_automata->null_event == 1)
-		{
-			for (i = 0; i < load_dfa->dfa_states_size; i++)
-			{
-
-				for (j = 1; j < load_automata->events.size; j++)
-				{
-					if (load_dfa->transitions_table[i][j].size != 0)
-					{
-						free(load_dfa->transitions_table[i][j].values);
-					}
-
-				}
-				free(load_dfa->transitions_table[i]);
-			}
-
-		}
-//if there aren't null events in the automaton
-		else
-		{
-			for (i = 0; i < load_dfa->dfa_states_size; i++)
-			{
-				for (j = 0; j < load_automata->events.size; j++)
-				{
-					if (load_dfa->transitions_table[i][j].size != 0)
-					{
-						free(load_dfa->transitions_table[i][j].values);
-					}
-
-				}
-				free(load_dfa->transitions_table[i]);
-			}
-
-		}
-		free(load_dfa->transitions_table);
-	}
-//----------------------------freeing the transitions----------------------------//
-
-
-//-----------------------------freeing the states--------------------------------//
-	if (load_dfa->dfa_states_size > 0)
-	{
-		for (i = 0; i < load_dfa->dfa_states_size; i++)
-		{
-			if (load_dfa->dfa_states[i].size > 0)
-			{
-				free(load_dfa->dfa_states[i].values);
-			}
-		}
-		free(load_dfa->dfa_states);
-	}
-	//-----------------------------freeing the states--------------------------------//
-
-//reset the variables
-	resetDfaStructure(load_dfa);
-}
-
-//function responsible for creating a variable of the type dfa
-dfa* newDfa()
-{
-	dfa* new_dfa;
-	new_dfa = (dfa*)malloc(sizeof(dfa));
-	resetDfaStructure(new_dfa);
-	return new_dfa;
-}
-
-//reset the variables that are in the dfa's structure
-void resetDfaStructure(dfa* load_dfa)
-{
-	load_dfa->transitions_table = NULL;
-	load_dfa->dfa_states = NULL;
-	load_dfa->dfa_states_size = 0;
-	load_dfa->error = 0;
-}
-
-//function responsible for creating a variable of the type canonical
-canonical* newCanonical()
-{
-	canonical* new_canonical;
-	new_canonical = (canonical*)malloc(sizeof(canonical));
-	resetCanonicalStructure(new_canonical);
-	return new_canonical;
-}
-
-//reset the variables that are in the canonical's structure
-void resetCanonicalStructure(canonical* load_canonical)
-{
-	load_canonical->error = 0;
-	load_canonical->trs_size = 0;
-	load_canonical->pair_size = 0;
-	load_canonical->marked_counter = 0;
-	load_canonical->combined_states = 0;
-	load_canonical->states_to_combine = NULL;
-	load_canonical->table_marked = NULL;
-	load_canonical->pair = NULL;
-	load_canonical->combined_states_trs = NULL;
-}
-
-//function that frees the canonical's type structure and its variables
-void freeCanonical(canonical* load_canonical, automato* load_automata)
-{
-	freeCanonicalStructure(load_canonical, load_automata);
-	free(load_canonical);
-}
-
-//function that frees the memory of all the variables that belong to the structure of the type canonical
-void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
-{
-	int i = 0, j = 0;
-
-//----------------------------freeing the transitions----------------------------//
-	if (load_canonical->combined_states != 0)
-	{
-		for (i = 0; i < load_canonical->combined_states; i++)
-		{
-			for (j = 0; j < load_automata->events.size; j++)
-			{
-				if (load_canonical->combined_states_trs[i][j].size != 0)
-				{
-					free(load_canonical->combined_states_trs[i][j].values);
-				}
-			}
-			free(load_canonical->combined_states_trs[i]);
-		}
-		free(load_canonical->combined_states_trs);
-	}
-//----------------------------freeing the transitions----------------------------//
-
-
-	if (load_automata->states.size > 0)
-	{
-//---------------------------freeing the states' pairs---------------------------//
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			if (load_canonical->pair[i].size > 0)
-			{
-				free(load_canonical->pair[i].values);
-			}
-		}
-		free(load_canonical->pair);
-//---------------------------freeing the states' pairs---------------------------//
-
-
-//---------------------------freeing the marked pairs----------------------------//
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			if (load_canonical->table_marked[i].size > 0)
-			{
-				free(load_canonical->table_marked[i].values);
-			}
-		}
-		free(load_canonical->table_marked);
-	}
-//---------------------------freeing the marked pairs----------------------------//
-
-
-//--------------------------freeing the minimized states-------------------------//
-	if (load_canonical->combined_states != 0)
-	{
-		for (i = 0; i < load_canonical->combined_states; i++)
-		{
-			if (load_canonical->states_to_combine[i].size > 0)
-			{
-				free(load_canonical->states_to_combine[i].values);
-			}
-		}
-		free(load_canonical->states_to_combine);
-	}
-//--------------------------freeing the minimized states-------------------------//
-
-
-//reset the variables
-	resetCanonicalStructure(load_canonical);
-}
-
-
-
-//function responsible for creating a variable of the type product
-product* newProduct()
-{
-	product* new_product;
-	new_product = (product*)malloc(sizeof(product));
-	resetProductStructure(new_product);
-	return new_product;
-}
-
-//reset the variables that are in the product's structure
-void resetProductStructure(product* load_product)
-{
-	load_product->error = 0;
-	load_product->product_trs_size = 0;
-	load_product->product_states_size = 0;
-	load_product->product_states = NULL;
-	load_product->product_states_trs = NULL;
-}
-
-
-//function that frees the product's type structure and its variables
-void freeProduct(product* load_product, automato* load_automata)
-{
-	freeProductStructure(load_product, load_automata);
-	free(load_product);
-}
-
-//function that frees the memory of all the variables that belong to the structure of the type product
-void freeProductStructure(product* load_product, automato* load_automata)
-{
-	int i = 0, j = 0;
-
-//----------------------------freeing the transitions----------------------------//
-	if (load_product->product_states_size != 0)
-	{
-		for (i = 0; i < load_product->product_states_size; i++)
-		{
-			for (j = 0; j < load_automata->events.size; j++)
-			{
-				if (load_product->product_states_trs[i][j].size != 0)
-				{
-					free(load_product->product_states_trs[i][j].values);
-				}
-			}
-			free(load_product->product_states_trs[i]);
-		}
-		free(load_product->product_states_trs);
-	}
-//----------------------------freeing the transitions----------------------------//
-
-//------------------------------freeing the states-------------------------------//
-	if (load_product->product_states_size != 0)
-	{
-		for (i = 0; i < load_product->product_states_size; i++)
-		{
-			if (load_product->product_states[i].size > 0)
-			{
-				free(load_product->product_states[i].values);
-			}
-		}
-		free(load_product->product_states);
-	}
-//------------------------------freeing the states-------------------------------//
-
-//reset variables
-	resetProductStructure(load_product);
-}
-
-
 //function that saves new DFA states and transitions, created with the transitions made with the entry state and event 
 void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* load_dfa, int index, int events)
 {
@@ -3369,8 +1739,8 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 	int dfa_provisory_state_size = 0;
 	int i = 0, y = 0, j = 0, z = 0, test = 0, counter = 0, different_state = 0;
 
-//the number of NFA states that belong to this DFA state
-	
+	//the number of NFA states that belong to this DFA state
+
 	for (j = 0; j < dfa_states.size; j++)
 	{
 		//each transition of the NFA states that belong to the DFA state will be tested with the event that entered in the function
@@ -3454,7 +1824,7 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 			{
 				test = 0;
 				counter = 0;
-				
+
 				//the variable counter will be incremented each time a NFA state from the provisory DFA state is different from the j's DFA state
 				for (z = 0; z < dfa_provisory_state_size; z++)
 				{
@@ -3484,7 +1854,7 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 				different_state++;
 			}
 		}
-		
+
 		//if the provisory dfa state is different from all the dfa states, this DFA state will be added 
 		if (different_state == load_dfa->dfa_states_size)
 		{
@@ -3511,7 +1881,7 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 			load_dfa->transitions_table[index][events].size++;
 			load_dfa->dfa_states_size++;
 		}
-		
+
 		//otherwise, only the transition will be saved
 		else
 		{
@@ -3543,206 +1913,6 @@ void checkDfaTransitions(automato* load_automata, int_vector dfa_states, dfa* lo
 	}
 	free(dfa_provisory_state);
 }
-
-//rewrites the automata case it's needed 
-void rewriteAutomata(automato* load_automata, int* valid_states, int dfa_canonical)
-{
-
-
-	int i = 0, j = 0, x = 0, z = 0, k = 0;
-	int* buffer[1000];
-	char c;
-	x = x + strlen("STATES\r\n") + 1;
-	char* new_automata_info;
-	int* valid_events;
-
-	valid_events = (int*)malloc(sizeof(int)*load_automata->events.size);
-	for (i = 0; i < load_automata->events.size; i++)
-	{
-		valid_events[i] = 0;
-	}
-
-	new_automata_info = malloc(x);
-
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcpy(new_automata_info, "STATES\r\n\0");
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		if (valid_states[i] == 1)
-		{
-			x = x + strlen(load_automata->states.string[i]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->states.string[i]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
-		}
-	}
-
-	x = x + strlen("EVENTS\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "EVENTS\r\n\0");
-
-
-	for (i = 0; i < load_automata->events.size; i++)
-	{
-		for (j = 0; j < load_automata->states.size; j++)
-		{
-			if (valid_states[j] == 1)
-			{
-				if (load_automata->transitions[j][i]->size != 0)
-				{
-					valid_events[i] = 1;
-					break;
-				}
-			}
-		}
-	}
-
-	if (load_automata->null_event == 1)
-	{
-		for (i = 1; i < load_automata->events.size; i++)
-		{
-			if (valid_events[i] == 1)
-			{
-				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-				strcat(new_automata_info, load_automata->events.string[i]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "\r\n\0");
-			}
-		}
-	}
-	else
-	{
-		for (i = 0; i < load_automata->events.size; i++)
-		{
-			if (valid_events[i] == 1)
-			{
-				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-				strcat(new_automata_info, load_automata->events.string[i]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "\r\n\0");
-			}
-		}
-	}
-
-
-	x = x + strlen("TRANSITIONS\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "TRANSITIONS\r\n\0");
-
-
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		if (valid_states[i] == 1)
-		{
-			for (j = 0; j < load_automata->events.size; j++)
-			{
-				if (load_automata->transitions[i][j]->size != 0)
-				{
-					for (z = 0; z < load_automata->transitions[i][j]->size; z++)
-					{
-
-						if (valid_states[load_automata->transitions[i][j]->values[z]] == 1)
-						{
-							x = x + strlen(load_automata->states.string[i]) + strlen(";") + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[i]);
-							strcat(new_automata_info, "\0");
-							strcat(new_automata_info, ";\0");
-
-							x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->events.string[j]);
-							strcat(new_automata_info, "\0");
-							strcat(new_automata_info, ";\0");
-
-							x = x + strlen(load_automata->states.string[load_automata->transitions[i][j]->values[z]]) + strlen("\r\n") + 2;
-							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-							strcat(new_automata_info, load_automata->states.string[load_automata->transitions[i][j]->values[z]]);
-							strcat(new_automata_info, "\0");
-							strcat(new_automata_info, "\r\n\0");
-						}
-					}
-				}
-			}
-		}
-	}
-
-	x = x + strlen("INITIAL\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "INITIAL\r\n\0");
-
-	x = x + strlen(load_automata->states.string[load_automata->initial]) + strlen("\r\n") + 2;
-	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-	strcat(new_automata_info, load_automata->states.string[load_automata->initial]);
-	strcat(new_automata_info, "\0");
-	strcat(new_automata_info, "\r\n\0");
-
-
-	x = x + strlen("MARKED\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "MARKED\r\n\0");
-
-
-	for (i = 0; i < load_automata->marked.size; i++)
-	{
-		for (j = 0; j < load_automata->states.size; j++)
-		{
-			if ((load_automata->states.string[j] == load_automata->states.string[load_automata->marked.values[i]]) && valid_states[j] == 1)
-			{
-				x = x + strlen(load_automata->states.string[load_automata->marked.values[i]]) + strlen("\r\n") + 2;
-				strcat(new_automata_info, load_automata->states.string[load_automata->marked.values[i]]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "\r\n\0");
-			}
-		}
-	}
-
-
-	if (dfa_canonical == 0)
-	{
-		printf("\n\nDo you wish to change the current automata? Press 1 if yes, any other number if not \n\n");
-		while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
-		if (k == 1)
-		{
-			freeData(load_automata);
-			parser(load_automata, new_automata_info);
-		}
-		else
-		{
-			printf("\n\nDo you wish to print the changed automata? Press 1 if yes, any other number if not \n\n");
-			while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
-			if (k == 1)
-			{
-				automato* provisory;
-				provisory = new_automata();
-				parser(provisory, new_automata_info);
-				printAutomata(provisory);
-				freeAutomata(provisory);
-			}
-			printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
-			while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
-			if (k == 1)
-			{
-				automato* provisory;
-				provisory = new_automata();
-				parser(provisory, new_automata_info);
-				writeAutomataToFile(provisory);
-				freeAutomata(provisory);
-			}
-		}
-	}
-	else
-	{
-		freeData(load_automata);
-		parser(load_automata, new_automata_info);
-	}
-	free(new_automata_info);
-	free(valid_events);
-}
-
 
 //function that writes the DFA automata in the .aut format. Also it gives the user the choice of saving the automata in memory...
 //...or print it in the console or writing it to a file.
@@ -4175,6 +2345,744 @@ void writeDfaAutomata(automato* load_automata, dfa* load_dfa)
 	free(new_automata_info);
 }
 
+
+//--------------------------------------------------------conversion private functions-------------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//--------------------------------------------------------canonical private functions--------------------------------------------------------------//
+
+
+//function responsible for creating a variable of the type canonical
+canonical* newCanonical()
+{
+	canonical* new_canonical;
+	new_canonical = (canonical*)malloc(sizeof(canonical));
+	resetCanonicalStructure(new_canonical);
+	return new_canonical;
+}
+
+//reset the variables that are in the canonical's structure
+void resetCanonicalStructure(canonical* load_canonical)
+{
+	load_canonical->error = 0;
+	load_canonical->trs_size = 0;
+	load_canonical->pair_size = 0;
+	load_canonical->marked_counter = 0;
+	load_canonical->combined_states = 0;
+	load_canonical->states_to_combine = NULL;
+	load_canonical->table_marked = NULL;
+	load_canonical->pair = NULL;
+	load_canonical->combined_states_trs = NULL;
+}
+
+//function that frees the canonical's type structure and its variables
+void freeCanonical(canonical* load_canonical, automato* load_automata)
+{
+	freeCanonicalStructure(load_canonical, load_automata);
+	free(load_canonical);
+}
+
+//function that frees the memory of all the variables that belong to the structure of the type canonical
+void freeCanonicalStructure(canonical* load_canonical, automato* load_automata)
+{
+	int i = 0, j = 0;
+
+	//----------------------------freeing the transitions----------------------------//
+	if (load_canonical->combined_states != 0)
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_canonical->combined_states_trs[i][j].size != 0)
+				{
+					free(load_canonical->combined_states_trs[i][j].values);
+				}
+			}
+			free(load_canonical->combined_states_trs[i]);
+		}
+		free(load_canonical->combined_states_trs);
+	}
+	//----------------------------freeing the transitions----------------------------//
+
+
+	if (load_automata->states.size > 0)
+	{
+		//---------------------------freeing the states' pairs---------------------------//
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			if (load_canonical->pair[i].size > 0)
+			{
+				free(load_canonical->pair[i].values);
+			}
+		}
+		free(load_canonical->pair);
+		//---------------------------freeing the states' pairs---------------------------//
+
+
+		//---------------------------freeing the marked pairs----------------------------//
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			if (load_canonical->table_marked[i].size > 0)
+			{
+				free(load_canonical->table_marked[i].values);
+			}
+		}
+		free(load_canonical->table_marked);
+	}
+	//---------------------------freeing the marked pairs----------------------------//
+
+
+	//--------------------------freeing the minimized states-------------------------//
+	if (load_canonical->combined_states != 0)
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			if (load_canonical->states_to_combine[i].size > 0)
+			{
+				free(load_canonical->states_to_combine[i].values);
+			}
+		}
+		free(load_canonical->states_to_combine);
+	}
+	//--------------------------freeing the minimized states-------------------------//
+
+
+	//reset the variables
+	resetCanonicalStructure(load_canonical);
+}
+
+//function that minimizes automata
+void dfaCanonical(automato* load_automata)
+{
+	if (load_automata->states.size > 1)
+	{
+		printf("\n\n\n-----------Checking if the automata needs to be converted to the canonical form.-----------\n\n\n");
+		int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, marked_test = 0, leave_iterations = 0;
+
+		//creation of canonical type variable
+		canonical* load_canonical = newCanonical();
+		resetCanonicalStructure(load_canonical);
+
+		//-----------------memory allocation and variables declaration-----------------// 
+		if (load_canonical->pair == NULL)
+		{
+			load_canonical->pair = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
+		}
+
+		if (load_canonical->table_marked == NULL)
+		{
+			load_canonical->table_marked = (int_vector*)malloc(sizeof(int_vector)* load_automata->states.size);
+		}
+
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			load_canonical->pair[i].size = 0;
+			load_canonical->table_marked[i].size = 0;
+		}
+		//-----------------memory allocation and variables declaration-----------------// 
+
+
+
+		//number of possible states' pairs
+		load_canonical->pair_size = nCr(load_automata);
+		printf("Number of pairs available in the automata: %d\n\n", load_canonical->pair_size);
+
+		//states' pairs creation
+		pairCreation(load_automata, load_canonical->pair);
+
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+
+			for (j = 0; j < load_automata->marked.size; j++)
+			{
+				if (i == load_automata->marked.values[j])
+				{
+					marked_test++;
+				}
+			}
+
+			//third step of the minimization algorithm:
+			// if the first element of the pair isn't final, then the 2nd element must be final, for the pair to be marked
+			if (marked_test == 0)
+			{
+				for (z = 0; z < load_canonical->pair[i].size; z++)
+				{
+					for (j = 0; j < load_automata->marked.size; j++)
+					{
+						if (load_canonical->pair[i].values[z] == load_automata->marked.values[j])
+						{
+							marked_test++;
+							break;
+						}
+
+					}
+					if (marked_test > 0)
+					{
+						intVectPushBack(&(load_canonical->table_marked[i]), 1);
+						load_canonical->marked_counter++;
+						marked_test = 0;
+					}
+					else
+					{
+						intVectPushBack(&(load_canonical->table_marked[i]), 0);
+						marked_test = 0;
+					}
+				}
+			}
+
+			//since the first element of the pair is final, then to the pair be marked, the 2nd element mustn't be final
+			else
+			{
+				marked_test = 0;
+				for (z = 0; z < load_canonical->pair[i].size; z++)
+				{
+					for (x = 0; x < load_automata->marked.size; x++)
+					{
+						if (load_canonical->pair[i].values[z] == load_automata->marked.values[x])
+						{
+							marked_test++;
+							break;
+						}
+
+					}
+					if (marked_test == 0)
+					{
+						intVectPushBack(&(load_canonical->table_marked[i]), 1);
+						load_canonical->marked_counter++;
+						marked_test = 0;
+					}
+
+					else
+					{
+						marked_test = 0;
+						intVectPushBack(&(load_canonical->table_marked[i]), 0);
+					}
+
+				}
+			}
+		}
+
+		int marked_counter = 0;
+
+		int pair_one = 0, pair_two = 0, dummy = 0, trs1_not = 0, trs2_not = 0;
+
+		//4th step of the minimization algorithm
+		//step done while there are new marked pairs
+		do
+		{
+			//variable atribution needed to check if there are new marked pairs
+			marked_counter = load_canonical->marked_counter;
+
+
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				for (y = 0; y < load_canonical->table_marked[i].size; y++)
+				{
+					if (load_canonical->table_marked[i].values[y] == 0)
+					{
+						for (j = 0; j < load_automata->events.size; j++)
+						{
+							//if there is a transition save the value of the first pair
+							if (load_automata->transitions[i][j]->size != 0)
+							{
+								pair_one = load_automata->transitions[i][j]->values[0];
+							}
+							else
+								//this is flagged otherwised
+								trs1_not = 1;
+
+							//same is done to the second element
+							if (load_automata->transitions[load_canonical->pair[i].values[y]][j]->size != 0)
+							{
+								pair_two = load_automata->transitions[load_canonical->pair[i].values[y]][j]->values[0];
+							}
+							else
+								trs2_not = 1;
+
+							//ordenate the pairs
+							if (pair_one > pair_two)
+							{
+								dummy = pair_one;
+								pair_one = pair_two;
+								pair_two = dummy;
+							}
+
+							//----------------mark if one of the states hasn't a transition----------------//
+							if (trs1_not == 1 && trs2_not == 0)
+							{
+								trs1_not = 0;
+								load_canonical->table_marked[i].values[y] = 1;
+								load_canonical->marked_counter++;
+							}
+							else
+							{
+								if (trs1_not == 0 && trs2_not == 1)
+								{
+									trs2_not = 0;
+									load_canonical->table_marked[i].values[y] = 1;
+									load_canonical->marked_counter++;
+								}
+								//----------------mark if one of the states hasn't a transition----------------//
+
+								//if both states have transitions need to call the function checkIfIsMarkedOnTable
+								else
+								{
+									if (trs1_not == 0 && trs2_not == 0)
+									{
+
+										if (pair_one != pair_two)
+										{
+											checkIfIsMarkedOnTable(load_automata, load_canonical, i, y, load_canonical->pair[i].values[y], pair_one, pair_two);
+										}
+									}
+
+								}
+							}
+							trs1_not = 0;
+							trs2_not = 0;
+						}
+					}
+				}
+			}
+
+		} while (marked_counter != load_canonical->marked_counter);
+
+		//create the combined states that belong to the unmarked pairs
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			for (j = 0; j < load_canonical->table_marked[i].size; j++)
+			{
+				if (load_canonical->table_marked[i].values[j] == 0)
+				{
+					createCanonicalStates(load_automata, load_canonical, load_canonical->pair[i].values[j], i, j);
+				}
+			}
+		}
+
+		dummy = 0;
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			for (j = 0; j < load_canonical->table_marked[i].size; j++)
+			{
+				if (load_canonical->table_marked[i].values[j] == 1)
+				{
+					dummy++;
+				}
+			}
+		}
+
+		//if the number of combined states is equal to the initial pair size, it means it was already in the canonical form
+		if (dummy == load_canonical->pair_size)
+		{
+			printf("The automata is already at the canonical form! All states are marked! Leaving function...\n\n");
+			freeCanonical(load_canonical, load_automata);
+			return;
+		}
+
+		//otherwise there is a new minimized automaton. Next steps are here to take care of the transitions of each combined state
+		else
+		{
+			dummy = 0;
+			if (load_canonical->combined_states != 0)
+			{
+				printf("\n\n-----------The automata needs to be converted to the canonical form... Converting-----------\n\n");
+				for (i = 0; i < load_automata->states.size; i++)
+				{
+					for (j = 0; j < load_canonical->combined_states; j++)
+					{
+						if (findItemarray(load_canonical->states_to_combine[j].values, i, load_canonical->states_to_combine[j].size) != load_canonical->states_to_combine[j].size)
+							dummy++;
+					}
+					if (dummy == 0)
+					{
+						load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
+						load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+						intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), i);
+						load_canonical->combined_states++;
+					}
+					else
+						dummy = 0;
+				}
+			}
+			else
+			{
+				load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector)*load_automata->states.size);
+				for (i = 0; i < load_automata->states.size; i++)
+				{
+					intVectPushBack(&(load_canonical->states_to_combine[i]), i);
+				}
+			}
+
+
+			if (load_canonical->combined_states_trs == NULL)
+			{
+				load_canonical->combined_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_canonical->combined_states);
+
+				for (i = 0; i < load_canonical->combined_states; i++)
+				{
+					load_canonical->combined_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(load_automata->events.size));
+				}
+			}
+
+			for (i = 0; i < load_canonical->combined_states; i++)
+			{
+				for (j = 0; j < load_automata->events.size; j++)
+				{
+					load_canonical->combined_states_trs[i][j].size = 0;
+				}
+			}
+
+
+			dummy = 0;
+			for (i = 0; i < load_canonical->combined_states; i++)
+			{
+				for (x = 0; x < load_canonical->states_to_combine[i].size; x++)
+				{
+					for (j = 0; j < load_automata->events.size; j++)
+					{
+						if (load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->size != 0)
+						{
+							if (load_canonical->trs_size == 0)
+							{
+
+								for (k = 0; k < load_canonical->combined_states; k++)
+								{
+									if (findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
+									{
+										load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+										load_canonical->combined_states_trs[i][j].values[0] = k;
+										load_canonical->combined_states_trs[i][j].size = 1;
+										load_canonical->trs_size++;
+										break;
+									}
+								}
+
+							}
+							else
+							{
+								if (load_canonical->combined_states_trs[i][j].size != 0)
+								{
+									dummy++;
+								}
+
+								if (dummy == 0)
+								{
+									for (k = 0; k < load_canonical->combined_states; k++)
+									{
+										if (findItemarray(load_canonical->states_to_combine[k].values, load_automata->transitions[load_canonical->states_to_combine[i].values[x]][j]->values[0], load_canonical->states_to_combine[k].size) != load_canonical->states_to_combine[k].size)
+										{
+											load_canonical->combined_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+											load_canonical->combined_states_trs[i][j].values[0] = k;
+											load_canonical->combined_states_trs[i][j].size = 1;
+											load_canonical->trs_size++;
+											break;
+										}
+									}
+								}
+								else
+								{
+									dummy = 0;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			writeCanonicalAutomata(load_automata, load_canonical);
+		}
+	}
+	else
+	{
+		printf("Not enough states to make pairs! The automata is already at canonical form! \n\n ");
+	}
+
+}
+
+//creates pairs with the automaton's states
+void pairCreation(automato* load_automata, int_vector* pair)
+{
+	int i = 0, j = 0, pair_size = 0, temp = 0;
+
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		for (j = i + 1; j <= (load_automata->states.size - 1); j++)
+		{
+			intVectPushBack(&(pair[i]), j);
+		}
+	}
+}
+
+//the 4th step of the minimization algorithm. Checks if the pair of states resultant from the pair transition is one of the marked pairs or not
+void checkIfIsMarkedOnTable(automato* load_automata, canonical* load_canonical, int  pair_index, int y, int table_index, int pair_one, int pair_two)
+{
+	int i = 0;
+
+
+	for (i = 0; i < load_canonical->pair[pair_one].size; i++)
+	{
+		if (load_canonical->pair[pair_one].values[i] == pair_two)
+			pair_two = i;
+	}
+
+	if (load_canonical->table_marked[pair_one].values[pair_two] == 1)
+	{
+		load_canonical->table_marked[pair_index].values[y] = 1;
+		load_canonical->marked_counter++;
+		table_index = 1;
+	}
+}
+
+//function responsible of creating the combined states out of the states that belong to the unmarked pairs
+void createCanonicalStates(automato* load_automata, canonical* load_canonical, int result_pair, int pair_1st_index, int pair_index)
+{
+	int i = 0, j = 0, x = 0, test = 0;
+	int* provisory_states;
+	int provisory_states_size = 0;
+	for (i = pair_1st_index; i < load_automata->states.size; i++)
+	{
+		if (i == pair_1st_index)
+		{
+			for (j = pair_index + 1; j < load_canonical->pair[i].size; j++)
+			{
+				if (load_canonical->table_marked[i].values[j] == 0)
+				{
+					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
+					{
+						if (provisory_states_size == 0)
+						{
+							provisory_states_size++;
+							provisory_states = (int*)malloc(sizeof(int));
+							provisory_states[provisory_states_size - 1] = pair_1st_index;
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+
+						}
+						else
+						{
+							if (findItemarray(provisory_states, pair_1st_index, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = pair_1st_index;
+							}
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			for (j = 0; j < load_canonical->pair[i].size; j++)
+			{
+				if (load_canonical->table_marked[i].values[j] == 0)
+				{
+					if (i == pair_1st_index || load_canonical->pair[i].values[j] == result_pair || i == result_pair || load_canonical->pair[i].values[j] == pair_1st_index)
+					{
+						if (provisory_states_size == 0)
+						{
+							provisory_states_size++;
+							provisory_states = (int*)malloc(sizeof(int));
+							provisory_states[provisory_states_size - 1] = pair_1st_index;
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+						}
+						else
+						{
+							if (findItemarray(provisory_states, pair_1st_index, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = pair_1st_index;
+							}
+
+							if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = result_pair;
+							}
+
+							if (findItemarray(provisory_states, i, provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = i;
+							}
+
+							if (findItemarray(provisory_states, load_canonical->pair[i].values[j], provisory_states_size) == provisory_states_size)
+							{
+								provisory_states_size++;
+								provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+								provisory_states[provisory_states_size - 1] = load_canonical->pair[i].values[j];
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (provisory_states_size > 0)
+	{
+		if (load_canonical->combined_states == 0)
+		{
+			load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector));
+			load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+			for (i = 0; i < provisory_states_size; i++)
+			{
+				intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+			}
+			sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+			load_canonical->combined_states++;
+		}
+		else
+		{
+			for (i = 0; i < load_canonical->combined_states; i++)
+			{
+				for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
+				{
+					for (x = 0; x < provisory_states_size; x++)
+					{
+						if (findItemarray(load_canonical->states_to_combine[i].values, provisory_states[x], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
+							test++;
+					}
+				}
+			}
+			if (test == 0)
+			{
+				load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
+				load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+				for (i = 0; i < provisory_states_size; i++)
+				{
+					intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+				}
+				sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+				load_canonical->combined_states++;
+			}
+
+		}
+	}
+	else
+	{
+		provisory_states_size++;
+		provisory_states = (int*)malloc(sizeof(int));
+		provisory_states[provisory_states_size - 1] = pair_1st_index;
+
+		if (findItemarray(provisory_states, result_pair, provisory_states_size) == provisory_states_size)
+		{
+			provisory_states_size++;
+			provisory_states = (int*)realloc(provisory_states, sizeof(int)*provisory_states_size);
+			provisory_states[provisory_states_size - 1] = result_pair;
+		}
+	}
+
+	if (load_canonical->combined_states == 0)
+	{
+		load_canonical->states_to_combine = (int_vector*)malloc(sizeof(int_vector));
+		load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+		for (i = 0; i < provisory_states_size; i++)
+		{
+			intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+		}
+		sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+		load_canonical->combined_states++;
+	}
+	else
+	{
+		for (i = 0; i < load_canonical->combined_states; i++)
+		{
+			for (j = 0; j < load_canonical->states_to_combine[i].size; j++)
+			{
+				for (x = 0; x < provisory_states_size; x++)
+				{
+					if (findItemarray(load_canonical->states_to_combine[i].values, provisory_states[x], load_canonical->states_to_combine[i].size) != load_canonical->states_to_combine[i].size)
+						test++;
+				}
+			}
+		}
+		if (test == 0)
+		{
+			load_canonical->states_to_combine = (int_vector*)realloc(load_canonical->states_to_combine, sizeof(int_vector)*(load_canonical->combined_states + 1));
+			load_canonical->states_to_combine[load_canonical->combined_states].size = 0;
+			for (i = 0; i < provisory_states_size; i++)
+			{
+				intVectPushBack(&(load_canonical->states_to_combine[load_canonical->combined_states]), provisory_states[i]);
+			}
+			sortArrayAscending(&(load_canonical->states_to_combine[load_canonical->combined_states]));
+			load_canonical->combined_states++;
+		}
+
+	}
+
+	//free memory 
+	if (provisory_states_size > 0)
+	{
+		free(provisory_states);
+	}
+}
+
 //function that writes the minimized automata in the .aut format. Also it gives the user the choice of saving the automata in memory...
 //...or print it in the console or writing it to a file.
 void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
@@ -4526,9 +3434,276 @@ void writeCanonicalAutomata(automato* load_automata, canonical* load_canonical)
 	free(new_automata_info);
 }
 
+
+//--------------------------------------------------------canonical private functions--------------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//---------------------------------------------------------product private functions---------------------------------------------------------------//
+
+
+//function responsible for creating a variable of the type product
+product* newProduct()
+{
+	product* new_product;
+	new_product = (product*)malloc(sizeof(product));
+	resetProductStructure(new_product);
+	return new_product;
+}
+
+//reset the variables that are in the product's structure
+void resetProductStructure(product* load_product)
+{
+	load_product->error = 0;
+	load_product->product_trs_size = 0;
+	load_product->product_states_size = 0;
+	load_product->product_states = NULL;
+	load_product->product_states_trs = NULL;
+}
+
+//function that frees the product's type structure and its variables
+void freeProduct(product* load_product, automato* load_automata)
+{
+	freeProductStructure(load_product, load_automata);
+	free(load_product);
+}
+
+//function that frees the memory of all the variables that belong to the structure of the type product
+void freeProductStructure(product* load_product, automato* load_automata)
+{
+	int i = 0, j = 0;
+
+	//----------------------------freeing the transitions----------------------------//
+	if (load_product->product_states_size != 0)
+	{
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_product->product_states_trs[i][j].size != 0)
+				{
+					free(load_product->product_states_trs[i][j].values);
+				}
+			}
+			free(load_product->product_states_trs[i]);
+		}
+		free(load_product->product_states_trs);
+	}
+	//----------------------------freeing the transitions----------------------------//
+
+	//------------------------------freeing the states-------------------------------//
+	if (load_product->product_states_size != 0)
+	{
+		for (i = 0; i < load_product->product_states_size; i++)
+		{
+			if (load_product->product_states[i].size > 0)
+			{
+				free(load_product->product_states[i].values);
+			}
+		}
+		free(load_product->product_states);
+	}
+	//------------------------------freeing the states-------------------------------//
+
+	//reset variables
+	resetProductStructure(load_product);
+}
+
+//function responsible of making the product between two automatons 
+void automataProduct(automata_array* automata_vector, automato* automata1, automato* automata2)
+{
+	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0;
+
+	//the product is made as long as there are states in the automatons and if both are deterministic
+	if (automata1->states.size > 0 && automata2->states.size > 0)
+	{
+		dfaOrNfa(automata1);
+		dfaOrNfa(automata2);
+		if (automata1->deterministic == 1 && automata2->deterministic == 1)
+		{
+			printf("\n\n\n-----------Making the product between the inserted automata-----------\n\n\n");
+
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+			product* load_product = newProduct();
+			resetProductStructure(load_product);
+
+			if (load_product->product_states == NULL)
+			{
+				load_product->product_states = (int_vector*)malloc(sizeof(int_vector));
+			}
+
+			load_product->product_states[0].size = 0;
+
+			//the first state is the combination of the initial state of both automata
+			intVectPushBack(&(load_product->product_states[0]), automata1->initial);
+			intVectPushBack(&(load_product->product_states[0]), automata2->initial);
+
+			load_product->product_states_size++;
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+
+
+
+			//recursive function that creates the product states
+			productStatescreation(load_product, automata1, automata2, 0);
+
+
+
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+			if (load_product->product_states_trs == NULL)
+			{
+				load_product->product_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_product->product_states_size);
+
+				for (i = 0; i < load_product->product_states_size; i++)
+				{
+					load_product->product_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(automata1->events.size));
+				}
+			}
+
+			for (i = 0; i < load_product->product_states_size; i++)
+			{
+				for (j = 0; j < automata1->events.size; j++)
+				{
+					load_product->product_states_trs[i][j].size = 0;
+				}
+			}
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+
+
+			//-------------------------------------------product states transitions-------------------------------------------//
+			dummy = 0;
+			for (i = 0; i < load_product->product_states_size; i++)
+			{
+				for (j = 0; j < automata1->events.size; j++)
+				{
+					for (z = 0; z < automata2->events.size; z++)
+					{
+						if (strcmp(automata1->events.string[j], automata2->events.string[z]) == 0)
+						{
+							if (automata1->transitions[load_product->product_states[i].values[0]][j]->size != 0 && automata2->transitions[load_product->product_states[i].values[1]][z]->size != 0)
+							{
+								if (load_product->product_trs_size == 0)
+								{
+									for (k = 0; k < load_product->product_states_size; k++)
+									{
+										if (findItemarray(load_product->product_states[k].values, automata1->transitions[load_product->product_states[i].values[0]][j]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size &&
+											findItemarray(load_product->product_states[k].values, automata2->transitions[load_product->product_states[i].values[1]][z]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size)
+										{
+											load_product->product_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+											load_product->product_states_trs[i][j].values[0] = k;
+											load_product->product_states_trs[i][j].size = 1;
+											load_product->product_trs_size++;
+											break;
+										}
+									}
+
+								}
+								else
+								{
+									if (load_product->product_states_trs[i][j].size != 0)
+									{
+										dummy++;
+									}
+
+									if (dummy == 0)
+									{
+										for (k = 0; k < load_product->product_states_size; k++)
+										{
+											if (findItemarray(load_product->product_states[k].values, automata1->transitions[load_product->product_states[i].values[0]][j]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size &&
+												findItemarray(load_product->product_states[k].values, automata2->transitions[load_product->product_states[i].values[1]][z]->values[0], load_product->product_states[k].size) != load_product->product_states[k].size)
+											{
+												load_product->product_states_trs[i][j].values = (int_vector*)malloc(sizeof(int*));
+												load_product->product_states_trs[i][j].values[0] = k;
+												load_product->product_states_trs[i][j].size = 1;
+												load_product->product_trs_size++;
+												break;
+											}
+										}
+									}
+									else
+									{
+										dummy = 0;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			//-------------------------------------------product states transitions-------------------------------------------//
+
+
+
+
+			writeProductAutomata(automata_vector, automata1, automata2, load_product);
+		}
+		else
+		{
+			printf("One of the automata is NFA, please use the other functions in the menu to change that!\n\n");
+			return;
+		}
+
+	}
+
+
+
+}
+
+//recursive function that creates the states that result in the product two automatons
+void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index)
+{
+	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0, trs1_provisory_value = 0, trs2_provisory_value = 0;
+
+	for (i = 0; i < load_automata1->events.size; i++)
+	{
+		for (j = 0; j < load_automata2->events.size; j++)
+		{
+			//they must share the same event
+			if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0)
+			{
+				//both of them must have transitions with the same event
+				if ((load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->size != 0))
+				{
+					//check if the state already exists in memory
+					for (z = 0; z < load_product->product_states_size; z++)
+					{
+						if ((load_product->product_states[z].values[0] == load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->values[0]) && (load_product->product_states[z].values[1] == load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->values[0]))
+						{
+							dummy++;
+						}
+					}
+
+					//if it doesn't add the new state
+					if (dummy == 0)
+					{
+
+						trs1_provisory_value = load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->values[0];
+						trs2_provisory_value = load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->values[0];
+						load_product->product_states = (int_vector*)realloc(load_product->product_states, sizeof(int_vector)*(load_product->product_states_size + 1));
+						load_product->product_states[load_product->product_states_size].size = 0;
+
+						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs1_provisory_value);
+						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs2_provisory_value);
+						load_product->product_states_size++;
+
+						//and the function is called recursively with each new state
+						productStatescreation(load_product, load_automata1, load_automata2, load_product->product_states_size - 1);
+					}
+
+					else
+					{
+						dummy = 0;
+					}
+
+				}
+
+			}
+		}
+	}
+}
+
 //function that writes the product result in the .aut format. Also it gives the user the choice of saving the automata in memory...
 //...or print it in the console or writing it to a file.
-void writeProductAutomata(automata_array* automata_vector ,automato* automata1, automato* automata2, product* load_product)
+void writeProductAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, product* load_product)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
 	x = x + strlen("STATES\r\n");
@@ -4567,31 +3742,31 @@ void writeProductAutomata(automata_array* automata_vector ,automato* automata1, 
 	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
 	strcat(new_automata_info, "EVENTS\r\n\0");
 
-	
+
 
 	if (automata1->events.size < automata2->events.size)
 	{
 		for (i = 0; i < automata1->events.size; i++)
 		{
-			
-				x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
-				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-				strcat(new_automata_info, automata1->events.string[i]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "\r\n\0");
+
+			x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
+			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+			strcat(new_automata_info, automata1->events.string[i]);
+			strcat(new_automata_info, "\0");
+			strcat(new_automata_info, "\r\n\0");
 		}
 	}
 	else
 	{
 		for (i = 0; i < automata2->events.size; i++)
 		{
-			
-				x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
-				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-				strcat(new_automata_info, automata2->events.string[i]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "\r\n\0");
-			
+
+			x = x + strlen(automata1->events.string[i]) + strlen("\r\n") + 2;
+			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+			strcat(new_automata_info, automata2->events.string[i]);
+			strcat(new_automata_info, "\0");
+			strcat(new_automata_info, "\r\n\0");
+
 		}
 	}
 
@@ -4606,118 +3781,118 @@ void writeProductAutomata(automata_array* automata_vector ,automato* automata1, 
 		{
 			for (j = 0; j < automata1->events.size; j++)
 			{
-				
-					if (load_product->product_states_trs[i][j].size != 0)
-					{
 
-						x = x + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, "{");
-						strcat(new_automata_info, "\0");
+				if (load_product->product_states_trs[i][j].size != 0)
+				{
 
-						x = x + strlen(automata1->states.string[load_product->product_states[i].values[0]]) + strlen(",") + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata1->states.string[load_product->product_states[i].values[0]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ",\0");
+					x = x + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, "{");
+					strcat(new_automata_info, "\0");
 
-						x = x + strlen(automata2->states.string[load_product->product_states[i].values[1]]) + strlen(";") + 3 + strlen("}");
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata2->states.string[load_product->product_states[i].values[1]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, "}");
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ";");
+					x = x + strlen(automata1->states.string[load_product->product_states[i].values[0]]) + strlen(",") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata1->states.string[load_product->product_states[i].values[0]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ",\0");
+
+					x = x + strlen(automata2->states.string[load_product->product_states[i].values[1]]) + strlen(";") + 3 + strlen("}");
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata2->states.string[load_product->product_states[i].values[1]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "}");
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ";");
 
 
-						x = x + strlen(automata1->events.string[j]) + strlen(";") + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata1->events.string[j]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ";\0");
+					x = x + strlen(automata1->events.string[j]) + strlen(";") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata1->events.string[j]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ";\0");
 
-						z = 0;
-						z = load_product->product_states_trs[i][j].values[0];
+					z = 0;
+					z = load_product->product_states_trs[i][j].values[0];
 
-						x = x + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, "{");
-						strcat(new_automata_info, "\0");
+					x = x + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, "{");
+					strcat(new_automata_info, "\0");
 
-						x = x + strlen(automata1->states.string[load_product->product_states[z].values[0]]) + strlen(",") + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata1->states.string[load_product->product_states[z].values[0]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ",\0");
+					x = x + strlen(automata1->states.string[load_product->product_states[z].values[0]]) + strlen(",") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata1->states.string[load_product->product_states[z].values[0]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ",\0");
 
-						x = x + strlen(automata2->states.string[load_product->product_states[z].values[1]]) + strlen(";") + strlen("\r\n") + 4;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata2->states.string[load_product->product_states[z].values[1]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, "}");
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, "\r\n\0");
-					}
-		
+					x = x + strlen(automata2->states.string[load_product->product_states[z].values[1]]) + strlen(";") + strlen("\r\n") + 4;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata2->states.string[load_product->product_states[z].values[1]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "}");
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "\r\n\0");
+				}
+
 			}
 		}
 		else
 		{
 			for (j = 0; j < automata2->events.size; j++)
 			{
-				
-					if (load_product->product_states_trs[i][j].size != 0)
-					{
 
-						x = x + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, "{");
-						strcat(new_automata_info, "\0");
+				if (load_product->product_states_trs[i][j].size != 0)
+				{
 
-						x = x + strlen(automata1->states.string[load_product->product_states[i].values[0]]) + strlen(",") + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata1->states.string[load_product->product_states[i].values[0]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ",\0");
+					x = x + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, "{");
+					strcat(new_automata_info, "\0");
 
-						x = x + strlen(automata2->states.string[load_product->product_states[i].values[1]]) + strlen(";") + 3 + strlen("}");
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata2->states.string[load_product->product_states[i].values[1]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, "}");
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ";");
+					x = x + strlen(automata1->states.string[load_product->product_states[i].values[0]]) + strlen(",") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata1->states.string[load_product->product_states[i].values[0]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ",\0");
+
+					x = x + strlen(automata2->states.string[load_product->product_states[i].values[1]]) + strlen(";") + 3 + strlen("}");
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata2->states.string[load_product->product_states[i].values[1]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "}");
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ";");
 
 
-						x = x + strlen(automata2->events.string[j]) + strlen(";") + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata2->events.string[j]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ";\0");
+					x = x + strlen(automata2->events.string[j]) + strlen(";") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata2->events.string[j]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ";\0");
 
-						z = 0;
-						z = load_product->product_states_trs[i][j].values[0];
+					z = 0;
+					z = load_product->product_states_trs[i][j].values[0];
 
-						x = x + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, "{");
-						strcat(new_automata_info, "\0");
+					x = x + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, "{");
+					strcat(new_automata_info, "\0");
 
-						x = x + strlen(automata1->states.string[load_product->product_states[z].values[0]]) + strlen(",") + 2;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata1->states.string[load_product->product_states[z].values[0]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, ",\0");
+					x = x + strlen(automata1->states.string[load_product->product_states[z].values[0]]) + strlen(",") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata1->states.string[load_product->product_states[z].values[0]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ",\0");
 
-						x = x + strlen(automata2->states.string[load_product->product_states[z].values[1]]) + strlen(";") + strlen("\r\n") + 4;
-						new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-						strcat(new_automata_info, automata2->states.string[load_product->product_states[z].values[1]]);
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, "}");
-						strcat(new_automata_info, "\0");
-						strcat(new_automata_info, "\r\n\0");
-					}
-				
+					x = x + strlen(automata2->states.string[load_product->product_states[z].values[1]]) + strlen(";") + strlen("\r\n") + 4;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, automata2->states.string[load_product->product_states[z].values[1]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "}");
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "\r\n\0");
+				}
+
 			}
 		}
 	}
@@ -4857,828 +4032,12 @@ void writeProductAutomata(automata_array* automata_vector ,automato* automata1, 
 	printf("\n\n\n-----------Product ended-----------\n\n\n");
 }
 
-//writes a choosen automaton to a file with a name inserted by the user
-void writeAutomataToFile(automato* load_automata)
-{
-	printf("\n\n\n-----------Writing automata to file-----------\n\n\n");
-	int i = 0, j = 0, x = 0, z = 0;
-	char buffer[1000];
-	x = x + strlen("STATES\r\n") + 1;
-	char* new_automata_info;
 
-	new_automata_info = (char*)malloc(sizeof(char)*x);
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcpy(new_automata_info, "STATES\r\n\0");
+//---------------------------------------------------------product private functions---------------------------------------------------------------//
 
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		x = x + strlen(load_automata->states.string[i]) + strlen("\r\n") + 2;
-		new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-		strcat(new_automata_info, load_automata->states.string[i]);
-		strcat(new_automata_info, "\0");
-		strcat(new_automata_info, "\r\n\0");
-	}
+//*************************************************************************************************************************************************//
 
-	x = x + strlen("EVENTS\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "EVENTS\r\n\0");
-
-
-
-	if (load_automata->null_event == 1)
-	{
-		for (i = 1; i < load_automata->events.size; i++)
-		{
-			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->events.string[i]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
-		}
-	}
-	else
-	{
-		for (i = 0; i < load_automata->events.size; i++)
-		{
-			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
-			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-			strcat(new_automata_info, load_automata->events.string[i]);
-			strcat(new_automata_info, "\0");
-			strcat(new_automata_info, "\r\n\0");
-		}
-	}
-
-
-	x = x + strlen("TRANSITIONS\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "TRANSITIONS\r\n\0");
-
-
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		for (j = 0; j < load_automata->events.size; j++)
-		{
-			if (load_automata->transitions[i][j]->size != 0)
-			{
-				for (z = 0; z < load_automata->transitions[i][j]->size; z++)
-				{
-					x = x + strlen(load_automata->states.string[i]) + strlen(";") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->states.string[i]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, ";\0");
-
-					x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->events.string[j]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, ";\0");
-
-					x = x + strlen(load_automata->states.string[load_automata->transitions[i][j]->values[z]]) + strlen("\r\n") + 2;
-					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-					strcat(new_automata_info, load_automata->states.string[load_automata->transitions[i][j]->values[z]]);
-					strcat(new_automata_info, "\0");
-					strcat(new_automata_info, "\r\n\0");
-				}
-			}
-		}
-	}
-
-	x = x + strlen("INITIAL\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "INITIAL\r\n\0");
-
-	x = x + strlen(load_automata->states.string[load_automata->initial]) + strlen("\r\n") + 2;
-	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
-	strcat(new_automata_info, load_automata->states.string[load_automata->initial]);
-	strcat(new_automata_info, "\0");
-	strcat(new_automata_info, "\r\n\0");
-
-
-	x = x + strlen("MARKED\r\n") + 1;
-	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
-	strcat(new_automata_info, "MARKED\r\n\0");
-
-
-	for (i = 0; i < load_automata->marked.size; i++)
-	{
-		for (j = 0; j < load_automata->states.size; j++)
-		{
-			if ((load_automata->states.string[j] == load_automata->states.string[load_automata->marked.values[i]]))
-			{
-				x = x + strlen(load_automata->states.string[load_automata->marked.values[i]]) + strlen("\r\n") + 2;
-				strcat(new_automata_info, load_automata->states.string[load_automata->marked.values[i]]);
-				strcat(new_automata_info, "\0");
-				strcat(new_automata_info, "\r\n\0");
-			}
-		}
-	}
-	printf("\n\n\nInsert path file\n\n\n");
-	scanf("%s", &buffer);
-	getchar();
-	FILE* fp;
-	fp = fopen(buffer, "w");
-	memset(buffer, 0, 1000);
-	fprintf(fp, new_automata_info);
-	fclose(fp);
-	free(new_automata_info);
-}
-
-
-
-//mark the reached states made from an accessible state through transitions, as accessible 
-void accesibleState(automato* load_automata, int state_index, int *accessible_states)
-{
-	int i = 0, j = 0, x = 0;
-
-	for (i = 0; i < load_automata->events.size; i++)
-	{
-//if the the state that entered has transitions, any state resulting from a transition will be marked as accessible
-		if (load_automata->transitions[state_index][i]->size != 0)
-		{
-			for (x = 0; x < load_automata->transitions[state_index][i]->size; x++)
-			{
-				accessible_states[load_automata->transitions[state_index][i]->values[x]] = 1;
-			}
-		}
-	}
-}
-
-//mark the reached states made from an accessible state through inverse transitions, as coaccessible 
-void coaccesibleState(automato* load_automata, int state_index, int *coaccessible_states)
-{
-	int i = 0, j = 0, x = 0;
-
-	for (i = 0; i < load_automata->events.size; i++)
-	{
-//if the the state that entered has inverse transitions, any state resulting from an inverse transition will be marked as coaccessible
-		if (load_automata->inverse_transitions[state_index][i]->size != 0)
-		{
-			for (x = 0; x < load_automata->inverse_transitions[state_index][i]->size; x++)
-			{
-				coaccessible_states[load_automata->inverse_transitions[state_index][i]->values[x]] = 1;
-			}
-		}
-	}
-}
-
-
-//parser for the automatata
-void parser(automato* load_automata, char* file_info)
-{
-	//private initializations 
-	char* line;
-	line = (char*)malloc(1);
-	int  parser_state = 0, i = 0, index = 0, j = 0, x = 0, y = 0, z = 0, states_test = 0, events_test = 0, initial_test = 0, marked_test = 0;
-	char* trs_line;
-	trs_line = (char*)malloc(1);
-	int trs_index = 0;
-	int second_trs_state_index = 0, trs_event_index = 0, trs_state_index = 0;
-	int inv_trs_index = 0, trs_test = 0;
-
-	nullEventSearcher(load_automata, file_info);
-
-	//split the automata's read file with each paragraph and search for each states, events, etc
-	while (splitString(file_info, &line, &index, '\n'))
-	{
-		//each line is compared to predefined strings
-		//continue is used to force the next iteration
-		if (strcmp(line, "STATES") == 0)
-		{
-			parser_state = 1;
-			continue;
-		}
-
-		if (strcmp(line, "EVENTS") == 0)
-		{
-			parser_state = 2;
-			continue;
-		}
-
-		if (strcmp(line, "TRANSITIONS") == 0)
-		{
-			parser_state = 3;
-			continue;
-		}
-
-		if (strcmp(line, "INITIAL") == 0)
-		{
-			parser_state = 4;
-			continue;
-		}
-
-		if (strcmp(line, "MARKED") == 0)
-		{
-			parser_state = 5;
-			continue;
-		}
-
-		//depending on the value of the parser in each iteration, there will be a case
-		switch (parser_state)
-		{
-
-		//state case
-		case 1:
-		
-		//avoid paragraphs with null content
-			if (strcmp(line, "") != 0)
-			{
-				if (load_automata->states.size != 0)
-				{
-		//to avoid repetition of states
-					for (i = 0; i < load_automata->states.size; i++)
-					{
-						if (strcmp(line, load_automata->states.string[i]) == 0)
-							states_test++;
-					}
-					if (states_test == 0)
-						stringPushBack(&(load_automata->states), line);
-					else
-						states_test = 0;
-				}
-		//for the first time
-				else
-					stringPushBack(&(load_automata->states), line);
-			}
-			break;
-
-		//event case
-		case 2:
-		
-		//avoid paragraphs with null content
-			if (strcmp(line, "") != 0)
-			{
-				if (load_automata->events.size != 0)
-				{
-		//to avoid repetition of events
-					for (i = 0; i < load_automata->events.size; i++)
-					{
-						if (strcmp(line, load_automata->events.string[i]) == 0)
-							events_test++;
-					}
-					if (events_test == 0)
-						stringPushBack(&(load_automata->events), line);
-					else
-						events_test = 0;
-				}
-		//for the first time
-				else
-					stringPushBack(&(load_automata->events), line);
-			}
-			break;
-
-		//transition case
-		case 3:
-
-		//avoid paragraphs with null content
-			if (strcmp(line, "") != 0)
-			{
-				trs_index = 0;
-				int i = 0, j = 0;
-
-				//memory allocation for the transitions (triple pointer)
-				if (load_automata->transitions == NULL)
-				{
-					//memory allocation for the double pointer, poiting to a pointer
-					load_automata->transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
-					for (i = 0; i < load_automata->states.size; i++)
-					{
-						load_automata->transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
-						for (j = 0; j < load_automata->events.size; j++)
-						{
-							load_automata->transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
-							load_automata->transitions[i][j]->size = 0;
-						}
-					}
-				}
-
-				if (load_automata->inverse_transitions == NULL)
-				{
-					//memory allocation for the double pointer, poiting to a pointer
-					load_automata->inverse_transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
-					for (i = 0; i < load_automata->states.size; i++)
-					{
-						load_automata->inverse_transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
-						for (j = 0; j < load_automata->events.size; j++)
-						{
-							load_automata->inverse_transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
-							load_automata->inverse_transitions[i][j]->size = 0;
-						}
-					}
-				}
-
-				//transitions will only happen with 2 states and one event
-				for (i = 0; i != 3; i++)
-				{
-					//transitions made correctly
-					if (splitString(line, &trs_line, &trs_index, ';') == false)
-					{
-						printf("Invalid transition in file. Correct this transition:\n\nPress enter to continue\n");
-						puts(line);
-						load_automata->error = 1;
-						return;
-					}
-
-					//when it's not an event
-					if (i == 0)
-					{
-
-						//confirm if there are states in the transitions vector
-						trs_state_index = findItemStringVector(trs_line, load_automata->states);
-						if (trs_state_index == load_automata->states.size)
-						{
-							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue\n");
-							puts(line);
-							load_automata->error = 1;
-							return;
-						}
-					}
-					if (i == 2)
-					{
-
-						//confirm if there are states in the transitions vector
-						second_trs_state_index = findItemStringVector(trs_line, load_automata->states);
-						if (second_trs_state_index == load_automata->states.size)
-						{
-							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue\n");
-							puts(line);
-							load_automata->error = 1;
-							return;
-						}
-					}
-					if (i == 1)
-					{
-
-						trs_event_index = findItemStringVector(trs_line, load_automata->events);
-						if (trs_event_index == load_automata->events.size)
-						{
-							printf("Invalid event being used on the transition. Correct this transition:\n\nPress enter to continue\n");
-							puts(line);
-							load_automata->error = 1;
-							return;
-						}
-					}
-
-				}
-				//avoid repeated transitions 
-				if (load_automata->transitions[trs_state_index][trs_event_index]->size != 0)
-				{
-					for (i = 0; i < load_automata->transitions[trs_state_index][trs_event_index]->size; i++)
-					{
-						if (load_automata->transitions[trs_state_index][trs_event_index]->values[i] == second_trs_state_index)
-							trs_test++;
-					}
-					if (trs_test == 0)
-					{
-						intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
-						intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
-					}
-					trs_test = 0;
-				}
-
-				//for the first time
-				else
-				{
-					intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
-					intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
-				}
-			}
-			break;
-
-		//initial state
-		case 4:
-		//avoid paragraphs with null content
-			if (strcmp(line, "") != 0)
-			{
-				for (j = 0; j < load_automata->states.size; j++)
-				{
-					if (strcmp(line, load_automata->states.string[j]) == 0)
-					{
-						load_automata->initial = j;
-						initial_test++;
-					}
-				}
-
-		//check if the file has more than one initial state
-				if (initial_test > 1)
-				{
-					printf("More than one initial state. Press enter to continue!\n");
-					load_automata->error = 1;
-					return;
-				}
-			}
-
-
-			break;
-
-		case 5:
-
-		//avoid paragraphs with null content
-			if (strcmp(line, "") != 0)
-			{
-				for (x = 0; x < load_automata->states.size; x++)
-				{
-					if (strcmp(line, load_automata->states.string[x]) == 0)
-					{
-		//to avoid repeated marked states
-						if (load_automata->marked.size != 0)
-						{
-							
-							for (i = 0; i < load_automata->marked.size; i++)
-							{
-								if (load_automata->marked.values[i] == x)
-									marked_test++;
-
-							}
-							if (marked_test == 0)
-								intVectPushBack(&(load_automata->marked), x);
-							else
-								marked_test = 0;
-						}
-			//for the first time
-						else
-							intVectPushBack(&(load_automata->marked), x);
-					}
-				}
-			}
-			break;
-
-		default:
-			printf("\nParser error!Automaton's file not correct!\n\nPress enter to continue\n");
-			load_automata->error = 1;
-			return;
-		}
-	}
-	
-	free(line);
-	free(trs_line);
-
-	//if there aren't states in the automaton, write an warning (the automaton will be later deleted)
-	if (load_automata->states.size == 0)
-	{
-		printf("There are no states in the automaton!\n\nPress enter to continue\n");
-		load_automata->error = 1;
-		return;
-	}
-	
-	//if there aren't events in the automaton, write an warning (the automaton will be later deleted)
-	if (load_automata->events.size == 0)
-	{
-		printf("There are no events in the automaton!\n\nPress enter to continue\n");
-		load_automata->error = 1;
-		return;
-	}
-
-	//if there aren't marked states in the automaton, write an warning (the automaton will be later deleted)
-	if (load_automata->marked.size == 0)
-	{
-		printf("There are no marked states in the automaton\n\nPress enter to continue\n");
-		load_automata->error = 1;
-		return;
-	}
-
-	//if there isn't an inital in the automaton, write an warning (the automaton will be later deleted)
-	if (initial_test == 0)
-	{
-		printf("There is no initial state in this automaton!\n\nPress enter to continue\n");
-		load_automata->error = 1;
-		return;
-	}
-
-	//if there aren't transitions in the automaton, write an warning (the automaton will be later deleted)
-	if (load_automata->transitions == NULL)
-	{
-		printf("There are no transitions in this automaton!\n\nPress enter to continue\n");
-		getchar();
-		getchar();
-		load_automata->error = 1;
-		return;
-	}
-
-	//allocate memory for the eclosure with the size of the available states
-	load_automata->e_closure = (int_vector*)malloc(sizeof(int_vector)*((load_automata)->states.size));
-	
-	//for the begining, the eclosure will only have the state it refers to
-	for (i = 0; i < load_automata->states.size; i++)
-	{
-		load_automata->e_closure[i].size = 0;
-		intVectPushBack(&(load_automata->e_closure[i]), i);
-	}
-
-	//if there are null events, there is need to use eclosure filling, otherwise the eclosure of each state
-	//will only be itself
-	if (load_automata->null_event == 1)
-	{
-		for (i = 0; i < load_automata->states.size; i++)
-		{
-			eclosureFilling(load_automata, i, i);
-		}
-	}
-
-	//sort each eclosure
-	for (i = 0; i < (load_automata)->states.size; i++)
-	{
-		if (load_automata->e_closure[i].size > 1)
-		{
-			sortArrayAscending(&(load_automata)->e_closure[i]);
-		}
-	}
-}
-
-//delete a character (ignores the selected characters)
-void deleteCharacter(char* str, char c)
-{
-	char *pr = str, *pw = str;
-	while (*pr) {
-		*pw = *pr++;
-		pw += (*pw != c);
-	}
-	*pw = '\0';
-}
-
-//search for the null event
-void nullEventSearcher(automato* load_automata, char* file_info)
-{
-	deleteCharacter(file_info, ' ');
-	if (strstr(file_info, ";;") != NULL)
-	{
-		stringPushBack(&(load_automata->events), "");
-		load_automata->null_event = 1;
-	}
-	else
-		load_automata->null_event = 0;
-}
-
-//print in console in a tidy way for string_type
-void writeStringVectorInConsole(string_vector* string_vect)
-{
-	int i = 0;
-	for (i = 0; i <string_vect->size; i++)
-	{
-		if (string_vect->size > 1)
-		{
-			if (i == 0)
-			{
-				printf("(%s,", string_vect->string[i]);
-			}
-			if (i > 0 && i < (string_vect->size - 1))
-			{
-				printf("%s,", string_vect->string[i]);
-			}
-			if (i == (string_vect->size - 1))
-			{
-				printf("%s)\n\n", string_vect->string[i]);
-			}
-		}
-		else
-			printf("(%s)\n\n", string_vect->string[i]);
-	}
-}
-
-//print in console in a tidy way for int_vector type
-void writeIntVectorInConsole(int_vector* vector, string_vector* string_vect)
-{
-	int i = 0;
-	for (i = 0; i < vector->size; i++)
-	{
-		if (vector->size > 1)
-		{
-			if (i == 0)
-			{
-				printf("(%s,", string_vect->string[vector->values[i]]);
-			}
-
-			if (i > 0 && i < ((vector->size) - 1))
-			{
-				printf("%s,", string_vect->string[vector->values[i]]);
-			}
-
-			if (i == ((vector->size) - 1))
-			{
-				printf("%s)\n\n", string_vect->string[vector->values[i]]);
-			}
-		}
-		else printf("(%s)\n\n", string_vect->string[vector->values[i]]);
-	}
-}
-
-//push back to allocate memory in vector type
-void intVectPushBack(int_vector* vector, int item)
-{
-	if (vector->size == 0)
-	{
-		vector->values = (int_vector*)malloc(sizeof(int*));
-	}
-	vector->size++;
-	vector->values = realloc(vector->values, sizeof(int*)*(vector->size));
-	vector->values[vector->size - 1] = item;
-}
-
-//push back to allocate memory in string type
-void stringPushBack(string_vector* char_vector, char* item)
-{
-	if (char_vector->size <= 0)
-	{
-		char_vector->string = (char**)malloc(sizeof(char*));
-	}
-	char_vector->size++;
-	char_vector->string = realloc(char_vector->string, sizeof(char*)*(char_vector->size));
-	char_vector->string[char_vector->size - 1] = (char*)malloc(sizeof(char)*strlen(item) + 1);
-	strcpy(char_vector->string[char_vector->size - 1], item);
-}
-
-
-
-//function to split strings with the selected delimitator
-bool splitString(char* string_to_split, char** substring, int* index, char delimitator)
-{
-	int initial_index;
-
-	initial_index = *index;
-
-	if (string_to_split[*index] == '\0') {
-
-		return false;
-	}
-
-	while (true)
-	{
-		if (string_to_split[*index] == delimitator)
-		{
-			*index += 1;
-			break;
-		}
-
-		*index += 1;
-
-		if (string_to_split[*index] == '\0') {
-			break;
-		}
-	}
-
-	if (string_to_split[*index] == '\0') {
-		*substring = (char*)realloc(*substring, sizeof(char) * (*index - initial_index + 1));
-		strncpy(*substring, (string_to_split + initial_index), (*index - initial_index + 1));
-	}
-	else
-	{
-		*substring = (char*)realloc(*substring, sizeof(char) * (*index - initial_index));
-		strncpy(*substring, (string_to_split + initial_index), (*index - initial_index - 1));
-		(*substring)[*index - initial_index - 1] = '\0';
-	}
-
-	deleteCharacter(*substring, '\r');
-	deleteCharacter(*substring, '\n');
-
-	return true;
-}
-
-//returns string size in case of failure. Else returns item index
-int findItemStringVector(char* string, string_vector vect)
-{
-	int i = 0;
-
-	for (i = 0; i != vect.size; i++)
-	{
-		if (strcmp(string, vect.string[i]) == 0)
-			return i;
-	}
-	return i;
-}
-
-//returns intvector size in case of failure. Else returns item index
-int findItemIntVector(int_vector myvect, int item)
-{
-
-	int i = 0;
-	for (i = 0; i < myvect.size; i++)
-	{
-		if (item == myvect.values[i])
-		{
-			return i;
-		}
-	}
-	return i;
-}
-
-//function created to be called recursively to create each state eclosure. The original index will be always the same
-//...since it only changes in the parser. The value that changes it's the new state (if there is at least one transition...
-//with the null event
-void eclosureFilling(automato* load_automata, int original_index, int index_next)
-{
-	int i = 0, j = 0, value = 0, x = 0;
-
-//the original already takes part in the eclosure. Otherwise this new state will belong to the eclosure
-	if (original_index != index_next)
-	{
-		intVectPushBack(&(load_automata->e_closure[original_index]), index_next);
-	}
-
-//now it's necessary to check if the new state has transitions with the null event 
-	if (load_automata->transitions[index_next][0]->size != 0)
-	{
-//if there are transitions and if the resulting state is different from any of the current eclosure, the function...
-//will be called with the new state (index_next)
-		for (i = 0; i < load_automata->transitions[index_next][0]->size; i++)
-		{
-			if (findItemIntVector(load_automata->e_closure[original_index], load_automata->transitions[index_next][0]->values[i]) == load_automata->e_closure[original_index].size)
-			{
-				eclosureFilling(load_automata, original_index, load_automata->transitions[index_next][0]->values[i]);
-			}
-		}
-	}
-}
-
-//function that sorts any int_vector array
-void sortArrayAscending(int_vector* array_to_sort)
-{
-	int i = 0, j = 0, min = 0, swap = 0, first = 0, second = 0;
-	for (i = 0; i < (array_to_sort->size - 1); i++)
-	{
-		min = i;
-		for (j = (i + 1); j < array_to_sort->size; j++)
-		{
-			first = array_to_sort->values[j];
-			second = array_to_sort->values[min];
-			if (second> first)
-			{
-				min = j;
-			}
-		}
-		if (i != min) {
-			swap = array_to_sort->values[i];
-			array_to_sort->values[i] = array_to_sort->values[min];
-			array_to_sort->values[min] = swap;
-		}
-	}
-}
-
-//function that searchs an int type array for an int type item. If it's found returns its position otherwise returns the array size
-int findItemarray(int* array_to_search, int item, int array_size)
-{
-	int i = 0;
-	for (i = 0; i < array_size; i++)
-	{
-		if (item == array_to_search[i])
-		{
-			return i;
-		}
-	}
-	return i;
-}
-
-//recursive function that creates the states that result in the product two automatons
-void productStatescreation(product* load_product, automato* load_automata1, automato* load_automata2, int product_state_index)
-{
-	int  i = 0, j = 0, z = 0, x = 0, y = 0, k = 0, dummy = 0, trs1_provisory_value = 0, trs2_provisory_value = 0;
-
-	for (i = 0; i < load_automata1->events.size; i++)
-	{
-		for (j = 0; j < load_automata2->events.size; j++)
-		{
-			//they must share the same event
-			if (strcmp(load_automata1->events.string[i], load_automata2->events.string[j]) == 0)
-			{
-				//both of them must have transitions with the same event
-				if ((load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->size != 0) && (load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->size != 0))
-				{
-					//check if the state already exists in memory
-					for (z = 0; z < load_product->product_states_size; z++)
-					{
-						if ((load_product->product_states[z].values[0] == load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->values[0]) && (load_product->product_states[z].values[1] == load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->values[0]))
-						{
-							dummy++;
-						}
-					}
-
-					//if it doesn't add the new state
-					if (dummy == 0)
-					{
-
-						trs1_provisory_value = load_automata1->transitions[load_product->product_states[product_state_index].values[0]][i]->values[0];
-						trs2_provisory_value = load_automata2->transitions[load_product->product_states[product_state_index].values[1]][j]->values[0];
-						load_product->product_states = (int_vector*)realloc(load_product->product_states, sizeof(int_vector)*(load_product->product_states_size + 1));
-						load_product->product_states[load_product->product_states_size].size = 0;
-
-						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs1_provisory_value);
-						intVectPushBack(&(load_product->product_states[load_product->product_states_size]), trs2_provisory_value);
-						load_product->product_states_size++;
-
-						//and the function is called recursively with each new state
-						productStatescreation(load_product, load_automata1, load_automata2, load_product->product_states_size - 1);
-					}
-
-					else
-					{
-						dummy = 0;
-					}
-
-				}
-
-			}
-		}
-	}
-}
+//---------------------------------------------------------parallel private functions--------------------------------------------------------------//
 
 
 //function responsible for creating a variable of the type parallel
@@ -5701,13 +4060,19 @@ void resetParallelStructure(parallel* load_parallel)
 	load_parallel->parallel_states_trs = NULL;
 }
 
+//function that frees the parallel's type structure and its variables
+void freeParallel(parallel* load_parallel)
+{
+	freeParallelStructure(load_parallel);
+	free(load_parallel);
+}
 
 //function that frees the memory of all the variables that belong to the structure of the type parallel
 void freeParallelStructure(parallel* load_parallel)
 {
 	int i = 0, j = 0;
 
-//----------------------------freeing the transitions----------------------------//
+	//----------------------------freeing the transitions----------------------------//
 	if (load_parallel->parallel_states_size != 0)
 	{
 		for (i = 0; i < load_parallel->parallel_states_size; i++)
@@ -5723,9 +4088,9 @@ void freeParallelStructure(parallel* load_parallel)
 		}
 		free(load_parallel->parallel_states_trs);
 	}
-//----------------------------freeing the transitions----------------------------//
+	//----------------------------freeing the transitions----------------------------//
 
-//------------------------------freeing the states-------------------------------//
+	//------------------------------freeing the states-------------------------------//
 	if (load_parallel->parallel_states_size != 0)
 	{
 		for (i = 0; i < load_parallel->parallel_states_size; i++)
@@ -5737,10 +4102,10 @@ void freeParallelStructure(parallel* load_parallel)
 		}
 		free(load_parallel->parallel_states);
 	}
-//------------------------------freeing the states-------------------------------//
+	//------------------------------freeing the states-------------------------------//
 
 
-//------------------------------freeing the events-------------------------------//
+	//------------------------------freeing the events-------------------------------//
 	if (load_parallel->parallel_events.size != 0)
 	{
 		for (i = 0; i < load_parallel->parallel_events.size; i++)
@@ -5749,36 +4114,355 @@ void freeParallelStructure(parallel* load_parallel)
 		}
 		free(load_parallel->parallel_events.string);
 	}
-//------------------------------freeing the events-------------------------------//
+	//------------------------------freeing the events-------------------------------//
 
-//reset variables
+	//reset variables
 	resetParallelStructure(load_parallel);
 }
 
-//function that frees the parallel's type structure and its variables
-void freeParallel(parallel* load_parallel)
+//function responsible of making the parallel between two automatons 
+void automataParallel(automata_array* automata_vector, automato* automata1, automato* automata2)
 {
-	freeParallelStructure(load_parallel);
-	free(load_parallel);
-}
+	int i = 0, j = 0, x = 0, k = 0, y = 0, z = 0, dummy = 0, automata1_event = 0, automata2_event = 0;
 
-//function responsible for creating a variable of the type automata_array
-automata_array* newAutomatonArray()
-{
-	automata_array* new_array;
-	new_array = (automata_array*)malloc(sizeof(automata_array));
-	resetAutomataArrayStructure(new_array);
-	return new_array;
-}
+	//the parallel is made as long as there are states in the automatons and if both are deterministic
+	if (automata1->states.size > 0 && automata2->states.size > 0)
+	{
+		dfaOrNfa(automata1);
+		dfaOrNfa(automata2);
+		if (automata1->deterministic == 1 && automata2->deterministic == 1)
+		{
+			printf("\n\n\n-----------Making the parallel between the inserted automaton-----------\n\n\n");
 
-//reset the variables that are in the parallel's structure
-void resetAutomataArrayStructure(automata_array* load_array)
-{
-	load_array->automata = NULL;
-	load_array->automata_name.size = 0;
-	load_array->automata_number = 0;
-}
 
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+			parallel* load_parallel = newParallel();
+			resetParallelStructure(load_parallel);
+
+			if (load_parallel->parallel_states == NULL)
+			{
+				load_parallel->parallel_states = (int_vector*)malloc(sizeof(int_vector));
+			}
+
+			//----------------------------save the events of both automata withouth repeating them----------------------------//
+			for (i = 0; i < automata1->events.size; i++)
+			{
+				stringPushBack(&(load_parallel->parallel_events), automata1->events.string[i]);
+			}
+
+			for (i = 0; i < automata2->events.size; i++)
+			{
+				if (findItemStringVector(automata2->events.string[i], load_parallel->parallel_events) == load_parallel->parallel_events.size)
+				{
+					stringPushBack(&(load_parallel->parallel_events), automata2->events.string[i]);
+				}
+			}
+			//----------------------------save the events of both automata withouth repeating them----------------------------//
+
+
+
+			//---------------------------------memory allocation and variables initialization---------------------------------//
+
+
+			load_parallel->parallel_states[0].size = 0;
+
+			//the first state is the combination of the initial state of both automata
+			intVectPushBack(&(load_parallel->parallel_states[0]), automata1->initial);
+			intVectPushBack(&(load_parallel->parallel_states[0]), automata2->initial);
+
+			load_parallel->parallel_states_size++;
+
+			//recursive function that creates the parallel states
+			parallelStatescreation(load_parallel, automata1, automata2, 0);
+
+
+			//-------------------------------------------product states transitions-------------------------------------------//
+			if (load_parallel->parallel_states_trs == NULL)
+			{
+				load_parallel->parallel_states_trs = (int_vector**)malloc(sizeof(int_vector*)*load_parallel->parallel_states_size);
+
+				for (i = 0; i < load_parallel->parallel_states_size; i++)
+				{
+					load_parallel->parallel_states_trs[i] = (int_vector*)malloc(sizeof(int_vector)*(load_parallel->parallel_events.size));
+				}
+			}
+
+
+			for (i = 0; i < load_parallel->parallel_states_size; i++)
+			{
+				for (j = 0; j < load_parallel->parallel_events.size; j++)
+				{
+					load_parallel->parallel_states_trs[i][j].size = 0;
+				}
+			}
+
+
+			dummy = 0;
+
+			//the procedure of saving the transitions is almost the same as the one found in parallelStatescreation
+			for (i = 0; i < load_parallel->parallel_states_size; i++)
+			{
+				for (y = 0; y < load_parallel->parallel_events.size; y++)
+				{
+					for (j = 0; j < automata1->events.size; j++)
+					{
+						for (z = 0; z < automata2->events.size; z++)
+						{
+							if (strcmp(automata1->events.string[j], automata2->events.string[z]) == 0 && (strcmp(load_parallel->parallel_events.string[y], automata1->events.string[j]) == 0))
+							{
+								if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0 && automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
+								{
+									if (load_parallel->parallel_trs_size == 0)
+									{
+										for (k = 0; k < load_parallel->parallel_states_size; k++)
+										{
+											if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]))
+											{
+												load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
+												load_parallel->parallel_states_trs[i][y].values[0] = k;
+												load_parallel->parallel_states_trs[i][y].size = 1;
+												load_parallel->parallel_trs_size++;
+												break;
+											}
+										}
+									}
+									else
+									{
+										if (load_parallel->parallel_states_trs[i][y].size != 0)
+										{
+											dummy++;
+										}
+
+										if (dummy == 0)
+										{
+											for (k = 0; k < load_parallel->parallel_states_size; k++)
+											{
+												if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]))
+												{
+													load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
+													load_parallel->parallel_states_trs[i][y].values[0] = k;
+													load_parallel->parallel_states_trs[i][y].size = 1;
+													load_parallel->parallel_trs_size++;
+													break;
+
+												}
+											}
+										}
+										else
+										{
+											dummy = 0;
+										}
+									}
+								}
+							}
+
+							else
+							{
+
+								dummy = 0;
+
+								if (strcmp(load_parallel->parallel_events.string[y], automata1->events.string[j]) == 0)
+								{
+									automata1_event = j;
+									dummy++;
+								}
+
+								if (dummy == 0)
+								{
+									automata1_event = -1;
+								}
+								else
+									dummy = 0;
+
+								if (automata1_event != -1)
+								{
+									for (x = 0; x < automata2->events.size; x++)
+									{
+
+										if (strcmp(load_parallel->parallel_events.string[automata1_event], automata2->events.string[x]) == 0)
+										{
+											automata2_event = x;
+											dummy++;
+											break;
+										}
+
+									}
+									if (dummy == 0)
+									{
+										automata2_event = -1;
+									}
+									else
+										dummy = 0;
+								}
+								else
+									automata2_event = -1;
+
+
+								if (automata1_event != -1)
+								{
+									if (automata2_event == -1)
+									{
+										if (load_parallel->parallel_trs_size == 0)
+										{
+											if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0)
+											{
+												for (k = 0; k < load_parallel->parallel_states_size; k++)
+												{
+													if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == load_parallel->parallel_states[i].values[1]))
+													{
+														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
+														load_parallel->parallel_states_trs[i][y].values[0] = k;
+														load_parallel->parallel_states_trs[i][y].size = 1;
+														load_parallel->parallel_trs_size++;
+														break;
+													}
+												}
+
+											}
+										}
+										else
+										{
+											if (load_parallel->parallel_states_trs[i][y].size != 0)
+											{
+												dummy++;
+											}
+
+											if (dummy == 0)
+											{
+												if (automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->size != 0)
+												{
+													for (k = 0; k < load_parallel->parallel_states_size; k++)
+													{
+														if ((load_parallel->parallel_states[k].values[0] == automata1->transitions[load_parallel->parallel_states[i].values[0]][j]->values[0]) && (load_parallel->parallel_states[k].values[1] == load_parallel->parallel_states[i].values[1]))
+														{
+															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
+															load_parallel->parallel_states_trs[i][y].values[0] = k;
+															load_parallel->parallel_states_trs[i][y].size = 1;
+															load_parallel->parallel_trs_size++;
+															break;
+														}
+													}
+												}
+											}
+											else
+												dummy = 0;
+										}
+									}
+								}
+
+
+								dummy = 0;
+
+								if (strcmp(load_parallel->parallel_events.string[y], automata2->events.string[z]) == 0)
+								{
+									automata2_event = z;
+									dummy++;
+								}
+
+								if (dummy == 0)
+								{
+									automata2_event = -1;
+								}
+								else
+									dummy = 0;
+
+								if (automata2_event != -1)
+								{
+									for (x = 0; x < automata1->events.size; x++)
+									{
+										if (strcmp(load_parallel->parallel_events.string[automata2_event], automata1->events.string[x]) == 0)
+										{
+											automata1_event = x;
+											dummy++;
+											break;
+										}
+
+									}
+									if (dummy == 0)
+									{
+										automata1_event = -1;
+									}
+									else
+										dummy = 0;
+								}
+								else
+								{
+									automata1_event = -1;
+								}
+
+
+
+								if (automata2_event != -1)
+								{
+
+
+									if (automata1_event == -1)
+									{
+										if (load_parallel->parallel_trs_size == 0)
+										{
+											if (automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
+											{
+												for (k = 0; k < load_parallel->parallel_states_size; k++)
+												{
+													if ((load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]) && (load_parallel->parallel_states[k].values[0] == load_parallel->parallel_states[i].values[0]))
+													{
+														load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
+														load_parallel->parallel_states_trs[i][y].values[0] = k;
+														load_parallel->parallel_states_trs[i][y].size = 1;
+														load_parallel->parallel_trs_size++;
+														break;
+													}
+												}
+
+											}
+										}
+										else
+										{
+											if (load_parallel->parallel_states_trs[i][y].size != 0)
+											{
+												dummy++;
+											}
+
+											if (dummy == 0)
+											{
+												if (automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->size != 0)
+												{
+													for (k = 0; k < load_parallel->parallel_states_size; k++)
+													{
+														if ((load_parallel->parallel_states[k].values[1] == automata2->transitions[load_parallel->parallel_states[i].values[1]][z]->values[0]) && (load_parallel->parallel_states[k].values[0] == load_parallel->parallel_states[i].values[0]))
+														{
+															load_parallel->parallel_states_trs[i][y].values = (int_vector*)malloc(sizeof(int*));
+															load_parallel->parallel_states_trs[i][y].values[0] = k;
+															load_parallel->parallel_states_trs[i][y].size = 1;
+															load_parallel->parallel_trs_size++;
+															break;
+														}
+													}
+												}
+											}
+											else
+												dummy = 0;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			//-------------------------------------------product states transitions-------------------------------------------//
+
+
+
+			writeParallelAutomata(automata_vector, automata1, automata2, load_parallel);
+		}
+		else
+		{
+			printf("One of the automaton is NFA, please use the other functions in the menu to change that!\n\n");
+			return;
+		}
+	}
+}
 
 //recursive function that creates the states that result of the parallel between two automatons
 void parallelStatescreation(parallel* load_parallel, automato* load_automata1, automato* load_automata2, int parallel_state_index)
@@ -6005,7 +4689,7 @@ void parallelStatescreation(parallel* load_parallel, automato* load_automata1, a
 
 //function that writes the parallel result in the .aut format. Also it gives the user the choice of saving the automata in memory...
 //...or print it in the console or writing it to a file.
-void writeParallelAutomata(automata_array* automata_vector ,automato* automata1, automato* automata2, parallel* load_parallel)
+void writeParallelAutomata(automata_array* automata_vector, automato* automata1, automato* automata2, parallel* load_parallel)
 {
 	int i = 0, j = 0, x = 0, z = 0, y = 0, k = 0;
 	int* valid_events;
@@ -6252,17 +4936,1277 @@ void writeParallelAutomata(automata_array* automata_vector ,automato* automata1,
 }
 
 
+//---------------------------------------------------------parallel private functions--------------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//------------------------------------------------------automaton treatment private functions------------------------------------------------------//
+
+
+//function that loads to an automata a new file
+void load_file(automato* load_automata, char* file_path)
+{
+	FILE* fp;
+	int size = 0;
+	char* file_info;
+	fp = fopen(file_path, "rb");
+	//check if there's something in the file
+	if (fp == NULL)
+	{
+		printf("Error opening file");
+		load_automata->error = 1;
+		return;
+	}
+	//get amount of characters in file
+	fseek(fp, 0, SEEK_END);
+	size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	//load file to a file_info string
+	file_info = (char *)malloc(size + 1);
+	fread(file_info, sizeof(char), size, fp);
+	//last character is atributted with an end string
+	file_info[size] = '\0';
+	fclose(fp);
+	//calls private function 
+	parser(load_automata, file_info);
+	free(file_info);
+}
+
+//parser for the automatata
+void parser(automato* load_automata, char* file_info)
+{
+	//private initializations 
+	char* line;
+	line = (char*)malloc(1);
+	int  parser_state = 0, i = 0, index = 0, j = 0, x = 0, y = 0, z = 0, states_test = 0, events_test = 0, initial_test = 0, marked_test = 0;
+	char* trs_line;
+	trs_line = (char*)malloc(1);
+	int trs_index = 0;
+	int second_trs_state_index = 0, trs_event_index = 0, trs_state_index = 0;
+	int inv_trs_index = 0, trs_test = 0;
+
+	nullEventSearcher(load_automata, file_info);
+
+	//split the automata's read file with each paragraph and search for each states, events, etc
+	while (splitString(file_info, &line, &index, '\n'))
+	{
+		//each line is compared to predefined strings
+		//continue is used to force the next iteration
+		if (strcmp(line, "STATES") == 0)
+		{
+			parser_state = 1;
+			continue;
+		}
+
+		if (strcmp(line, "EVENTS") == 0)
+		{
+			parser_state = 2;
+			continue;
+		}
+
+		if (strcmp(line, "TRANSITIONS") == 0)
+		{
+			parser_state = 3;
+			continue;
+		}
+
+		if (strcmp(line, "INITIAL") == 0)
+		{
+			parser_state = 4;
+			continue;
+		}
+
+		if (strcmp(line, "MARKED") == 0)
+		{
+			parser_state = 5;
+			continue;
+		}
+
+		//depending on the value of the parser in each iteration, there will be a case
+		switch (parser_state)
+		{
+
+			//state case
+		case 1:
+
+			//avoid paragraphs with null content
+			if (strcmp(line, "") != 0)
+			{
+				if (load_automata->states.size != 0)
+				{
+					//to avoid repetition of states
+					for (i = 0; i < load_automata->states.size; i++)
+					{
+						if (strcmp(line, load_automata->states.string[i]) == 0)
+							states_test++;
+					}
+					if (states_test == 0)
+						stringPushBack(&(load_automata->states), line);
+					else
+						states_test = 0;
+				}
+				//for the first time
+				else
+					stringPushBack(&(load_automata->states), line);
+			}
+			break;
+
+			//event case
+		case 2:
+
+			//avoid paragraphs with null content
+			if (strcmp(line, "") != 0)
+			{
+				if (load_automata->events.size != 0)
+				{
+					//to avoid repetition of events
+					for (i = 0; i < load_automata->events.size; i++)
+					{
+						if (strcmp(line, load_automata->events.string[i]) == 0)
+							events_test++;
+					}
+					if (events_test == 0)
+						stringPushBack(&(load_automata->events), line);
+					else
+						events_test = 0;
+				}
+				//for the first time
+				else
+					stringPushBack(&(load_automata->events), line);
+			}
+			break;
+
+			//transition case
+		case 3:
+
+			//avoid paragraphs with null content
+			if (strcmp(line, "") != 0)
+			{
+				trs_index = 0;
+				int i = 0, j = 0;
+
+				//memory allocation for the transitions (triple pointer)
+				if (load_automata->transitions == NULL)
+				{
+					//memory allocation for the double pointer, poiting to a pointer
+					load_automata->transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
+					for (i = 0; i < load_automata->states.size; i++)
+					{
+						load_automata->transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
+						for (j = 0; j < load_automata->events.size; j++)
+						{
+							load_automata->transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
+							load_automata->transitions[i][j]->size = 0;
+						}
+					}
+				}
+
+				if (load_automata->inverse_transitions == NULL)
+				{
+					//memory allocation for the double pointer, poiting to a pointer
+					load_automata->inverse_transitions = (int_vector***)malloc(sizeof(int_vector**)*(load_automata->states.size));
+					for (i = 0; i < load_automata->states.size; i++)
+					{
+						load_automata->inverse_transitions[i] = (int_vector**)malloc(sizeof(int_vector*)*(load_automata->events.size));
+						for (j = 0; j < load_automata->events.size; j++)
+						{
+							load_automata->inverse_transitions[i][j] = (int_vector*)malloc(sizeof(int_vector));
+							load_automata->inverse_transitions[i][j]->size = 0;
+						}
+					}
+				}
+
+				//transitions will only happen with 2 states and one event
+				for (i = 0; i != 3; i++)
+				{
+					//transitions made correctly
+					if (splitString(line, &trs_line, &trs_index, ';') == false)
+					{
+						printf("Invalid transition in file. Correct this transition:\n\nPress enter to continue\n");
+						puts(line);
+						load_automata->error = 1;
+						return;
+					}
+
+					//when it's not an event
+					if (i == 0)
+					{
+
+						//confirm if there are states in the transitions vector
+						trs_state_index = findItemStringVector(trs_line, load_automata->states);
+						if (trs_state_index == load_automata->states.size)
+						{
+							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue\n");
+							puts(line);
+							load_automata->error = 1;
+							return;
+						}
+					}
+					if (i == 2)
+					{
+
+						//confirm if there are states in the transitions vector
+						second_trs_state_index = findItemStringVector(trs_line, load_automata->states);
+						if (second_trs_state_index == load_automata->states.size)
+						{
+							printf("Invalid state being used on the transition. Correct this transition:\n\nPress enter to continue\n");
+							puts(line);
+							load_automata->error = 1;
+							return;
+						}
+					}
+					if (i == 1)
+					{
+
+						trs_event_index = findItemStringVector(trs_line, load_automata->events);
+						if (trs_event_index == load_automata->events.size)
+						{
+							printf("Invalid event being used on the transition. Correct this transition:\n\nPress enter to continue\n");
+							puts(line);
+							load_automata->error = 1;
+							return;
+						}
+					}
+
+				}
+				//avoid repeated transitions 
+				if (load_automata->transitions[trs_state_index][trs_event_index]->size != 0)
+				{
+					for (i = 0; i < load_automata->transitions[trs_state_index][trs_event_index]->size; i++)
+					{
+						if (load_automata->transitions[trs_state_index][trs_event_index]->values[i] == second_trs_state_index)
+							trs_test++;
+					}
+					if (trs_test == 0)
+					{
+						intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
+						intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
+					}
+					trs_test = 0;
+				}
+
+				//for the first time
+				else
+				{
+					intVectPushBack(load_automata->transitions[trs_state_index][trs_event_index], second_trs_state_index);
+					intVectPushBack(load_automata->inverse_transitions[second_trs_state_index][trs_event_index], trs_state_index);
+				}
+			}
+			break;
+
+			//initial state
+		case 4:
+			//avoid paragraphs with null content
+			if (strcmp(line, "") != 0)
+			{
+				for (j = 0; j < load_automata->states.size; j++)
+				{
+					if (strcmp(line, load_automata->states.string[j]) == 0)
+					{
+						load_automata->initial = j;
+						initial_test++;
+					}
+				}
+
+				//check if the file has more than one initial state
+				if (initial_test > 1)
+				{
+					printf("More than one initial state. Press enter to continue!\n");
+					load_automata->error = 1;
+					return;
+				}
+			}
+
+
+			break;
+
+		case 5:
+
+			//avoid paragraphs with null content
+			if (strcmp(line, "") != 0)
+			{
+				for (x = 0; x < load_automata->states.size; x++)
+				{
+					if (strcmp(line, load_automata->states.string[x]) == 0)
+					{
+						//to avoid repeated marked states
+						if (load_automata->marked.size != 0)
+						{
+
+							for (i = 0; i < load_automata->marked.size; i++)
+							{
+								if (load_automata->marked.values[i] == x)
+									marked_test++;
+
+							}
+							if (marked_test == 0)
+								intVectPushBack(&(load_automata->marked), x);
+							else
+								marked_test = 0;
+						}
+						//for the first time
+						else
+							intVectPushBack(&(load_automata->marked), x);
+					}
+				}
+			}
+			break;
+
+		default:
+			printf("\nParser error!Automaton's file not correct!\n\nPress enter to continue\n");
+			load_automata->error = 1;
+			return;
+		}
+	}
+
+	free(line);
+	free(trs_line);
+
+	//if there aren't states in the automaton, write an warning (the automaton will be later deleted)
+	if (load_automata->states.size == 0)
+	{
+		printf("There are no states in the automaton!\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
+	}
+
+	//if there aren't events in the automaton, write an warning (the automaton will be later deleted)
+	if (load_automata->events.size == 0)
+	{
+		printf("There are no events in the automaton!\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
+	}
+
+	//if there aren't marked states in the automaton, write an warning (the automaton will be later deleted)
+	if (load_automata->marked.size == 0)
+	{
+		printf("There are no marked states in the automaton\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
+	}
+
+	//if there isn't an inital in the automaton, write an warning (the automaton will be later deleted)
+	if (initial_test == 0)
+	{
+		printf("There is no initial state in this automaton!\n\nPress enter to continue\n");
+		load_automata->error = 1;
+		return;
+	}
+
+	//if there aren't transitions in the automaton, write an warning (the automaton will be later deleted)
+	if (load_automata->transitions == NULL)
+	{
+		printf("There are no transitions in this automaton!\n\nPress enter to continue\n");
+		getchar();
+		getchar();
+		load_automata->error = 1;
+		return;
+	}
+
+	//allocate memory for the eclosure with the size of the available states
+	load_automata->e_closure = (int_vector*)malloc(sizeof(int_vector)*((load_automata)->states.size));
+
+	//for the begining, the eclosure will only have the state it refers to
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		load_automata->e_closure[i].size = 0;
+		intVectPushBack(&(load_automata->e_closure[i]), i);
+	}
+
+	//if there are null events, there is need to use eclosure filling, otherwise the eclosure of each state
+	//will only be itself
+	if (load_automata->null_event == 1)
+	{
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			eclosureFilling(load_automata, i, i);
+		}
+	}
+
+	//sort each eclosure
+	for (i = 0; i < (load_automata)->states.size; i++)
+	{
+		if (load_automata->e_closure[i].size > 1)
+		{
+			sortArrayAscending(&(load_automata)->e_closure[i]);
+		}
+	}
+}
+
+//search for the null event
+void nullEventSearcher(automato* load_automata, char* file_info)
+{
+	deleteCharacter(file_info, ' ');
+	if (strstr(file_info, ";;") != NULL)
+	{
+		stringPushBack(&(load_automata->events), "");
+		load_automata->null_event = 1;
+	}
+	else
+		load_automata->null_event = 0;
+}
+
+//function to split strings with the selected delimitator
+bool splitString(char* string_to_split, char** substring, int* index, char delimitator)
+{
+	int initial_index;
+
+	initial_index = *index;
+
+	if (string_to_split[*index] == '\0') {
+
+		return false;
+	}
+
+	while (true)
+	{
+		if (string_to_split[*index] == delimitator)
+		{
+			*index += 1;
+			break;
+		}
+
+		*index += 1;
+
+		if (string_to_split[*index] == '\0') {
+			break;
+		}
+	}
+
+	if (string_to_split[*index] == '\0') {
+		*substring = (char*)realloc(*substring, sizeof(char) * (*index - initial_index + 1));
+		strncpy(*substring, (string_to_split + initial_index), (*index - initial_index + 1));
+	}
+	else
+	{
+		*substring = (char*)realloc(*substring, sizeof(char) * (*index - initial_index));
+		strncpy(*substring, (string_to_split + initial_index), (*index - initial_index - 1));
+		(*substring)[*index - initial_index - 1] = '\0';
+	}
+
+	deleteCharacter(*substring, '\r');
+	deleteCharacter(*substring, '\n');
+
+	return true;
+}
+
+//delete a character (ignores the selected characters)
+void deleteCharacter(char* str, char c)
+{
+	char *pr = str, *pw = str;
+	while (*pr) {
+		*pw = *pr++;
+		pw += (*pw != c);
+	}
+	*pw = '\0';
+}
+
+//function created to be called recursively to create each state eclosure. The original index will be always the same
+//...since it only changes in the parser. The value that changes it's the new state (if there is at least one transition...
+//with the null event
+void eclosureFilling(automato* load_automata, int original_index, int index_next)
+{
+	int i = 0, j = 0, value = 0, x = 0;
+
+	//the original already takes part in the eclosure. Otherwise this new state will belong to the eclosure
+	if (original_index != index_next)
+	{
+		intVectPushBack(&(load_automata->e_closure[original_index]), index_next);
+	}
+
+	//now it's necessary to check if the new state has transitions with the null event 
+	if (load_automata->transitions[index_next][0]->size != 0)
+	{
+		//if there are transitions and if the resulting state is different from any of the current eclosure, the function...
+		//will be called with the new state (index_next)
+		for (i = 0; i < load_automata->transitions[index_next][0]->size; i++)
+		{
+			if (findItemIntVector(load_automata->e_closure[original_index], load_automata->transitions[index_next][0]->values[i]) == load_automata->e_closure[original_index].size)
+			{
+				eclosureFilling(load_automata, original_index, load_automata->transitions[index_next][0]->values[i]);
+			}
+		}
+	}
+}
+
+
+//-----------------------------------------------------automaton treatment private functions-------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//--------------------------------------------------------accessibility private functions----------------------------------------------------------//
+
+
+//check accessibility of all states, removing the unreachable. the 2nd argument refers to showing info or not in the console
+void checkAccessibilty(automato* load_automata, int dfa_canonical)
+{
+	int i = 0, j = 0, x = 0, initial_confirmation = 0;
+	int *accessible_states;
+	int *accessible_states_check;
+	int continue_loop = 1, delete_counter = 0;
+
+	accessible_states = malloc(sizeof(int)*(load_automata->states.size));
+	accessible_states_check = malloc(sizeof(int)*(load_automata->states.size));
+
+	for (i = 0; i < load_automata->events.size; i++)
+	{
+		if ((load_automata->transitions[load_automata->initial][i]->size) != 0)
+		{
+			initial_confirmation = 0;
+			break;
+		}
+		else initial_confirmation = 1;
+	}
+	if (initial_confirmation == 1)
+	{
+		printf("No state is acessible through the initial state!\n\n");
+		getchar();
+		load_automata->error = 1;
+		return;
+	}
+	else
+	{
+		//initially say that no state is accessilbe
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			accessible_states[i] = 0;
+		}
+		//the initial state must be accessible 
+		accessible_states[load_automata->initial] = 1;
+		x = load_automata->initial;
+		//after that check the transitions of the initial state any state that comes from initial will be accessible 
+		accesibleState(load_automata, x, accessible_states);
+
+		//while it's still one, it will continue.
+		while (continue_loop)
+		{
+			//every state will be checked and if it is accessible we'll see if its transitions are too
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				if (accessible_states[i] == 1)
+				{
+					accesibleState(load_automata, i, accessible_states);
+				}
+			}
+
+			continue_loop = 0;
+
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				//if there are differences in the accessible states array and it's "copy", there are still paths to take
+				if (accessible_states[i] != accessible_states_check[i])
+				{
+					for (j = 0; j < load_automata->states.size; j++)
+					{
+						accessible_states_check[j] = accessible_states[j];
+					}
+					continue_loop = 1;
+					break;
+				}
+			}
+		}
+	}
+	//how many states need to be deleted
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		if (accessible_states[i] == 0)
+			delete_counter++;
+	}
+
+	if (delete_counter > 0)
+	{
+		if (dfa_canonical == 0)
+		{
+			//show the states that are going to be removed
+			printf("-----------The automata had non-accessible states. They are going to be removed-----------\n\n\n");
+			printf("Removed states:\n");
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				if (accessible_states[i] == 0)
+					printf("%s \n", load_automata->states.string[i]);
+			}
+		}
+
+		//rewrites the automaton to be passed in the parser without the removed states
+		rewriteAutomata(load_automata, accessible_states, dfa_canonical);
+
+	}
+	else
+	{
+		if (dfa_canonical == 0)
+		{
+			printf("\n\n\n-----------All states in the automata are accessible!-----------\n\n\n");
+		}
+	}
+
+
+	free(accessible_states);
+	free(accessible_states_check);
+}
+
+//mark the reached states made from an accessible state through transitions, as accessible 
+void accesibleState(automato* load_automata, int state_index, int *accessible_states)
+{
+	int i = 0, j = 0, x = 0;
+
+	for (i = 0; i < load_automata->events.size; i++)
+	{
+		//if the the state that entered has transitions, any state resulting from a transition will be marked as accessible
+		if (load_automata->transitions[state_index][i]->size != 0)
+		{
+			for (x = 0; x < load_automata->transitions[state_index][i]->size; x++)
+			{
+				accessible_states[load_automata->transitions[state_index][i]->values[x]] = 1;
+			}
+		}
+	}
+}
+
+
+//-------------------------------------------------------accessibility private functions-----------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//-------------------------------------------------------coaccessibility private functions---------------------------------------------------------//
+
+
+//check coaccessibility of all states, removing the unreachable. the 2nd argument refers to showing info or not in the console
+void checkCoaccessibilty(automato* load_automata, int dfa_canonical)
+{
+	int i = 0, j = 0, x = 0, initial_confirmation = 0;
+	int *coaccessible_states;
+	int *coaccessible_states_check;
+	int continue_loop = 1, delete_counter = 0;
+
+	coaccessible_states = malloc(sizeof(int)*(load_automata->states.size));
+	coaccessible_states_check = malloc(sizeof(int)*(load_automata->states.size));
+
+
+	for (j = 0; j < load_automata->marked.size; j++)
+	{
+		for (i = 0; i < load_automata->events.size; i++)
+		{
+
+			if ((load_automata->inverse_transitions[load_automata->marked.values[j]][i]->size) != 0)
+			{
+				initial_confirmation = 0;
+				break;
+			}
+			else initial_confirmation = 1;
+		}
+	}
+
+	if (initial_confirmation == 1)
+	{
+		printf("No state is coacessible through any marked state(s)!\n\n");
+		getchar();
+		load_automata->error = 1;
+		return;
+	}
+	else
+	{
+		//initially say that no state is coaccessilbe
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			coaccessible_states[i] = 0;
+		}
+		//the marked state(s) must be coaccessible 
+		for (j = 0; j < load_automata->marked.size; j++)
+		{
+			for (i = 0; i < load_automata->states.size; i++)
+			{
+				if (load_automata->marked.values[j] == i)
+				{
+					coaccessible_states[i] = 1;
+				}
+			}
+		}
+
+
+		for (x = 0; x < load_automata->marked.size; x++)
+		{
+			//after that check the transitions of the marked state any state that comes from marked will be coacessible
+			coaccesibleState(load_automata, load_automata->marked.values[x], coaccessible_states);
+
+			//while it's still one, it will continue.
+			while (continue_loop)
+			{
+				//every state will be checked and if it is coaccessible we'll see if its transitions are too
+				for (i = 0; i < load_automata->states.size; i++)
+				{
+					if (coaccessible_states[i] == 1)
+					{
+						coaccesibleState(load_automata, i, coaccessible_states);
+					}
+				}
+
+				continue_loop = 0;
+
+				for (i = 0; i < load_automata->states.size; i++)
+				{
+					//if there are differences in the accessible states array and it's "copy", there are still paths to take
+					if (coaccessible_states[i] != coaccessible_states_check[i])
+					{
+						for (j = 0; j < load_automata->states.size; j++)
+						{
+							coaccessible_states_check[j] = coaccessible_states[j];
+						}
+						continue_loop = 1;
+						break;
+					}
+				}
+			}
+			continue_loop = 0;
+		}
+	}
+	//how many states need to be deleted
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		if (coaccessible_states[i] == 0)
+			delete_counter++;
+	}
+
+	//show the states that are going to be removed
+	if (delete_counter > 0)
+	{
+		printf("\n\n\n-----------The automata had non-coaccessible states. They are going to be removed-----------\n\n\n");
+		printf("Removed states:\n");
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			if (coaccessible_states[i] == 0)
+				printf("%s \n", load_automata->states.string[i]);
+		}
+
+		//rewrites the automaton to be passed in the parser without the removed states
+		rewriteAutomata(load_automata, coaccessible_states, dfa_canonical);
+	}
+	else
+		printf("\n\n\n-----------All states in the automata are coaccessible!-----------\n\n\n");
+
+	free(coaccessible_states);
+	free(coaccessible_states_check);
+}
+
+//mark the reached states made from an accessible state through inverse transitions, as coaccessible 
+void coaccesibleState(automato* load_automata, int state_index, int *coaccessible_states)
+{
+	int i = 0, j = 0, x = 0;
+
+	for (i = 0; i < load_automata->events.size; i++)
+	{
+		//if the the state that entered has inverse transitions, any state resulting from an inverse transition will be marked as coaccessible
+		if (load_automata->inverse_transitions[state_index][i]->size != 0)
+		{
+			for (x = 0; x < load_automata->inverse_transitions[state_index][i]->size; x++)
+			{
+				coaccessible_states[load_automata->inverse_transitions[state_index][i]->values[x]] = 1;
+			}
+		}
+	}
+}
+
+
+//-------------------------------------------------------coaccessibility private functions---------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//--------------------------------------------------------write automaton private functions--------------------------------------------------------//
+
+
+//function responsible of writing a selected automaton in the console
+void printAutomata(automato* load_automata)
+{
+
+	printf("G=(X,E,f,Xinit,Xmarked)\n\n");
+	int i = 0, j = 0, x = 0, comma_counter = 0;
+
+	printf("States\n");
+	printf("X=");
+	writeStringVectorInConsole(&(load_automata->states));
+
+	printf("Events\n");
+	printf("E=");
+	writeStringVectorInConsole(&(load_automata->events));
+
+	printf("Transitions");
+
+	if (load_automata->transitions != NULL)
+	{
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_automata->transitions[i][j]->size != 0)
+				{
+					printf("\nf(%s", load_automata->states.string[i]);
+					printf(",%s)=", load_automata->events.string[j]);
+
+					for (x = 0; x < load_automata->transitions[i][j]->size; x++)
+					{
+						if (load_automata->transitions[i][j]->size != 0 && load_automata->transitions[i][j]->size == 1)
+						{
+							printf("(%s)", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
+							continue;
+						}
+
+						if (load_automata->transitions[i][j]->size != 0 && load_automata->transitions[i][j]->size > 1 && (x < ((load_automata->transitions[i][j]->size) - 1)))
+						{
+							if (x == 0)
+							{
+								printf("(%s,", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
+							}
+							else
+								printf("%s,", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
+						}
+						if (load_automata->transitions[i][j]->size != 0 && (x == ((load_automata->transitions[i][j]->size) - 1)))
+							printf("%s)", load_automata->states.string[load_automata->transitions[i][j]->values[x]]);
+					}
+				}
+			}
+		}
+	}
+
+	printf("\n\n");
+
+	printf("Initial\n");
+	printf("Xinit=%s\n\n", load_automata->states.string[load_automata->initial]);
+
+	printf("Marked\n");
+	printf("Xmarked=");
+	writeIntVectorInConsole(&(load_automata->marked), &(load_automata->states));
+
+	if (load_automata->e_closure != NULL)
+	{
+		for (i = 0; i < load_automata->states.size; i++)
+		{
+			printf("EClosure(%s)=", load_automata->states.string[i]);
+			for (j = 0; j < load_automata->e_closure[i].size; j++)
+			{
+				if (load_automata->e_closure[i].size == 1)
+				{
+					printf("{%s}", (load_automata)->states.string[(load_automata)->e_closure[i].values[j]]);
+				}
+				if (load_automata->e_closure[i].size > 1)
+				{
+					if (j == 0)
+					{
+						printf("{%s,", (load_automata)->states.string[load_automata->e_closure[i].values[j]]);
+					}
+					if (j > 0 && j != (load_automata->e_closure[i].size - 1))
+					{
+						printf("%s,", (load_automata)->states.string[(load_automata)->e_closure[i].values[j]]);
+					}
+					if (j == load_automata->e_closure[i].size - 1)
+					{
+						printf("%s}", (load_automata)->states.string[load_automata->e_closure[i].values[j]]);
+					}
+				}
+			}
+			printf("\n\n");
+		}
+	}
+}
+
+//print in console in a tidy way for int_vector type
+void writeIntVectorInConsole(int_vector* vector, string_vector* string_vect)
+{
+	int i = 0;
+	for (i = 0; i < vector->size; i++)
+	{
+		if (vector->size > 1)
+		{
+			if (i == 0)
+			{
+				printf("(%s,", string_vect->string[vector->values[i]]);
+			}
+
+			if (i > 0 && i < ((vector->size) - 1))
+			{
+				printf("%s,", string_vect->string[vector->values[i]]);
+			}
+
+			if (i == ((vector->size) - 1))
+			{
+				printf("%s)\n\n", string_vect->string[vector->values[i]]);
+			}
+		}
+		else printf("(%s)\n\n", string_vect->string[vector->values[i]]);
+	}
+}
+
+//print in console in a tidy way for string_type
+void writeStringVectorInConsole(string_vector* string_vect)
+{
+	int i = 0;
+	for (i = 0; i <string_vect->size; i++)
+	{
+		if (string_vect->size > 1)
+		{
+			if (i == 0)
+			{
+				printf("(%s,", string_vect->string[i]);
+			}
+			if (i > 0 && i < (string_vect->size - 1))
+			{
+				printf("%s,", string_vect->string[i]);
+			}
+			if (i == (string_vect->size - 1))
+			{
+				printf("%s)\n\n", string_vect->string[i]);
+			}
+		}
+		else
+			printf("(%s)\n\n", string_vect->string[i]);
+	}
+}
+
+//function that writes the resulting automaton in the .aut format. Also it gives the user the choice of saving the automata in memory...
+//...or print it in the console or writing it to a file.
+void rewriteAutomata(automato* load_automata, int* valid_states, int dfa_canonical)
+{
+
+
+	int i = 0, j = 0, x = 0, z = 0, k = 0;
+	int* buffer[1000];
+	char c;
+	x = x + strlen("STATES\r\n") + 1;
+	char* new_automata_info;
+	int* valid_events;
+
+	valid_events = (int*)malloc(sizeof(int)*load_automata->events.size);
+	for (i = 0; i < load_automata->events.size; i++)
+	{
+		valid_events[i] = 0;
+	}
+
+	new_automata_info = malloc(x);
+
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcpy(new_automata_info, "STATES\r\n\0");
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		if (valid_states[i] == 1)
+		{
+			x = x + strlen(load_automata->states.string[i]) + strlen("\r\n") + 2;
+			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+			strcat(new_automata_info, load_automata->states.string[i]);
+			strcat(new_automata_info, "\0");
+			strcat(new_automata_info, "\r\n\0");
+		}
+	}
+
+	x = x + strlen("EVENTS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "EVENTS\r\n\0");
+
+
+	for (i = 0; i < load_automata->events.size; i++)
+	{
+		for (j = 0; j < load_automata->states.size; j++)
+		{
+			if (valid_states[j] == 1)
+			{
+				if (load_automata->transitions[j][i]->size != 0)
+				{
+					valid_events[i] = 1;
+					break;
+				}
+			}
+		}
+	}
+
+	if (load_automata->null_event == 1)
+	{
+		for (i = 1; i < load_automata->events.size; i++)
+		{
+			if (valid_events[i] == 1)
+			{
+				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, load_automata->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+			}
+		}
+	}
+	else
+	{
+		for (i = 0; i < load_automata->events.size; i++)
+		{
+			if (valid_events[i] == 1)
+			{
+				x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+				new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+				strcat(new_automata_info, load_automata->events.string[i]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+			}
+		}
+	}
+
+
+	x = x + strlen("TRANSITIONS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "TRANSITIONS\r\n\0");
+
+
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		if (valid_states[i] == 1)
+		{
+			for (j = 0; j < load_automata->events.size; j++)
+			{
+				if (load_automata->transitions[i][j]->size != 0)
+				{
+					for (z = 0; z < load_automata->transitions[i][j]->size; z++)
+					{
+
+						if (valid_states[load_automata->transitions[i][j]->values[z]] == 1)
+						{
+							x = x + strlen(load_automata->states.string[i]) + strlen(";") + 2;
+							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+							strcat(new_automata_info, load_automata->states.string[i]);
+							strcat(new_automata_info, "\0");
+							strcat(new_automata_info, ";\0");
+
+							x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
+							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+							strcat(new_automata_info, load_automata->events.string[j]);
+							strcat(new_automata_info, "\0");
+							strcat(new_automata_info, ";\0");
+
+							x = x + strlen(load_automata->states.string[load_automata->transitions[i][j]->values[z]]) + strlen("\r\n") + 2;
+							new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+							strcat(new_automata_info, load_automata->states.string[load_automata->transitions[i][j]->values[z]]);
+							strcat(new_automata_info, "\0");
+							strcat(new_automata_info, "\r\n\0");
+						}
+					}
+				}
+			}
+		}
+	}
+
+	x = x + strlen("INITIAL\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "INITIAL\r\n\0");
+
+	x = x + strlen(load_automata->states.string[load_automata->initial]) + strlen("\r\n") + 2;
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, load_automata->states.string[load_automata->initial]);
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, "\r\n\0");
+
+
+	x = x + strlen("MARKED\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "MARKED\r\n\0");
+
+
+	for (i = 0; i < load_automata->marked.size; i++)
+	{
+		for (j = 0; j < load_automata->states.size; j++)
+		{
+			if ((load_automata->states.string[j] == load_automata->states.string[load_automata->marked.values[i]]) && valid_states[j] == 1)
+			{
+				x = x + strlen(load_automata->states.string[load_automata->marked.values[i]]) + strlen("\r\n") + 2;
+				strcat(new_automata_info, load_automata->states.string[load_automata->marked.values[i]]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+			}
+		}
+	}
+
+
+	if (dfa_canonical == 0)
+	{
+		printf("\n\nDo you wish to change the current automata? Press 1 if yes, any other number if not \n\n");
+		while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
+		if (k == 1)
+		{
+			freeData(load_automata);
+			parser(load_automata, new_automata_info);
+		}
+		else
+		{
+			printf("\n\nDo you wish to print the changed automata? Press 1 if yes, any other number if not \n\n");
+			while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
+			if (k == 1)
+			{
+				automato* provisory;
+				provisory = new_automata();
+				parser(provisory, new_automata_info);
+				printAutomata(provisory);
+				freeAutomata(provisory);
+			}
+			printf("\n\nDo you wish to print the changed automata to a file? Press 1 if yes, any other number if not \n\n");
+			while ((scanf("%d%c", &k, &c) != 2 || c != '\n') && clean_stdin());
+			if (k == 1)
+			{
+				automato* provisory;
+				provisory = new_automata();
+				parser(provisory, new_automata_info);
+				writeAutomataToFile(provisory);
+				freeAutomata(provisory);
+			}
+		}
+	}
+	else
+	{
+		freeData(load_automata);
+		parser(load_automata, new_automata_info);
+	}
+	free(new_automata_info);
+	free(valid_events);
+}
+
+
+//--------------------------------------------------------write automaton private functions--------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//----------------------------------------------------------extra menu private functions-----------------------------------------------------------//
+
+
+//writes a choosen automaton to a file with a name inserted by the user
+void writeAutomataToFile(automato* load_automata)
+{
+	printf("\n\n\n-----------Writing automata to file-----------\n\n\n");
+	int i = 0, j = 0, x = 0, z = 0;
+	char buffer[1000];
+	x = x + strlen("STATES\r\n") + 1;
+	char* new_automata_info;
+
+	new_automata_info = (char*)malloc(sizeof(char)*x);
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcpy(new_automata_info, "STATES\r\n\0");
+
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		x = x + strlen(load_automata->states.string[i]) + strlen("\r\n") + 2;
+		new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+		strcat(new_automata_info, load_automata->states.string[i]);
+		strcat(new_automata_info, "\0");
+		strcat(new_automata_info, "\r\n\0");
+	}
+
+	x = x + strlen("EVENTS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "EVENTS\r\n\0");
+
+
+
+	if (load_automata->null_event == 1)
+	{
+		for (i = 1; i < load_automata->events.size; i++)
+		{
+			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+			strcat(new_automata_info, load_automata->events.string[i]);
+			strcat(new_automata_info, "\0");
+			strcat(new_automata_info, "\r\n\0");
+		}
+	}
+	else
+	{
+		for (i = 0; i < load_automata->events.size; i++)
+		{
+			x = x + strlen(load_automata->events.string[i]) + strlen("\r\n") + 2;
+			new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+			strcat(new_automata_info, load_automata->events.string[i]);
+			strcat(new_automata_info, "\0");
+			strcat(new_automata_info, "\r\n\0");
+		}
+	}
+
+
+	x = x + strlen("TRANSITIONS\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "TRANSITIONS\r\n\0");
+
+
+	for (i = 0; i < load_automata->states.size; i++)
+	{
+		for (j = 0; j < load_automata->events.size; j++)
+		{
+			if (load_automata->transitions[i][j]->size != 0)
+			{
+				for (z = 0; z < load_automata->transitions[i][j]->size; z++)
+				{
+					x = x + strlen(load_automata->states.string[i]) + strlen(";") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, load_automata->states.string[i]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ";\0");
+
+					x = x + strlen(load_automata->events.string[j]) + strlen(";") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, load_automata->events.string[j]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, ";\0");
+
+					x = x + strlen(load_automata->states.string[load_automata->transitions[i][j]->values[z]]) + strlen("\r\n") + 2;
+					new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+					strcat(new_automata_info, load_automata->states.string[load_automata->transitions[i][j]->values[z]]);
+					strcat(new_automata_info, "\0");
+					strcat(new_automata_info, "\r\n\0");
+				}
+			}
+		}
+	}
+
+	x = x + strlen("INITIAL\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "INITIAL\r\n\0");
+
+	x = x + strlen(load_automata->states.string[load_automata->initial]) + strlen("\r\n") + 2;
+	new_automata_info = (char*)realloc(new_automata_info, (x * sizeof(char)));
+	strcat(new_automata_info, load_automata->states.string[load_automata->initial]);
+	strcat(new_automata_info, "\0");
+	strcat(new_automata_info, "\r\n\0");
+
+
+	x = x + strlen("MARKED\r\n") + 1;
+	new_automata_info = (char*)realloc(new_automata_info, x * sizeof(char));
+	strcat(new_automata_info, "MARKED\r\n\0");
+
+
+	for (i = 0; i < load_automata->marked.size; i++)
+	{
+		for (j = 0; j < load_automata->states.size; j++)
+		{
+			if ((load_automata->states.string[j] == load_automata->states.string[load_automata->marked.values[i]]))
+			{
+				x = x + strlen(load_automata->states.string[load_automata->marked.values[i]]) + strlen("\r\n") + 2;
+				strcat(new_automata_info, load_automata->states.string[load_automata->marked.values[i]]);
+				strcat(new_automata_info, "\0");
+				strcat(new_automata_info, "\r\n\0");
+			}
+		}
+	}
+	printf("\n\n\nInsert path file\n\n\n");
+	scanf("%s", &buffer);
+	getchar();
+	FILE* fp;
+	fp = fopen(buffer, "w");
+	memset(buffer, 0, 1000);
+	fprintf(fp, new_automata_info);
+	fclose(fp);
+	free(new_automata_info);
+}
+
 //function that deletes an automaton chosen by the user
 void deleteAutomata(automata_array* automata_vector, string_vector* automata_name, int automata_to_delete)
 {
 	int i = 0;
 	//frees the memory of the mentioned automata
 	freeAutomata(automata_vector->automata[automata_to_delete]);
-	
+
 	//changes the array positions if necessary
 	if (automata_to_delete + 1 < automata_vector->automata_number)
 	{
-		for (i = automata_to_delete; i <  automata_vector->automata_number - 1; i++)
+		for (i = automata_to_delete; i < automata_vector->automata_number - 1; i++)
 		{
 			automata_vector->automata[i] = automata_vector->automata[i + 1];
 		}
@@ -6274,7 +6218,7 @@ void deleteAutomata(automata_array* automata_vector, string_vector* automata_nam
 	//changes the array positions if necessary.
 	if (automata_to_delete + 1 <  automata_vector->automata_number)
 	{
-		for (i = automata_to_delete; i <  automata_vector->automata_number - 1; i++)
+		for (i = automata_to_delete; i < automata_vector->automata_number - 1; i++)
 		{
 			automata_name->string[i] = automata_name->string[i + 1];
 
@@ -6289,18 +6233,154 @@ void deleteAutomata(automata_array* automata_vector, string_vector* automata_nam
 		automata_name->string = (char**)realloc(automata_name->string, sizeof(char*)*automata_vector->automata_number);
 		automata_name->size--;
 	}
-	
+
 	//otherwise just free the memory and redefine the size of each variable
 	else
 	{
-		
+
 		automata_name->size = 0;
 		free(automata_name->string);
-		automata_vector->automata_number=0;
+		automata_vector->automata_number = 0;
 		free(automata_vector->automata);
 	}
 
 }
 
+
+//----------------------------------------------------------extra menu private functions-----------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
+
+//-----------------------------------------------------------generic private functions-------------------------------------------------------------//
+
+
+//waits for the user to insert an enter after writing on the console
+int clean_stdin()
+{
+	while (getchar() != '\n');
+	return 1;
+}
+
+//calculates the pairs (k=2) that are possible to combine with a number of states (n)
+int nCr(automato* load_automata)
+{
+	int result = 0;
+	int n = load_automata->states.size;
+	int k = 2;
+	int n_fact = factorial(n);
+	int k_fact = factorial(k);
+	int n_k = n - k;
+	int n_k_factorial = factorial(n_k);
+	result = n_fact / (k_fact * n_k_factorial);
+
+	return(result);
+}
+
+//computes the factorial of a given number
+int factorial(int number)
+{
+	int i, fact = 1;
+
+	for (i = 1; i <= number; i++)
+	{
+		fact = fact * i;
+	}
+	return(fact);
+}
+
+//function that sorts any int_vector array
+void sortArrayAscending(int_vector* array_to_sort)
+{
+	int i = 0, j = 0, min = 0, swap = 0, first = 0, second = 0;
+	for (i = 0; i < (array_to_sort->size - 1); i++)
+	{
+		min = i;
+		for (j = (i + 1); j < array_to_sort->size; j++)
+		{
+			first = array_to_sort->values[j];
+			second = array_to_sort->values[min];
+			if (second> first)
+			{
+				min = j;
+			}
+		}
+		if (i != min) {
+			swap = array_to_sort->values[i];
+			array_to_sort->values[i] = array_to_sort->values[min];
+			array_to_sort->values[min] = swap;
+		}
+	}
+}
+
+//push back to allocate memory in vector type
+void intVectPushBack(int_vector* vector, int item)
+{
+	if (vector->size == 0)
+	{
+		vector->values = (int_vector*)malloc(sizeof(int*));
+	}
+	vector->size++;
+	vector->values = realloc(vector->values, sizeof(int*)*(vector->size));
+	vector->values[vector->size - 1] = item;
+}
+
+//push back to allocate memory in string type
+void stringPushBack(string_vector* char_vector, char* item)
+{
+	if (char_vector->size <= 0)
+	{
+		char_vector->string = (char**)malloc(sizeof(char*));
+	}
+	char_vector->size++;
+	char_vector->string = realloc(char_vector->string, sizeof(char*)*(char_vector->size));
+	char_vector->string[char_vector->size - 1] = (char*)malloc(sizeof(char)*strlen(item) + 1);
+	strcpy(char_vector->string[char_vector->size - 1], item);
+}
+
+//returns string size in case of failure. Else returns item index
+int findItemStringVector(char* string, string_vector vect)
+{
+	int i = 0;
+
+	for (i = 0; i != vect.size; i++)
+	{
+		if (strcmp(string, vect.string[i]) == 0)
+			return i;
+	}
+	return i;
+}
+
+//returns intvector size in case of failure. Else returns item index
+int findItemIntVector(int_vector myvect, int item)
+{
+
+	int i = 0;
+	for (i = 0; i < myvect.size; i++)
+	{
+		if (item == myvect.values[i])
+		{
+			return i;
+		}
+	}
+	return i;
+}
+
+//function that searchs an int type array for an int type item. If it's found returns its position otherwise returns the array size
+int findItemarray(int* array_to_search, int item, int array_size)
+{
+	int i = 0;
+	for (i = 0; i < array_size; i++)
+	{
+		if (item == array_to_search[i])
+		{
+			return i;
+		}
+	}
+	return i;
+}
+
+//-----------------------------------------------------------generic private functions-------------------------------------------------------------//
+
+//*************************************************************************************************************************************************//
 
 //----------------------------------------------------------------Private functions----------------------------------------------------------------//
